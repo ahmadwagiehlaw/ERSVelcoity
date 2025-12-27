@@ -1,25 +1,32 @@
-const CACHE_NAME = 'ers-v5-cache';
+const CACHE_NAME = 'ers-v5.5-force-update'; // اسم جديد لإجبار التحديث
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/ers-logo.png',
+  './',
+  './index.html',
+  './manifest.json',
+  './ers-logo.png',
   'https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css',
-  'https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap'
+  'https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap'
 ];
 
-// Install Event
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS))
-  );
+  self.skipWaiting();
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
 });
 
-// Fetch Event
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys => Promise.all(
+      keys.map(key => key !== CACHE_NAME ? caches.delete(key) : null)
+    ))
   );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', event => {
+  // Network first for HTML to always get latest version
+  if (event.request.mode === 'navigate') {
+    event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+  } else {
+    event.respondWith(caches.match(event.request).then(res => res || fetch(event.request)));
+  }
 });

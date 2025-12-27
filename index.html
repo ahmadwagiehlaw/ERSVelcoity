@@ -422,31 +422,74 @@
         box.innerHTML = advice;
     }
 
-    // --- GLOBAL CHALLENGE ---
+    // --- GLOBAL CHALLENGE (Google Sheets Integration) ---
     async function fetchGlobalChallenge() {
-        // رابط CSV الصحيح
-        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSJ1EllXPDXThEec-zwpqZBMY5pYOI-jLNu0Zjr6nLI2wXONsNPKkN-BIIY1jRDJN7VG6KQAPFJX7Zr/pub?output=csv";
+        // 1. رابط الشيت الأساسي الذي أرسلته
+        const BASE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSJ1EllXPDXThEec-zwpqZBMY5pYOI-jLNu0Zjr6nLI2wXONsNPKkN-BIIY1jRDJN7VG6KQAPFJX7Zr/pub?gid=0&single=true&output=csv";
+        
+        // 2. الحيلة السحرية: إضافة توقيت اللحظة للرابط لكسر الكاش (Cache Busting)
+        // هذا يجعل الرابط مختلفاً في كل مرة، فيجبر جوجل على إرسال بيانات جديدة
+        const SHEET_URL = `${BASE_URL}&t=${Date.now()}`;
+
         const banner = document.getElementById('globalChallengeBanner');
         const loader = document.getElementById('challengeLoader');
+        const titleEl = document.getElementById('gcTitle');
+        const descEl = document.getElementById('gcDesc');
 
         try {
-            const res = await fetch(SHEET_URL, {cache: "no-store"}); // Avoid caching
+            const res = await fetch(SHEET_URL);
             const text = await res.text();
+            
+            // تقسيم النص إلى صفوف
             const rows = text.split('\n');
-            if(rows.length > 1) {
-                // Regex for CSV parsing handling quotes
-                const cols = rows[1].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || rows[1].split(','); 
-                if(cols && cols.length >= 2) {
-                    document.getElementById('gcTitle').innerText = cols[0].replace(/"/g,'');
-                    document.getElementById('gcDesc').innerText = cols[1].replace(/"/g,'');
-                    loader.style.display = 'none';
+
+            // التأكد أن لدينا صف بيانات (الصف الثاني)
+            if (rows.length > 1) {
+                // الصف الأول (index 0) هو العناوين Title, Description
+                // الصف الثاني (index 1) هو البيانات التي نريدها
+                const dataRow = rows[1];
+
+                // التعامل مع الفاصلة (CSV Parsing)
+                // هذه الطريقة تفصل النص بناءً على الفاصلة
+                // وتتعامل مع النصوص العربية بشكل أفضل
+                const cols = parseCSVRow(dataRow);
+
+                if (cols.length >= 2) {
+                    // العمود الأول: العنوان
+                    titleEl.innerText = cols[0]; 
+                    // العمود الثاني: الوصف
+                    descEl.innerText = cols[1];
+
+                    // إخفاء التحميل وإظهار البانر
+                    if (loader) loader.style.display = 'none';
                     banner.style.display = 'block';
                 }
             }
         } catch (e) {
-            console.log("Error loading challenge", e);
-            loader.innerText = "لا يوجد تحديات نشطة حالياً (تأكد من النت)";
+            console.error("Error loading challenge:", e);
+            if (loader) loader.innerText = "تعذر تحميل التحدي (تأكد من الإنترنت)";
         }
+    }
+
+    // دالة مساعدة لفك شفرة CSV بشكل دقيق حتى لو فيه فواصل داخل النص
+    function parseCSVRow(row) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < row.length; i++) {
+            const char = row[i];
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                result.push(current.trim());
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        result.push(current.trim());
+        return result.map(t => t.replace(/^"|"$/g, '').trim()); // تنظيف علامات التنصيص
     }
 
     // --- CORE FUNCTIONS ---
@@ -563,4 +606,5 @@
     init();
 </script>
 </body>
+
 </html>

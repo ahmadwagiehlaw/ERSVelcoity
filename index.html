@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ERS Velocity V6.2</title>
+    <title>ERS Velocity V6.3</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
@@ -117,7 +117,7 @@
         }
         input:focus { outline: none; border-color: var(--primary); background: rgba(125,125,125,0.12); }
         
-        /* New Style for Date Row */
+        /* Date Row Style */
         .date-row { display: flex; gap: 10px; align-items: stretch; }
         .date-input-container { flex: 1; position: relative; }
         .yesterday-btn {
@@ -146,13 +146,6 @@
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px var(--primary-glow); }
         .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
 
-        /* CALCULATOR TABS */
-        .calc-tabs { display: flex; background: rgba(0,0,0,0.2); border-radius: 14px; padding: 5px; margin-bottom: 25px; }
-        .calc-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; color: var(--text-muted); border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .calc-tab.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .calc-view { display: none; }
-        .calc-view.active { display: block; animation: fadeIn 0.3s; }
-
         /* NAV */
         .bottom-nav {
             position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
@@ -165,15 +158,26 @@
         .nav-item i { display: block; font-size: 26px; margin-bottom: 4px; }
         .nav-item.active { color: var(--primary); transform: translateY(-3px); }
 
-        /* UTILS */
+        /* CALCULATOR TABS & UTILS */
+        .calc-tabs { display: flex; background: rgba(0,0,0,0.2); border-radius: 14px; padding: 5px; margin-bottom: 25px; }
+        .calc-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; color: var(--text-muted); border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .calc-tab.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .calc-view { display: none; }
+        .calc-view.active { display: block; animation: fadeIn 0.3s; }
         .view-section { display: none; }
         .view-section.active { display: block; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
-        .modal-content { background: var(--bg-color); width: 85%; max-width: 400px; padding: 30px 25px; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
         .stat-box { background: rgba(125,125,125,0.08); padding: 15px; border-radius: 16px; text-align: center; }
         .stat-val { font-size: 24px; font-weight: 800; }
+
+        /* MODALS */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--bg-color); width: 85%; max-width: 400px; padding: 30px 25px; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        
         .float-btns { position: fixed; bottom: 110px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
-        .float-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .float-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); cursor: pointer; }
+
+        .install-step { text-align: right; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--text-main); }
+        .install-step i { color: var(--secondary); font-size: 20px; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -240,7 +244,7 @@
                 <div class="stat-box"><div class="stat-val" style="color:var(--secondary)" id="monthDist">0</div><div style="font-size:13px; color:var(--text-muted)">شهري</div></div>
             </div>
         </div>
-        <button class="btn btn-primary" onclick="switchView('log')"><i class="ri-add-line"></i> تسجيل جرية</button>
+        <button class="btn btn-primary" onclick="switchView('log')"><i class="ri-add-line"></i> تسجيل جرية جديدة</button>
     </div>
 
     <div id="view-log" class="view-section">
@@ -354,7 +358,12 @@
 </div>
 
 <div class="float-btns">
-    <div class="float-btn" onclick="openModal('settingsModal')"><i class="ri-settings-3-line"></i></div>
+    <div class="float-btn" onclick="openModal('installModal')">
+        <i class="ri-lightbulb-flash-line" style="color:var(--accent);"></i>
+    </div>
+    <div class="float-btn" onclick="openModal('settingsModal')">
+        <i class="ri-settings-3-line"></i>
+    </div>
 </div>
 
 <div class="bottom-nav">
@@ -368,16 +377,30 @@
     <div class="modal-content">
         <h3>الإعدادات</h3>
         <button class="btn btn-outline" onclick="toggleTheme()">تغيير المظهر 🌓</button>
-        
         <h4 style="margin:20px 0 10px 0; font-size:14px; color:var(--secondary);">النسخ الاحتياطي</h4>
         <div class="grid-2">
             <button class="btn btn-outline" style="margin-top:0; font-size:13px;" onclick="exportData()">💾 تصدير</button>
             <button class="btn btn-outline" style="margin-top:0; font-size:13px;" onclick="document.getElementById('importFile').click()">📂 استيراد</button>
             <input type="file" id="importFile" style="display:none" onchange="importData(this)">
         </div>
-
         <button class="btn btn-primary" onclick="forceUpdateApp()" style="margin-top:20px; background:var(--secondary);">تحديث التطبيق 🔄</button>
-        <p style="font-size:11px; margin-top:10px; opacity:0.6;">ERS V6.2 Pro</p>
+        <p style="font-size:11px; margin-top:10px; opacity:0.6;">ERS V6.3 Ultimate</p>
+    </div>
+</div>
+
+<div id="installModal" class="modal-overlay">
+    <div class="modal-content">
+        <div style="text-align:center; margin-bottom:15px;"><img src="ers-logo.png" style="width:80px;"></div>
+        <h3>تنويهات الفريق & التثبيت</h3>
+        <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:20px;">
+            أهلاً بك يا بطل! لضمان أفضل تجربة، يرجى تثبيت التطبيق على هاتفك.
+            <br><span style="color:var(--accent); font-size:12px;">(اضغط على علامة اللمبة 💡 لمراجعة هذا التنويه لاحقاً)</span>
+        </p>
+        
+        <div class="install-step"><i class="ri-apple-fill"></i><div><strong>للآيفون:</strong><br>اضغط زر المشاركة Share > ثم Add to Home Screen.</div></div>
+        <div class="install-step"><i class="ri-android-fill"></i><div><strong>للأندرويد:</strong><br>اضغط القائمة (3 نقاط) > ثم Install App.</div></div>
+        
+        <button class="btn btn-primary" onclick="closeInstallModal()">فهمت، لنبدأ! 🚀</button>
     </div>
 </div>
 
@@ -395,7 +418,8 @@
         profile: { name: "", weeklyGoal: 30, goalType: "fitness", monthlyGoal: 100, weight: "", height: "", waist: "", pb5k: "", pb10k: "", longestRun: "" },
         runs: [],
         settings: { theme: 'dark' },
-        challenge: { joined: false, targetDist: 0, titleHash: "" }
+        challenge: { joined: false, targetDist: 0, titleHash: "" },
+        onboardingDone: false // To track if welcome message seen
     };
 
     function init() {
@@ -412,14 +436,20 @@
 
         updateUI();
         fetchGlobalChallenge();
+        
+        // POPUP LOGIC: Show if new user OR name missing
+        if (!appData.onboardingDone || !appData.profile.name) {
+            setTimeout(() => document.getElementById('installModal').style.display = 'flex', 1500);
+        }
+
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
     }
     
     function saveData() { localStorage.setItem('ers_data_v6', JSON.stringify(appData)); updateUI(); }
 
     function updateUI() {
-        const fName = appData.profile.name ? appData.profile.name.split(' ')[0] : 'غير الاسم في الاعدادات';
-        document.getElementById('headerGreeting').innerHTML = `أهلاً كابتن، <span>${fName}</span>`;
+        const fName = appData.profile.name ? appData.profile.name.split(' ')[0] : 'كابتن';
+        document.getElementById('headerGreeting').innerHTML = `أهلاً، <span>${fName}</span>`;
         document.getElementById('goalBadge').innerText = {'fitness':'حرق', 'speed':'سرعة', 'endurance':'تحمل'}[appData.profile.goalType] || 'عام';
 
         const now = new Date();
@@ -470,7 +500,6 @@
         box.innerHTML = msg;
     }
 
-    // --- HELPERS (NEW DATE LOGIC) ---
     function setYesterday() {
         const d = new Date();
         d.setDate(d.getDate() - 1);
@@ -482,15 +511,12 @@
         if(!d||!t) return alert("أكمل البيانات");
         appData.runs.unshift({id:Date.now(), dist:d, time:t, type:document.getElementById('logType').value, date:document.getElementById('logDate').value});
         saveData(); 
-        
-        // Show Success Popup instead of immediate switch
         document.getElementById('successModal').style.display = 'flex';
     }
 
     function closeSuccessModal() {
         document.getElementById('successModal').style.display = 'none';
         switchView('dashboard');
-        // Reset Log Inputs
         document.getElementById('logDist').value = '';
         document.getElementById('logTime').value = '';
     }
@@ -645,6 +671,11 @@
         r.readAsText(inp.files[0]);
     }
     
+    function closeInstallModal() {
+        appData.onboardingDone = true; saveData();
+        document.getElementById('installModal').style.display='none';
+    }
+
     function toggleTheme() { document.body.classList.toggle('light-mode'); appData.settings.theme = document.body.classList.contains('light-mode')?'light':'dark'; saveData(); }
     function openModal(id) { document.getElementById(id).style.display='flex'; }
 

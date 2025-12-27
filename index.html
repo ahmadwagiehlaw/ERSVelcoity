@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ERS Velocity V6.1</title>
+    <title>ERS Velocity V6.2</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
@@ -24,7 +24,7 @@
             --accent: #f59e0b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --border-color: rgba(255,255,255,0.08); /* خط فاصل أنعم */
+            --border-color: rgba(255,255,255,0.08);
             --header-height: 85px;
         }
 
@@ -46,7 +46,6 @@
             display: flex; justify-content: center;
             min-height: 100vh;
             padding-bottom: 110px;
-            /* زيادة المسافة العلوية لمنع تغطية التحدي */
             padding-top: calc(var(--header-height) + env(safe-area-inset-top) + 20px);
             user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -84,14 +83,13 @@
         }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* CHALLENGE (UPDATED DESIGN) */
+        /* CHALLENGE */
         .challenge-card {
             background: linear-gradient(135deg, #b45309, #f59e0b);
             color: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px;
             box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3);
             border: 1px solid rgba(255,255,255,0.15); position: relative;
         }
-        /* العنوان الثابت للتحدي */
         .ch-super-header {
             background: rgba(0,0,0,0.2); padding: 8px 18px; font-size: 11px; font-weight: 800;
             text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.9);
@@ -102,7 +100,6 @@
         .ch-sub { font-size: 13px; opacity: 0.95; margin-top:4px; display:block; font-weight: 500;}
         .ch-actions { display: flex; gap: 10px; }
         .icon-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        
         .ch-body { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s; background: rgba(0,0,0,0.1); }
         .ch-body.open { max-height: 800px; padding: 10px 18px 25px 18px; }
         .ch-desc { font-size: 15px; line-height: 1.6; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
@@ -111,7 +108,7 @@
         .prog-track { height: 14px; background: rgba(0,0,0,0.25); border-radius: 10px; overflow: hidden; }
         .prog-fill { height: 100%; background: #fff; width: 0%; border-radius: 10px; transition: width 1s; }
 
-        /* INPUTS & FONTS (BIGGER) */
+        /* INPUTS */
         label { display: block; margin: 15px 0 8px 0; color: var(--text-muted); font-size: 14px; font-weight: 600; }
         input, select {
             width: 100%; padding: 16px; background: rgba(125,125,125,0.08);
@@ -119,10 +116,21 @@
             color: var(--text-main); font-size: 17px; font-weight: 500; font-family: inherit; box-sizing: border-box;
         }
         input:focus { outline: none; border-color: var(--primary); background: rgba(125,125,125,0.12); }
+        
+        /* New Style for Date Row */
+        .date-row { display: flex; gap: 10px; align-items: stretch; }
+        .date-input-container { flex: 1; position: relative; }
+        .yesterday-btn {
+            background: transparent; border: 1px solid var(--border-color); color: var(--text-muted);
+            border-radius: 14px; padding: 0 15px; font-size: 13px; font-weight: bold; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .yesterday-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.95); }
+
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
-        /* RESULTS (HUGE) */
+        /* RESULTS */
         .result-display {
             text-align: center; margin-top: 20px; padding: 15px;
             background: rgba(125,125,125,0.08); border-radius: 16px; border: 1px solid var(--border-color);
@@ -190,7 +198,6 @@
 
         <div id="globalChallenge" class="challenge-card" style="display:none;">
             <div class="ch-super-header"><i class="ri-flag-2-fill"></i> تحدي الفريق الرسمي</div>
-            
             <div class="ch-header" onclick="toggleChallenge()">
                 <div>
                     <div class="ch-title-text" id="gcTitle">...</div>
@@ -205,7 +212,6 @@
             <div class="ch-body" id="chBody">
                 <div class="ch-desc" id="gcDesc">...</div>
                 <button id="joinBtn" class="join-btn" onclick="joinChallenge()">انضمام للتحدي 🎯</button>
-                
                 <div id="progressArea" class="progress-area" style="display:none;">
                     <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:bold; margin-bottom:8px;">
                         <span>تقدمك</span>
@@ -252,10 +258,15 @@
                 <option value="interval">Intervals</option>
                 <option value="race">Race</option>
             </select>
+            
             <label>تاريخ التمرين</label>
-            <div style="position:relative;">
-                <input type="date" id="logDate" style="text-align:center; font-weight:bold;">
+            <div class="date-row">
+                <div class="date-input-container">
+                    <input type="date" id="logDate" style="text-align:center; font-weight:bold; height:100%;">
+                </div>
+                <button class="yesterday-btn" onclick="setYesterday()">أمس</button>
             </div>
+
             <button class="btn btn-primary" onclick="addRun()">حفظ</button>
         </div>
         <div class="card">
@@ -295,8 +306,7 @@
                 </select>
                 <label>الزمن (دقائق)</label><input type="number" id="predTime" placeholder="مثال: 25">
                 <button class="btn btn-primary" onclick="predictRace()">توقع أرقامي 🔮</button>
-                <div id="predResult" class="result-display" style="text-align:right; font-size:15px; line-height:2;">
-                    </div>
+                <div id="predResult" class="result-display" style="text-align:right; font-size:15px; line-height:2;"></div>
             </div>
 
             <div id="calc-hr" class="calc-view">
@@ -367,7 +377,16 @@
         </div>
 
         <button class="btn btn-primary" onclick="forceUpdateApp()" style="margin-top:20px; background:var(--secondary);">تحديث التطبيق 🔄</button>
-        <p style="font-size:11px; margin-top:10px; opacity:0.6;">ERS V6.1 Ultimate</p>
+        <p style="font-size:11px; margin-top:10px; opacity:0.6;">ERS V6.2 Pro</p>
+    </div>
+</div>
+
+<div id="successModal" class="modal-overlay">
+    <div class="modal-content" style="text-align:center;">
+        <i class="ri-checkbox-circle-fill" style="font-size:60px; color:var(--primary); margin-bottom:10px;"></i>
+        <h2 style="margin:0 0 10px 0; color:var(--text-main);">عاش يا بطل! 🔥</h2>
+        <p style="color:var(--text-muted); font-size:15px;">تم تسجيل التمرين بنجاح.</p>
+        <button class="btn btn-primary" onclick="closeSuccessModal()">تم</button>
     </div>
 </div>
 
@@ -399,8 +418,8 @@
     function saveData() { localStorage.setItem('ers_data_v6', JSON.stringify(appData)); updateUI(); }
 
     function updateUI() {
-        const fName = appData.profile.name ? appData.profile.name.split(' ')[0] : 'كابتن';
-        document.getElementById('headerGreeting').innerHTML = `أهلاً، <span>${fName}</span>`;
+        const fName = appData.profile.name ? appData.profile.name.split(' ')[0] : 'غير الاسم في الاعدادات';
+        document.getElementById('headerGreeting').innerHTML = `أهلاً كابتن، <span>${fName}</span>`;
         document.getElementById('goalBadge').innerText = {'fitness':'حرق', 'speed':'سرعة', 'endurance':'تحمل'}[appData.profile.goalType] || 'عام';
 
         const now = new Date();
@@ -428,7 +447,6 @@
         generateSuggestion();
     }
 
-    // --- ENGINE ---
     function generateSuggestion() {
         const p = appData.profile;
         const box = document.getElementById('smartSuggestion');
@@ -450,6 +468,31 @@
             }
         }
         box.innerHTML = msg;
+    }
+
+    // --- HELPERS (NEW DATE LOGIC) ---
+    function setYesterday() {
+        const d = new Date();
+        d.setDate(d.getDate() - 1);
+        document.getElementById('logDate').valueAsDate = d;
+    }
+
+    function addRun() {
+        const d=parseFloat(document.getElementById('logDist').value), t=parseFloat(document.getElementById('logTime').value);
+        if(!d||!t) return alert("أكمل البيانات");
+        appData.runs.unshift({id:Date.now(), dist:d, time:t, type:document.getElementById('logType').value, date:document.getElementById('logDate').value});
+        saveData(); 
+        
+        // Show Success Popup instead of immediate switch
+        document.getElementById('successModal').style.display = 'flex';
+    }
+
+    function closeSuccessModal() {
+        document.getElementById('successModal').style.display = 'none';
+        switchView('dashboard');
+        // Reset Log Inputs
+        document.getElementById('logDist').value = '';
+        document.getElementById('logTime').value = '';
     }
 
     // --- CALCULATORS ---
@@ -533,13 +576,6 @@
                 appData.challenge.targetDist = num;
             }
         } catch(e){}
-    }
-
-    function addRun() {
-        const d=parseFloat(document.getElementById('logDist').value), t=parseFloat(document.getElementById('logTime').value);
-        if(!d||!t) return alert("أكمل البيانات");
-        appData.runs.unshift({id:Date.now(), dist:d, time:t, type:document.getElementById('logType').value, date:document.getElementById('logDate').value});
-        saveData(); switchView('dashboard');
     }
 
     function renderLogs() {

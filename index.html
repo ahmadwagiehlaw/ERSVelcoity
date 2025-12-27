@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ERS Velocity V6.3</title>
+    <title>ERS Velocity V6.4</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
@@ -108,7 +108,7 @@
         .prog-track { height: 14px; background: rgba(0,0,0,0.25); border-radius: 10px; overflow: hidden; }
         .prog-fill { height: 100%; background: #fff; width: 0%; border-radius: 10px; transition: width 1s; }
 
-        /* INPUTS */
+        /* INPUTS & FIX FOR IPHONE DATE */
         label { display: block; margin: 15px 0 8px 0; color: var(--text-muted); font-size: 14px; font-weight: 600; }
         input, select {
             width: 100%; padding: 16px; background: rgba(125,125,125,0.08);
@@ -117,15 +117,28 @@
         }
         input:focus { outline: none; border-color: var(--primary); background: rgba(125,125,125,0.12); }
         
-        /* Date Row Style */
-        .date-row { display: flex; gap: 10px; align-items: stretch; }
-        .date-input-container { flex: 1; position: relative; }
+        /* --- IPHONE FIX: Date Row --- */
+        .date-row { display: flex; gap: 10px; align-items: stretch; width: 100%; }
+        .date-input-container { 
+            flex: 1; /* يأخذ المساحة المتاحة */
+            min-width: 0; /* هام جداً: يمنع العنصر من الخروج عن الشاشة في فليكس */
+            position: relative; 
+        }
+        #logDate {
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            -webkit-appearance: none; /* يحسن العرض في سفاري */
+            min-width: 0;
+        }
         .yesterday-btn {
+            width: 80px; /* حجم ثابت للزر */
+            flex-shrink: 0; /* منع الزر من الانكماش */
             background: transparent; border: 1px solid var(--border-color); color: var(--text-muted);
-            border-radius: 14px; padding: 0 15px; font-size: 13px; font-weight: bold; cursor: pointer;
+            border-radius: 14px; font-size: 14px; font-weight: bold; cursor: pointer;
             display: flex; align-items: center; justify-content: center; transition: 0.2s;
         }
-        .yesterday-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.95); }
+        .yesterday-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.95); border-color: var(--primary); color: var(--primary); }
 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
@@ -146,6 +159,13 @@
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px var(--primary-glow); }
         .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
 
+        /* CALCULATOR TABS */
+        .calc-tabs { display: flex; background: rgba(0,0,0,0.2); border-radius: 14px; padding: 5px; margin-bottom: 25px; }
+        .calc-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; color: var(--text-muted); border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .calc-tab.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .calc-view { display: none; }
+        .calc-view.active { display: block; animation: fadeIn 0.3s; }
+
         /* NAV */
         .bottom-nav {
             position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
@@ -158,21 +178,15 @@
         .nav-item i { display: block; font-size: 26px; margin-bottom: 4px; }
         .nav-item.active { color: var(--primary); transform: translateY(-3px); }
 
-        /* CALCULATOR TABS & UTILS */
-        .calc-tabs { display: flex; background: rgba(0,0,0,0.2); border-radius: 14px; padding: 5px; margin-bottom: 25px; }
-        .calc-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; color: var(--text-muted); border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .calc-tab.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .calc-view { display: none; }
-        .calc-view.active { display: block; animation: fadeIn 0.3s; }
+        /* UTILS */
         .view-section { display: none; }
         .view-section.active { display: block; }
-        .stat-box { background: rgba(125,125,125,0.08); padding: 15px; border-radius: 16px; text-align: center; }
-        .stat-val { font-size: 24px; font-weight: 800; }
-
-        /* MODALS */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--bg-color); width: 85%; max-width: 400px; padding: 30px 25px; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .stat-box { background: rgba(125,125,125,0.08); padding: 15px; border-radius: 16px; text-align: center; }
+        .stat-val { font-size: 24px; font-weight: 800; }
         
+        /* Floating Buttons */
         .float-btns { position: fixed; bottom: 110px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
         .float-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); cursor: pointer; }
 
@@ -230,11 +244,11 @@
         </div>
 
         <div class="card" style="border-right: 4px solid var(--primary);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="margin:0; font-size:16px; display:flex; gap:5px;"><i class="ri-robot-2-line"></i> كوتش ERS</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="margin:0; font-size:17px; display:flex; gap:6px;"><i class="ri-robot-2-line"></i> كوتش ERS</h3>
                 <span id="goalBadge" style="font-size:11px; background:rgba(34,197,94,0.1); color:var(--primary); padding:3px 10px; border-radius:8px;"></span>
             </div>
-            <div id="smartSuggestion" style="font-size:16px; line-height:1.6; color:var(--text-main);">...</div>
+            <div id="smartSuggestion" style="font-size:15px; line-height:1.7; color:var(--text-main);">...</div>
         </div>
 
         <div class="card">
@@ -266,7 +280,7 @@
             <label>تاريخ التمرين</label>
             <div class="date-row">
                 <div class="date-input-container">
-                    <input type="date" id="logDate" style="text-align:center; font-weight:bold; height:100%;">
+                    <input type="date" id="logDate">
                 </div>
                 <button class="yesterday-btn" onclick="setYesterday()">أمس</button>
             </div>
@@ -384,21 +398,21 @@
             <input type="file" id="importFile" style="display:none" onchange="importData(this)">
         </div>
         <button class="btn btn-primary" onclick="forceUpdateApp()" style="margin-top:20px; background:var(--secondary);">تحديث التطبيق 🔄</button>
-        <p style="font-size:11px; margin-top:10px; opacity:0.6;">ERS V6.3 Ultimate</p>
+        <p style="font-size:11px; margin-top:10px; opacity:0.6;">ERS V6.4 Pro</p>
     </div>
 </div>
 
 <div id="installModal" class="modal-overlay">
     <div class="modal-content">
         <div style="text-align:center; margin-bottom:15px;"><img src="ers-logo.png" style="width:80px;"></div>
-        <h3>تنويهات الفريق & التثبيت</h3>
+        <h3>تنويهات الفريق</h3>
         <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:20px;">
-            أهلاً بك يا بطل! لضمان أفضل تجربة، يرجى تثبيت التطبيق على هاتفك.
-            <br><span style="color:var(--accent); font-size:12px;">(اضغط على علامة اللمبة 💡 لمراجعة هذا التنويه لاحقاً)</span>
+            1. يرجى تثبيت التطبيق على هاتفك.<br>
+            2. <strong>هام:</strong> أدخل اسمك وهدفك في البروفايل ليعمل الكوتش بدقة.
         </p>
         
-        <div class="install-step"><i class="ri-apple-fill"></i><div><strong>للآيفون:</strong><br>اضغط زر المشاركة Share > ثم Add to Home Screen.</div></div>
-        <div class="install-step"><i class="ri-android-fill"></i><div><strong>للأندرويد:</strong><br>اضغط القائمة (3 نقاط) > ثم Install App.</div></div>
+        <div class="install-step"><i class="ri-apple-fill"></i><div><strong>للآيفون:</strong><br>Share > Add to Home Screen.</div></div>
+        <div class="install-step"><i class="ri-android-fill"></i><div><strong>للأندرويد:</strong><br>Menu > Install App.</div></div>
         
         <button class="btn btn-primary" onclick="closeInstallModal()">فهمت، لنبدأ! 🚀</button>
     </div>
@@ -419,7 +433,7 @@
         runs: [],
         settings: { theme: 'dark' },
         challenge: { joined: false, targetDist: 0, titleHash: "" },
-        onboardingDone: false // To track if welcome message seen
+        onboardingDone: false 
     };
 
     function init() {
@@ -437,7 +451,7 @@
         updateUI();
         fetchGlobalChallenge();
         
-        // POPUP LOGIC: Show if new user OR name missing
+        // Show Popup for new users or incomplete profile
         if (!appData.onboardingDone || !appData.profile.name) {
             setTimeout(() => document.getElementById('installModal').style.display = 'flex', 1500);
         }
@@ -477,29 +491,52 @@
         generateSuggestion();
     }
 
+    // --- ENGINE 2.0 (With Context) ---
     function generateSuggestion() {
         const p = appData.profile;
         const box = document.getElementById('smartSuggestion');
-        if(!appData.runs.length) { box.innerHTML = "سجل أول جرية لنبدأ!"; return; }
+        if(!appData.runs.length) { box.innerHTML = "سجل أول جرية لنبدأ التحليل."; return; }
 
         const last = appData.runs[0];
         const days = Math.floor((new Date() - new Date(last.date))/86400000);
         
-        let msg = "";
-        if(days === 0) msg = "راحة اليوم لاستشفاء العضلات 🧘";
-        else if(days > 5) msg = "عودة خفيفة: 3 كم هرولة";
-        else {
+        let plan = "", why = "", note = "";
+
+        if(days === 0) {
+            plan = "راحة اليوم (Recovery) 🧘";
+            why = "تدربت اليوم بالفعل، جسمك ينمو أثناء الراحة.";
+        } else if(days > 5) {
+            plan = "عودة خفيفة: 3 كم هرولة";
+            why = "لتجنب الإصابة بعد الانقطاع.";
+            note = "خليك هادي، العودة محتاجة صبر.";
+        } else {
             if(p.goalType === 'fitness') {
-                msg = p.weight > 90 ? "مشي سريع 45 دقيقة (Zone 1)" : "جري خفيف 50 دقيقة (Zone 2) لحرق الدهون.";
+                plan = p.weight > 90 ? "مشي سريع 45 دقيقة" : "جري خفيف 50 دقيقة (Zone 2)";
+                why = "لحرق الدهون بأمان وكفاءة.";
+                note = "حافظ على وتيرة تقدر تتكلم فيها.";
             } else if(p.goalType === 'speed') {
-                msg = last.type === 'interval' ? "Recovery Run 5km" : "Intervals: 1km Warm + 6x400m Fast";
+                if(last.type === 'interval' || last.type === 'race') {
+                    plan = "Recovery Run 5km ببطء شديد";
+                    why = "لأن الأمس كان مجهوداً عالياً.";
+                } else {
+                    plan = "Intervals: 1km تسخين + 6x400m سريع";
+                    why = "لتطوير السرعة القصوى.";
+                    note = "دوس بنزين يا وحش! 🔥";
+                }
             } else {
-                msg = last.type === 'long' ? "Recovery Swim/Walk" : "Steady Run 8-10km";
+                plan = last.type === 'long' ? "Recovery Run/Walk" : "Steady Run 8-10km";
+                why = last.type === 'long' ? "استشفاء بعد الطويل." : "لبناء قاعدة التحمل.";
             }
         }
-        box.innerHTML = msg;
+        
+        box.innerHTML = `
+            <div style="font-weight:bold; margin-bottom:5px;">${plan}</div>
+            <div style="font-size:13px; color:var(--text-muted); line-height:1.5;">💡 ${why}</div>
+            ${note ? `<div style="font-size:12px; color:var(--primary); margin-top:5px; font-style:italic;">"${note}"</div>` : ''}
+        `;
     }
 
+    // --- HELPERS ---
     function setYesterday() {
         const d = new Date();
         d.setDate(d.getDate() - 1);

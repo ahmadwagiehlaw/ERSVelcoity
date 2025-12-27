@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ERS Velocity V5.5</title>
+    <title>ERS Velocity V6.0</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
@@ -16,8 +16,8 @@
     <style>
         :root {
             --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --glass-bg: rgba(15, 23, 42, 0.85);
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --glass-bg: rgba(15, 23, 42, 0.95);
             --primary: #22c55e;
             --primary-glow: rgba(34, 197, 94, 0.4);
             --secondary: #3b82f6;
@@ -53,7 +53,7 @@
 
         .app-container { width: 100%; max-width: 480px; padding: 0 20px; box-sizing: border-box; }
 
-        /* --- HEADER --- */
+        /* HEADER */
         header {
             position: fixed; top: 0; left: 0; right: 0;
             height: calc(var(--header-height) + env(safe-area-inset-top));
@@ -73,17 +73,10 @@
         .date-badge { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-bottom: 2px; }
         .welcome-msg { font-size: 16px; font-weight: 800; }
         .welcome-msg span { color: var(--primary); }
-        
-        .logo-img { 
-            height: 65px; 
-            width: auto; 
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3)); 
-            display: block; 
-            transition: transform 0.2s;
-        }
+        .logo-img { height: 65px; width: auto; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3)); display: block; transition: transform 0.2s; }
         .logo-img:active { transform: scale(0.95); }
 
-        /* --- CARDS --- */
+        /* CARDS & UTILS */
         .card {
             background: var(--card-bg); border: 1px solid var(--border-color);
             border-radius: 20px; padding: 20px; margin-bottom: 20px;
@@ -91,47 +84,25 @@
         }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- CHALLENGE (FOLDABLE) --- */
-        .challenge-card {
-            background: linear-gradient(135deg, #b45309, #f59e0b);
-            color: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px;
-            box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3);
-            border: 1px solid rgba(255,255,255,0.1); position: relative;
-        }
-        .ch-header { padding: 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.05); cursor: pointer; }
-        .ch-title-box { display: flex; align-items: center; gap: 12px; }
-        .ch-icon { font-size: 28px; color: #fff; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2)); }
-        .ch-title-text { font-size: 18px; font-weight: 900; }
-        .ch-sub { font-size: 12px; opacity: 0.9; margin-top:2px; display:block; }
-        .ch-actions { display: flex; gap: 10px; }
-        .icon-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .ch-body { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s; background: rgba(0,0,0,0.1); }
-        .ch-body.open { max-height: 800px; padding: 10px 18px 25px 18px; }
-        .ch-desc { font-size: 14px; line-height: 1.6; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .join-btn { width: 100%; padding: 15px; background: #fff; color: #b45309; border: none; border-radius: 12px; font-weight: 800; font-size: 15px; cursor: pointer; display: flex; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .progress-area { margin-top: 15px; }
-        .prog-track { height: 12px; background: rgba(0,0,0,0.25); border-radius: 10px; overflow: hidden; }
-        .prog-fill { height: 100%; background: #fff; width: 0%; border-radius: 10px; transition: width 1s; }
-
-        /* --- INPUTS & FONTS (BIGGER) --- */
-        label { display: block; margin: 15px 0 6px 0; color: var(--text-muted); font-size: 14px; font-weight: 600; }
+        /* INPUTS */
+        label { display: block; margin: 15px 0 6px 0; color: var(--text-muted); font-size: 13px; font-weight: 600; }
         input, select {
             width: 100%; padding: 16px; background: rgba(125,125,125,0.08);
             border: 1px solid var(--border-color); border-radius: 14px;
             color: var(--text-main); font-size: 16px; font-weight: 500; font-family: inherit; box-sizing: border-box;
+            -webkit-appearance: none; /* Fix for iOS date input styles */
         }
         input:focus { outline: none; border-color: var(--primary); background: rgba(125,125,125,0.12); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        .stat-box { background: rgba(125,125,125,0.08); padding: 15px; border-radius: 16px; text-align: center; }
-        .stat-val { font-size: 22px; font-weight: 800; }
-        .stat-lbl { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
-        .btn { width: 100%; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 16px; border: none; cursor: pointer; margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        /* BUTTONS */
+        .btn { width: 100%; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 16px; border: none; cursor: pointer; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.98); }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px var(--primary-glow); }
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
 
-        /* --- NAV --- */
+        /* NAV */
         .bottom-nav {
             position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
             width: 90%; max-width: 440px; background: var(--glass-bg);
@@ -139,20 +110,36 @@
             border-radius: 24px; display: flex; justify-content: space-around;
             padding: 14px 0; box-shadow: 0 15px 40px rgba(0,0,0,0.4); z-index: 999;
         }
-        .nav-item { color: var(--text-muted); text-align: center; font-size: 11px; cursor: pointer; width: 25%; font-weight: 500; }
+        .nav-item { color: var(--text-muted); text-align: center; font-size: 11px; cursor: pointer; width: 25%; font-weight: 500; transition: 0.3s; }
         .nav-item i { display: block; font-size: 26px; margin-bottom: 4px; }
         .nav-item.active { color: var(--primary); transform: translateY(-3px); }
 
-        /* --- MODALS & UTILS --- */
+        /* CALCULATOR TABS */
+        .calc-tabs { display: flex; background: rgba(0,0,0,0.2); border-radius: 12px; padding: 4px; margin-bottom: 20px; }
+        .calc-tab { flex: 1; text-align: center; padding: 10px; font-size: 13px; color: var(--text-muted); border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .calc-tab.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .calc-view { display: none; animation: fadeIn 0.3s; }
+        .calc-view.active { display: block; }
+
+        /* CHALLENGE STYLES */
+        .challenge-card { background: linear-gradient(135deg, #b45309, #f59e0b); color: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px; position: relative; border: 1px solid rgba(255,255,255,0.1); }
+        .ch-header { padding: 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .ch-title-text { font-size: 18px; font-weight: 900; }
+        .ch-body { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s; background: rgba(0,0,0,0.1); }
+        .ch-body.open { max-height: 800px; padding: 10px 18px 25px 18px; }
+        .progress-area { margin-top: 15px; }
+        .prog-track { height: 12px; background: rgba(0,0,0,0.25); border-radius: 10px; overflow: hidden; }
+        .prog-fill { height: 100%; background: #fff; width: 0%; border-radius: 10px; transition: width 1s; }
+
+        /* UTILS */
         .view-section { display: none; }
         .view-section.active { display: block; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--bg-color); width: 85%; max-width: 400px; padding: 30px 25px; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .stat-box { background: rgba(125,125,125,0.08); padding: 15px; border-radius: 16px; text-align: center; }
+        .stat-val { font-size: 22px; font-weight: 800; }
         .float-btns { position: fixed; bottom: 110px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
         .float-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        
-        .install-step { text-align: right; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--text-main); }
-        .install-step i { color: var(--secondary); font-size: 20px; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -170,37 +157,26 @@
 <div class="app-container">
 
     <div id="view-dashboard" class="view-section active">
-        
         <div id="challengeLoader" style="font-size:12px; text-align:center; color:var(--text-muted); margin-bottom:10px;">
-            <i class="ri-loader-4-line ri-spin"></i> تحديث التحدي...
+            <i class="ri-loader-4-line ri-spin"></i>
         </div>
-
         <div id="globalChallenge" class="challenge-card" style="display:none;">
             <div class="ch-header" onclick="toggleChallenge()">
-                <div class="ch-title-box">
-                    <i class="ri-trophy-fill ch-icon"></i>
-                    <div>
-                        <div class="ch-title-text" id="gcTitle">...</div>
-                        <span class="ch-sub" id="gcSub">اضغط للتفاصيل</span>
-                    </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <i class="ri-trophy-fill" style="font-size:28px;"></i>
+                    <div><div class="ch-title-text" id="gcTitle">...</div><span style="font-size:12px; opacity:0.9;">اضغط للتفاصيل</span></div>
                 </div>
-                <div class="ch-actions">
-                    <div class="icon-btn" onclick="event.stopPropagation(); fetchGlobalChallenge(true)"><i class="ri-refresh-line"></i></div>
-                    <div class="icon-btn"><i class="ri-arrow-down-s-line chevron" id="chChevron"></i></div>
+                <div style="display:flex; gap:10px;">
+                    <i class="ri-refresh-line" onclick="event.stopPropagation(); fetchGlobalChallenge(true)" style="padding:8px; background:rgba(255,255,255,0.2); border-radius:50%;"></i>
+                    <i class="ri-arrow-down-s-line" id="chChevron" style="padding:8px; background:rgba(255,255,255,0.2); border-radius:50%;"></i>
                 </div>
             </div>
             <div class="ch-body" id="chBody">
-                <div class="ch-desc" id="gcDesc">...</div>
-                <div id="joinArea">
-                    <button class="join-btn" onclick="joinChallenge()"><i class="ri-flag-fill"></i> انضمام للتحدي</button>
-                </div>
+                <div id="gcDesc" style="background:rgba(0,0,0,0.15); padding:15px; border-radius:12px; margin-bottom:15px; font-size:14px; line-height:1.6;">...</div>
+                <button id="joinBtn" class="btn" style="background:#fff; color:#b45309; margin-top:0;" onclick="joinChallenge()">انضمام للتحدي 🎯</button>
                 <div id="progressArea" class="progress-area" style="display:none;">
-                    <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:bold; margin-bottom:6px;">
-                        <span>تقدمك</span>
-                        <span id="chProgressTxt">0 / 0</span>
-                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:bold; margin-bottom:6px;"><span>تقدمك</span><span id="chProgressTxt">0 / 0</span></div>
                     <div class="prog-track"><div class="prog-fill" id="chProgressBar"></div></div>
-                    <div style="text-align:center; font-size:11px; margin-top:8px; opacity:0.8;">أنت مشارك في هذا التحدي ✅</div>
                 </div>
             </div>
         </div>
@@ -216,22 +192,21 @@
         <div class="card">
             <h3 style="margin:0 0 15px 0; font-size:16px;">📊 الأداء</h3>
             <div class="grid-2">
-                <div class="stat-box"><div class="stat-val" style="color:var(--primary)" id="weekDist">0</div><div class="stat-lbl">أسبوعي</div></div>
-                <div class="stat-box"><div class="stat-val" style="color:var(--secondary)" id="monthDist">0</div><div class="stat-lbl">شهري</div></div>
+                <div class="stat-box"><div class="stat-val" style="color:var(--primary)" id="weekDist">0</div><div style="font-size:12px; color:var(--text-muted)">أسبوعي</div></div>
+                <div class="stat-box"><div class="stat-val" style="color:var(--secondary)" id="monthDist">0</div><div style="font-size:12px; color:var(--text-muted)">شهري</div></div>
             </div>
         </div>
-        
         <button class="btn btn-primary" onclick="switchView('log')"><i class="ri-add-line"></i> تسجيل جرية</button>
     </div>
 
     <div id="view-log" class="view-section">
         <div class="card">
-            <h3>📝 نشاط جديد</h3>
+            <h3>📝 تسجيل نشاط</h3>
             <div class="grid-2">
                 <div><label>مسافة (كم)</label><input type="number" id="logDist" step="0.1" inputmode="decimal"></div>
                 <div><label>زمن (دقيقة)</label><input type="number" id="logTime" inputmode="numeric"></div>
             </div>
-            <label>النوع</label>
+            <label>نوع التمرين</label>
             <select id="logType">
                 <option value="easy">Easy Run</option>
                 <option value="long">Long Run</option>
@@ -239,7 +214,12 @@
                 <option value="interval">Intervals</option>
                 <option value="race">Race</option>
             </select>
-            <label>التاريخ</label><input type="date" id="logDate">
+            <label>تاريخ التمرين</label>
+            <div style="position:relative;">
+                <input type="date" id="logDate" style="width:100%; text-align:center; font-weight:bold; letter-spacing:1px;">
+                <i class="ri-calendar-event-line" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--primary); pointer-events:none;"></i>
+            </div>
+
             <button class="btn btn-primary" onclick="addRun()">حفظ</button>
         </div>
         <div class="card">
@@ -248,88 +228,106 @@
         </div>
     </div>
 
+    <div id="view-calculator" class="view-section">
+        <div class="card">
+            <h3>🧰 أدوات العداء</h3>
+            <div class="calc-tabs">
+                <div class="calc-tab active" onclick="switchCalcTab('pace')">Pace</div>
+                <div class="calc-tab" onclick="switchCalcTab('predict')">توقعات السباق</div>
+                <div class="calc-tab" onclick="switchCalcTab('hr')">مناطق القلب</div>
+            </div>
+
+            <div id="calc-pace" class="calc-view active">
+                <label>المسافة</label><input type="number" id="calcDist" placeholder="كم">
+                <div class="grid-2">
+                    <input type="number" id="calcHrs" placeholder="س"><input type="number" id="calcMins" placeholder="د">
+                </div>
+                <button class="btn btn-primary" onclick="calculatePace()">احسب السرعة</button>
+                <div id="paceResult" style="text-align:center; margin-top:15px; font-size:24px; color:var(--primary); display:none;"></div>
+            </div>
+
+            <div id="calc-predict" class="calc-view">
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">أدخل نتيجة سباق حديث لتوقع زمنك في مسافات أخرى.</p>
+                <label>مسافة جريتها</label>
+                <select id="predBaseDist">
+                    <option value="5">5 كم</option>
+                    <option value="10">10 كم</option>
+                    <option value="21.1">نصف ماراثون</option>
+                </select>
+                <label>الزمن (دقائق)</label><input type="number" id="predTime">
+                <button class="btn btn-primary" onclick="predictRace()">توقع أرقامي 🔮</button>
+                <div id="predResult" style="margin-top:15px; font-size:13px; line-height:1.8; display:none;"></div>
+            </div>
+
+            <div id="calc-hr" class="calc-view">
+                <label>عمرك (سنة)</label><input type="number" id="hrAge" placeholder="مثال: 30">
+                <button class="btn btn-primary" onclick="calcZones()">احسب المناطق ❤️</button>
+                <div id="hrResult" style="margin-top:15px; font-size:13px; display:none;"></div>
+            </div>
+        </div>
+    </div>
+
     <div id="view-profile" class="view-section">
         <div class="card">
             <h3>👤 الملف الشخصي</h3>
-            <label>الاسم (مطلوب)</label><input type="text" id="profName" placeholder="الاسم ثلاثي">
-            
-            <label>الهدف الرئيسي</label>
+            <label>الاسم</label><input type="text" id="profName">
+            <label>الهدف</label>
             <select id="profGoalType">
-                <option value="fitness">لياقة وتخسيس (Fitness)</option>
-                <option value="endurance">تحمل ومسافات (Endurance)</option>
-                <option value="speed">سرعة (Speed)</option>
+                <option value="fitness">لياقة وتخسيس</option>
+                <option value="endurance">تحمل ومسافات</option>
+                <option value="speed">سرعة</option>
             </select>
-
-            <label style="color:var(--secondary); margin-top:25px;">البيانات الجسمانية</label>
+            <label style="color:var(--secondary); margin-top:20px;">الجسم</label>
             <div class="grid-3">
-                <input type="number" id="profWeight" placeholder="وزن (kg)">
-                <input type="number" id="profHeight" placeholder="طول (cm)">
-                <input type="number" id="profWaist" placeholder="خصر (cm)">
+                <input type="number" id="profWeight" placeholder="وزن">
+                <input type="number" id="profHeight" placeholder="طول">
+                <input type="number" id="profWaist" placeholder="خصر">
             </div>
-            <div id="bmiResult" style="text-align:center; font-size:12px; margin-top:5px; color:var(--text-muted);"></div>
+            <div id="bmiResult" style="text-align:center; font-size:12px; margin-top:5px;"></div>
 
-            <label style="color:var(--secondary); margin-top:20px;">الأرقام القياسية (PB)</label>
+            <label style="color:var(--secondary); margin-top:20px;">أفضل أرقام (PB)</label>
             <div class="grid-2">
                 <input type="number" id="profPb5k" placeholder="5K (دقيقة)">
                 <input type="number" id="profPb10k" placeholder="10K (دقيقة)">
             </div>
-            <label>أطول جرية آخر 30 يوم (كم)</label>
-            <input type="number" id="profLongest">
+            <label>أطول جرية آخر 30 يوم</label><input type="number" id="profLongest" placeholder="كم">
             
             <label style="color:var(--secondary); margin-top:20px;">الأهداف</label>
             <div class="grid-2">
-                <div><label style="margin-top:0;">هدف أسبوعي</label><input type="number" id="profGoalWeek"></div>
-                <div><label style="margin-top:0;">هدف شهري</label><input type="number" id="profGoalMonth"></div>
+                <div><label style="margin-top:0;">أسبوعي</label><input type="number" id="profGoalWeek"></div>
+                <div><label style="margin-top:0;">شهري</label><input type="number" id="profGoalMonth"></div>
             </div>
-            
-            <button class="btn btn-primary" onclick="saveProfile()">حفظ البيانات</button>
-        </div>
-    </div>
-    
-    <div id="view-calculator" class="view-section">
-        <div class="card">
-            <h3>⏱️ حاسبة الـ Pace</h3>
-            <label>المسافة</label><input type="number" id="calcDist" placeholder="كم">
-            <div class="grid-2">
-                <input type="number" id="calcHrs" placeholder="س"><input type="number" id="calcMins" placeholder="د">
-            </div>
-            <button class="btn btn-primary" onclick="calculatePace()">احسب</button>
-            <div id="calcResult" style="display:none; text-align:center; margin-top:20px;">
-                <h2 id="paceDisplay" style="color:var(--primary); font-size:32px;"></h2>
-            </div>
+            <button class="btn btn-primary" onclick="saveProfile()">حفظ</button>
         </div>
     </div>
 
 </div>
 
 <div class="float-btns">
-    <div class="float-btn" onclick="document.getElementById('settingsModal').style.display='flex'"><i class="ri-settings-3-line"></i></div>
+    <div class="float-btn" onclick="openModal('settingsModal')"><i class="ri-settings-3-line"></i></div>
 </div>
 
 <div class="bottom-nav">
     <div class="nav-item active" onclick="switchView('dashboard')"><i class="ri-dashboard-line"></i><span>الرئيسية</span></div>
-    <div class="nav-item" onclick="switchView('calculator')"><i class="ri-timer-flash-line"></i><span>الحاسبة</span></div>
     <div class="nav-item" onclick="switchView('log')"><i class="ri-file-list-3-line"></i><span>السجل</span></div>
+    <div class="nav-item" onclick="switchView('calculator')"><i class="ri-calculator-line"></i><span>أدوات</span></div>
     <div class="nav-item" onclick="switchView('profile')"><i class="ri-user-settings-line"></i><span>أنا</span></div>
 </div>
 
 <div id="settingsModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
     <div class="modal-content">
         <h3>الإعدادات</h3>
-        <button class="btn btn-primary" style="background:transparent; border:1px solid var(--border-color); color:var(--text-main);" onclick="toggleTheme()">تغيير المظهر 🌓</button>
-        <button class="btn btn-primary" onclick="forceUpdateApp()" style="margin-top:15px; background:var(--secondary);">تحديث التطبيق 🔄</button>
-        <p style="font-size:11px; margin-top:10px; opacity:0.6;">V5.5 - Force Update Enabled</p>
-    </div>
-</div>
+        <button class="btn btn-outline" onclick="toggleTheme()">تغيير المظهر 🌓</button>
+        
+        <h4 style="margin:20px 0 10px 0; font-size:14px; color:var(--secondary);">النسخ الاحتياطي</h4>
+        <div class="grid-2">
+            <button class="btn btn-outline" style="margin-top:0; font-size:13px;" onclick="exportData()">💾 تصدير</button>
+            <button class="btn btn-outline" style="margin-top:0; font-size:13px;" onclick="document.getElementById('importFile').click()">📂 استيراد</button>
+            <input type="file" id="importFile" style="display:none" onchange="importData(this)">
+        </div>
 
-<div id="installModal" class="modal-overlay">
-    <div class="modal-content">
-        <div style="text-align:center; margin-bottom:15px;"><img src="ers-logo.png" style="width:80px;"></div>
-        <h3>أهلاً بك في ERS Velocity</h3>
-        <p style="font-size:14px; color:var(--text-muted); line-height:1.6;">لضمان أفضل تجربة، يرجى تثبيت التطبيق.</p>
-        <div class="install-step"><i class="ri-apple-fill"></i><div><strong>للآيفون:</strong><br>Share > Add to Home Screen.</div></div>
-        <div class="install-step"><i class="ri-android-fill"></i><div><strong>للأندرويد:</strong><br>Menu > Install App.</div></div>
-        <button class="btn btn-primary" onclick="closeInstallModal()">ابدأ الآن 🚀</button>
+        <button class="btn btn-primary" onclick="forceUpdateApp()" style="margin-top:20px; background:var(--secondary);">تحديث التطبيق 🔄</button>
+        <p style="font-size:11px; margin-top:10px; opacity:0.6;">ERS V6.0 Ultimate</p>
     </div>
 </div>
 
@@ -338,30 +336,28 @@
         profile: { name: "", weeklyGoal: 30, goalType: "fitness", monthlyGoal: 100, weight: "", height: "", waist: "", pb5k: "", pb10k: "", longestRun: "" },
         runs: [],
         settings: { theme: 'dark' },
-        challenge: { joined: false, targetDist: 0, titleHash: "" },
-        onboardingDone: false
+        challenge: { joined: false, targetDist: 0, titleHash: "" }
     };
 
     function init() {
-        const saved = localStorage.getItem('ers_data_v5');
+        const saved = localStorage.getItem('ers_data_v6'); // New key for V6
         if (saved) appData = JSON.parse(saved);
+        else {
+            // Try migrating old data
+            const old = localStorage.getItem('ers_data_v5');
+            if(old) appData = JSON.parse(old);
+        }
+
         if (appData.settings.theme === 'light') document.body.classList.add('light-mode');
-        
         document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('ar-EG', {weekday:'short', day:'numeric', month:'short'});
         document.getElementById('logDate').valueAsDate = new Date();
 
         updateUI();
         fetchGlobalChallenge();
-        
-        // Popup Logic
-        if (!appData.onboardingDone || !appData.profile.name) {
-            setTimeout(() => document.getElementById('installModal').style.display = 'flex', 1000);
-        }
-
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
     }
     
-    function saveData() { localStorage.setItem('ers_data_v5', JSON.stringify(appData)); updateUI(); }
+    function saveData() { localStorage.setItem('ers_data_v6', JSON.stringify(appData)); updateUI(); }
 
     function updateUI() {
         const fName = appData.profile.name ? appData.profile.name.split(' ')[0] : 'كابتن';
@@ -377,100 +373,133 @@
         document.getElementById('weekDist').innerText = wDist.toFixed(1);
         document.getElementById('monthDist').innerText = mDist.toFixed(1);
 
-        if(appData.challenge.joined) {
-            document.getElementById('joinArea').style.display = 'none';
-            document.getElementById('progressArea').style.display = 'block';
-            const t = appData.challenge.targetDist;
-            const pct = t > 0 ? Math.min((wDist/t)*100, 100) : 0;
+        // Challenge Progress
+        if(appData.challenge.joined && appData.challenge.targetDist > 0) {
+            document.getElementById('joinBtn').style.display='none';
+            document.getElementById('progressArea').style.display='block';
+            const pct = Math.min((wDist / appData.challenge.targetDist) * 100, 100);
             document.getElementById('chProgressBar').style.width = pct + "%";
-            document.getElementById('chProgressTxt').innerText = `${wDist.toFixed(1)} / ${t} كم`;
-            if(pct >= 100) document.getElementById('chProgressBar').style.backgroundColor = '#4ade80';
+            document.getElementById('chProgressTxt').innerText = `${wDist.toFixed(1)} / ${appData.challenge.targetDist}`;
+            if(pct >= 100) document.getElementById('chProgressBar').style.background = '#4ade80';
         } else {
-            document.getElementById('joinArea').style.display = 'block';
-            document.getElementById('progressArea').style.display = 'none';
+            document.getElementById('joinBtn').style.display='block';
+            document.getElementById('progressArea').style.display='none';
         }
 
         renderLogs();
         generateSuggestion();
     }
 
+    // --- ENGINE 2.0 ---
     function generateSuggestion() {
-        const goal = appData.profile.goalType;
-        const weight = parseFloat(appData.profile.weight) || 0;
-        let msg = "سجل أول جرية لتبدأ التوصيات!";
+        const p = appData.profile;
+        const box = document.getElementById('smartSuggestion');
+        if(!appData.runs.length) { box.innerHTML = "سجل أول جرية لنبدأ!"; return; }
+
+        const last = appData.runs[0];
+        const days = Math.floor((new Date() - new Date(last.date))/86400000);
         
-        if(appData.runs.length > 0) {
-            const last = appData.runs[0];
-            const days = Math.floor((new Date() - new Date(last.date))/(86400000));
-            
-            if(days === 0) msg = "لقد أديت ما عليك اليوم. الراحة (Recovery) مهمة! 🛌";
-            else if(days > 5) msg = "فترة انقطاع طويلة! ابدأ بـ 3 كم هرولة خفيفة جداً لتجنب الإصابة.";
-            else {
-                if(goal === 'fitness') {
-                     if(weight > 90) msg = "لحرق الدهون بأمان: مشي سريع أو هرولة خفيفة (Zone 2) لمدة 45 دقيقة.";
-                     else msg = "تمرين حرق الدهون: جري متواصل بسرعة مريحة لمدة 50 دقيقة.";
-                } else if(goal === 'speed') {
-                    if(last.type === 'interval') msg = "Recovery Run: 5 كم بسرعة بطيئة جداً.";
-                    else msg = "يوم السرعة: 10 دقايق تسخين + (400م سريع / 2د راحة) x 8.";
-                } else {
-                    msg = "بناء التحمل: 8-10 كم جري بوتيرة ثابتة (Steady Pace).";
-                }
+        let msg = "";
+        if(days === 0) msg = "راحة اليوم لاستشفاء العضلات 🧘";
+        else if(days > 5) msg = "عودة خفيفة: 3 كم هرولة";
+        else {
+            if(p.goalType === 'fitness') {
+                msg = p.weight > 90 ? "مشي سريع 45 دقيقة (Zone 1)" : "جري خفيف 50 دقيقة (Zone 2) لحرق الدهون.";
+            } else if(p.goalType === 'speed') {
+                msg = last.type === 'interval' ? "Recovery Run 5km" : "Intervals: 1km Warm + 6x400m Fast";
+            } else {
+                msg = last.type === 'long' ? "Recovery Swim/Walk" : "Steady Run 8-10km";
             }
         }
-        document.getElementById('smartSuggestion').innerText = msg;
+        // V02 Max Estimation Bonus if PB exists
+        if(p.pb5k) {
+            // Approximate V02 Max logic
+            const v02 = (10000 / p.pb5k) * 0.21; // Very rough estimation for motivation
+            // msg += `<br><span style="font-size:11px; color:var(--accent)">V02 Max التقديري: ${v02.toFixed(1)}</span>`;
+        }
+        box.innerHTML = msg;
     }
 
-    async function forceUpdateApp() {
-        if ('serviceWorker' in navigator) {
-            const regs = await navigator.serviceWorker.getRegistrations();
-            for (let reg of regs) await reg.unregister();
-            const keys = await caches.keys();
-            for (let key of keys) await caches.delete(key);
-            window.location.reload(true);
-        } else location.reload(true);
+    // --- NEW CALCULATORS ---
+    function predictRace() {
+        const d1 = parseFloat(document.getElementById('predBaseDist').value);
+        const t1 = parseFloat(document.getElementById('predTime').value);
+        if(!t1) return;
+        // Riegel Formula: T2 = T1 * (D2 / D1)^1.06
+        const predict = (d2) => {
+            const t2 = t1 * Math.pow((d2/d1), 1.06);
+            const h = Math.floor(t2/60);
+            const m = Math.round(t2%60);
+            return `${h>0?h+'س ':''}${m}د`;
+        };
+        const res = document.getElementById('predResult');
+        res.innerHTML = `
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding:5px;"><span>10 كم:</span> <span style="color:var(--primary)">${predict(10)}</span></div>
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding:5px;"><span>نصف ماراثون:</span> <span style="color:var(--accent)">${predict(21.1)}</span></div>
+            <div style="display:flex; justify-content:space-between; padding:5px;"><span>ماراثون:</span> <span style="color:var(--secondary)">${predict(42.2)}</span></div>
+        `;
+        res.style.display = 'block';
     }
 
+    function calcZones() {
+        const age = parseFloat(document.getElementById('hrAge').value);
+        if(!age) return;
+        const maxHr = 220 - age;
+        const res = document.getElementById('hrResult');
+        res.innerHTML = `
+            <div style="margin-bottom:5px;">Max HR: <strong>${maxHr}</strong></div>
+            <div style="font-size:12px; opacity:0.8;">
+            Zone 2 (حرق دهون): ${Math.round(maxHr*0.6)} - ${Math.round(maxHr*0.7)}<br>
+            Zone 4 (عتبة اللاهوائي): ${Math.round(maxHr*0.8)} - ${Math.round(maxHr*0.9)}
+            </div>
+        `;
+        res.style.display = 'block';
+    }
+
+    function switchCalcTab(tab) {
+        document.querySelectorAll('.calc-view').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.calc-tab').forEach(el => el.classList.remove('active'));
+        document.getElementById('calc-'+tab).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // --- CORE & UTILS ---
     function toggleChallenge() {
         document.getElementById('chBody').classList.toggle('open');
-        document.getElementById('chChevron').classList.toggle('rotate-down');
+        document.getElementById('chChevron').classList.toggle(document.getElementById('chBody').classList.contains('open') ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line');
     }
 
     function joinChallenge() {
         const t = document.getElementById('gcTitle').innerText;
-        if(t === "...") return alert("انتظر التحميل");
-        if(!appData.challenge) appData.challenge = {};
+        if(t==="...") return;
         appData.challenge.joined = true;
         appData.challenge.titleHash = t;
-        saveData(); toggleChallenge(); alert("تم الانضمام! بالتوفيق 🎯");
+        saveData();
     }
 
-    async function fetchGlobalChallenge(force = false) {
-        if(force) document.getElementById('challengeLoader').style.display = 'block';
-        let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSJ1EllXPDXThEec-zwpqZBMY5pYOI-jLNu0Zjr6nLI2wXONsNPKkN-BIIY1jRDJN7VG6KQAPFJX7Zr/pub?gid=0&single=true&output=csv&t=" + Date.now();
+    async function fetchGlobalChallenge(force) {
+        if(force) document.getElementById('challengeLoader').style.display='block';
+        let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSJ1EllXPDXThEec-zwpqZBMY5pYOI-jLNu0Zjr6nLI2wXONsNPKkN-BIIY1jRDJN7VG6KQAPFJX7Zr/pub?gid=0&single=true&output=csv&t="+Date.now();
         try {
-            const txt = await (await fetch(url, {cache: "no-store"})).text();
+            const txt = await (await fetch(url, {cache:"no-store"})).text();
             const rows = txt.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
-            if(rows.length > 1) {
-                let rt = rows[1][0].replace(/"/g, '').trim();
-                let rd = rows[1][1].replace(/"/g, '').trim();
-                let num = parseFloat(rt.match(/[\d.]+/));
-                if(isNaN(num)) num = 10;
-                
+            if(rows.length>1) {
+                let rt = rows[1][0].replace(/"/g,'').trim();
+                let rd = rows[1][1].replace(/"/g,'').trim();
+                let num = parseFloat(rt.match(/[\d.]+/)) || 10;
                 document.getElementById('gcTitle').innerText = rt;
                 document.getElementById('gcDesc').innerText = rd;
-                document.getElementById('gcSub').innerText = `المستهدف: ${num} كم`;
                 document.getElementById('globalChallenge').style.display = 'block';
-                document.getElementById('challengeLoader').style.display = 'none';
-                
-                if(appData.challenge.titleHash && appData.challenge.titleHash !== rt) appData.challenge.joined = false;
+                document.getElementById('challengeLoader').style.display='none';
+                if(appData.challenge.titleHash !== rt) appData.challenge.joined = false;
                 appData.challenge.targetDist = num;
             }
-        } catch(e) {}
+        } catch(e){}
     }
 
     function addRun() {
         const d=parseFloat(document.getElementById('logDist').value), t=parseFloat(document.getElementById('logTime').value);
-        if(!d || !t) return alert("أكمل البيانات");
+        if(!d||!t) return alert("البيانات ناقصة");
         appData.runs.unshift({id:Date.now(), dist:d, time:t, type:document.getElementById('logType').value, date:document.getElementById('logDate').value});
         saveData(); switchView('dashboard');
     }
@@ -482,60 +511,73 @@
 
     function calculatePace() {
         let d=parseFloat(document.getElementById('calcDist').value), h=parseFloat(document.getElementById('calcHrs').value)||0, m=parseFloat(document.getElementById('calcMins').value)||0;
-        if(d){ let p=((h*60)+m)/d, pm=Math.floor(p), ps=Math.round((p-pm)*60); document.getElementById('paceDisplay').innerText=`${pm}:${ps<10?'0'+ps:ps}`; document.getElementById('calcResult').style.display='block'; }
+        if(d){ let p=((h*60)+m)/d, pm=Math.floor(p), ps=Math.round((p-pm)*60); document.getElementById('paceResult').innerText=`${pm}:${ps<10?'0'+ps:ps} /km`; document.getElementById('paceResult').style.display='block'; }
     }
 
-    function switchView(v) {
-        document.querySelectorAll('.view-section').forEach(e=>e.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
-        document.getElementById('view-'+v).classList.add('active');
-        const m={'dashboard':0,'calculator':1,'log':2,'profile':3};
-        document.querySelectorAll('.nav-item')[m[v]].classList.add('active');
-        window.scrollTo(0,0);
-        if(v==='profile') populateProfile();
+    function saveProfile() {
+        const p=appData.profile;
+        p.name=document.getElementById('profName').value;
+        p.goalType=document.getElementById('profGoalType').value;
+        p.weight=document.getElementById('profWeight').value;
+        p.height=document.getElementById('profHeight').value;
+        p.waist=document.getElementById('profWaist').value;
+        p.pb5k=document.getElementById('profPb5k').value;
+        p.pb10k=document.getElementById('profPb10k').value;
+        p.longestRun=document.getElementById('profLongest').value;
+        p.weeklyGoal=document.getElementById('profGoalWeek').value;
+        p.monthlyGoal=document.getElementById('profGoalMonth').value;
+        saveData(); alert("تم الحفظ"); switchView('dashboard');
     }
 
     function populateProfile() {
-        const p = appData.profile;
-        document.getElementById('profName').value = p.name;
-        document.getElementById('profGoalType').value = p.goalType;
-        document.getElementById('profWeight').value = p.weight;
-        document.getElementById('profHeight').value = p.height;
-        document.getElementById('profWaist').value = p.waist;
-        document.getElementById('profPb5k').value = p.pb5k;
-        document.getElementById('profPb10k').value = p.pb10k;
-        document.getElementById('profLongest').value = p.longestRun;
-        document.getElementById('profGoalWeek').value = p.weeklyGoal;
-        document.getElementById('profGoalMonth').value = p.monthlyGoal;
-        
+        const p=appData.profile;
+        document.getElementById('profName').value=p.name;
+        document.getElementById('profGoalType').value=p.goalType;
+        document.getElementById('profWeight').value=p.weight;
+        document.getElementById('profHeight').value=p.height;
+        document.getElementById('profWaist').value=p.waist;
+        document.getElementById('profPb5k').value=p.pb5k;
+        document.getElementById('profPb10k').value=p.pb10k;
+        document.getElementById('profLongest').value=p.longestRun;
+        document.getElementById('profGoalWeek').value=p.weeklyGoal;
+        document.getElementById('profGoalMonth').value=p.monthlyGoal;
         if(p.weight && p.height) {
             const bmi = (p.weight / ((p.height/100)**2)).toFixed(1);
             document.getElementById('bmiResult').innerHTML = `BMI: <strong>${bmi}</strong>`;
         }
     }
 
-    function saveProfile() {
-        const p = appData.profile;
-        p.name = document.getElementById('profName').value;
-        p.goalType = document.getElementById('profGoalType').value;
-        p.weight = document.getElementById('profWeight').value;
-        p.height = document.getElementById('profHeight').value;
-        p.waist = document.getElementById('profWaist').value;
-        p.pb5k = document.getElementById('profPb5k').value;
-        p.pb10k = document.getElementById('profPb10k').value;
-        p.longestRun = document.getElementById('profLongest').value;
-        p.weeklyGoal = parseFloat(document.getElementById('profGoalWeek').value)||30;
-        p.monthlyGoal = parseFloat(document.getElementById('profGoalMonth').value)||100;
-        saveData(); alert("تم الحفظ"); switchView('dashboard');
+    function switchView(v) {
+        document.querySelectorAll('.view-section').forEach(e=>e.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+        document.getElementById('view-'+v).classList.add('active');
+        const m={'dashboard':0,'log':1,'calculator':2,'profile':3};
+        document.querySelectorAll('.nav-item')[m[v]].classList.add('active');
+        window.scrollTo(0,0);
+        if(v==='profile') populateProfile();
     }
 
-    function closeInstallModal() {
-        appData.onboardingDone = true; saveData();
-        document.getElementById('installModal').style.display='none';
-        if(!appData.profile.name) { alert("من فضلك أدخل اسمك"); switchView('profile'); }
+    async function forceUpdateApp() {
+        if('serviceWorker' in navigator) {
+            (await navigator.serviceWorker.getRegistrations()).forEach(r=>r.unregister());
+            (await caches.keys()).forEach(k=>caches.delete(k));
+        }
+        location.reload(true);
     }
-
+    
+    function exportData() {
+        const s = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+        const a = document.createElement('a'); a.href=s; a.download="ers_v6_backup.json"; a.click();
+    }
+    
+    function importData(inp) {
+        const r = new FileReader();
+        r.onload = e => { appData = JSON.parse(e.target.result); saveData(); location.reload(); };
+        r.readAsText(inp.files[0]);
+    }
+    
     function toggleTheme() { document.body.classList.toggle('light-mode'); appData.settings.theme = document.body.classList.contains('light-mode')?'light':'dark'; saveData(); }
+    function openModal(id) { document.getElementById(id).style.display='flex'; }
 
     init();
 </script>

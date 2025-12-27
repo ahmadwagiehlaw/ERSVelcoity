@@ -1,0 +1,21 @@
+{
+  "name": "ERS Velocity",
+  "short_name": "ERS Team",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "ers-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "ers-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

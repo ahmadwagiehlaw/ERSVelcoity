@@ -3,27 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ERS Velocity V5.3</title>
+    <title>ERS Velocity V5.5</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --bg-color: #0f172a;
             --card-bg: rgba(30, 41, 59, 0.7);
-            --glass-bg: rgba(15, 23, 42, 0.95);
+            --glass-bg: rgba(15, 23, 42, 0.85);
             --primary: #22c55e;
             --primary-glow: rgba(34, 197, 94, 0.4);
             --secondary: #3b82f6;
             --accent: #f59e0b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --border-color: rgba(255,255,255,0.08);
-            --header-height: 70px;
+            --border-color: rgba(255,255,255,0.1);
+            --header-height: 90px;
         }
 
         body.light-mode {
@@ -43,132 +45,114 @@
             margin: 0; padding: 0;
             display: flex; justify-content: center;
             min-height: 100vh;
-            padding-bottom: 100px; 
-            padding-top: calc(var(--header-height) + 25px); /* مساحة للهيدر العائم */
+            padding-bottom: 110px;
+            padding-top: calc(var(--header-height) + env(safe-area-inset-top));
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .app-container { width: 100%; max-width: 480px; padding: 0 15px; box-sizing: border-box; }
+        .app-container { width: 100%; max-width: 480px; padding: 0 20px; box-sizing: border-box; }
 
-        /* --- FLOATING HEADER (التصميم الجديد) --- */
+        /* --- HEADER --- */
         header {
-            position: fixed; 
-            top: 15px; left: 15px; right: 15px; /* يطفو بعيداً عن الحواف */
-            height: var(--header-height);
+            position: fixed; top: 0; left: 0; right: 0;
+            height: calc(var(--header-height) + env(safe-area-inset-top));
             background: var(--glass-bg);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px; /* حواف دائرية بالكامل */
-            display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            z-index: 1000;
-            max-width: 450px;
-            margin: 0 auto; /* توسيط للشاشات الكبيرة */
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: flex-end; padding-bottom: 10px;
+            justify-content: center; z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
         .header-content {
-            width: 100%; padding: 0 20px;
+            width: 100%; max-width: 480px; padding: 0 20px;
             display: flex; justify-content: space-between; align-items: center;
+            height: var(--header-height);
         }
-        .header-info { text-align: right; line-height: 1.2; }
-        .date-badge { font-size: 10px; background: rgba(125,125,125,0.1); padding: 2px 8px; border-radius: 10px; color: var(--text-muted); display: inline-block; margin-bottom: 2px;}
-        .welcome-msg { font-size: 14px; font-weight: 800; color: var(--text-main); }
+        .header-info { text-align: right; }
+        .date-badge { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-bottom: 2px; }
+        .welcome-msg { font-size: 16px; font-weight: 800; }
         .welcome-msg span { color: var(--primary); }
         
-        .logo-box {
-            background: rgba(255,255,255,0.05);
-            padding: 5px; border-radius: 12px; border: 1px solid var(--border-color);
-            display: flex; align-items: center;
+        .logo-img { 
+            height: 65px; 
+            width: auto; 
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3)); 
+            display: block; 
+            transition: transform 0.2s;
         }
-        .logo-img { height: 35px; width: auto; display: block; }
+        .logo-img:active { transform: scale(0.95); }
 
         /* --- CARDS --- */
         .card {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 18px; padding: 18px; margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            animation: slideUp 0.4s ease-out;
+            border-radius: 20px; padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); animation: slideUp 0.4s ease-out;
         }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- FOLDABLE CHALLENGE CARD --- */
+        /* --- CHALLENGE (FOLDABLE) --- */
         .challenge-card {
             background: linear-gradient(135deg, #b45309, #f59e0b);
-            color: white; border-radius: 18px; overflow: hidden;
-            margin-bottom: 15px; position: relative;
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
+            color: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3);
+            border: 1px solid rgba(255,255,255,0.1); position: relative;
         }
-        .ch-header {
-            padding: 15px; display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0,0,0,0.1); cursor: pointer;
-        }
-        .ch-title-box { display: flex; align-items: center; gap: 10px; }
-        .ch-icon { font-size: 24px; color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .ch-title-text { font-size: 16px; font-weight: 800; line-height: 1.2; }
-        .ch-sub { font-size: 11px; opacity: 0.8; font-weight: normal; display: block; }
-        
-        .ch-actions { display: flex; gap: 8px; align-items: center; }
-        .icon-btn { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); cursor: pointer; transition: 0.2s; }
-        .icon-btn:active { transform: scale(0.9); }
-        .chevron { transition: transform 0.3s; }
-        .rotate-down { transform: rotate(180deg); }
+        .ch-header { padding: 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.05); cursor: pointer; }
+        .ch-title-box { display: flex; align-items: center; gap: 12px; }
+        .ch-icon { font-size: 28px; color: #fff; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2)); }
+        .ch-title-text { font-size: 18px; font-weight: 900; }
+        .ch-sub { font-size: 12px; opacity: 0.9; margin-top:2px; display:block; }
+        .ch-actions { display: flex; gap: 10px; }
+        .icon-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .ch-body { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s; background: rgba(0,0,0,0.1); }
+        .ch-body.open { max-height: 800px; padding: 10px 18px 25px 18px; }
+        .ch-desc { font-size: 14px; line-height: 1.6; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        .join-btn { width: 100%; padding: 15px; background: #fff; color: #b45309; border: none; border-radius: 12px; font-weight: 800; font-size: 15px; cursor: pointer; display: flex; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .progress-area { margin-top: 15px; }
+        .prog-track { height: 12px; background: rgba(0,0,0,0.25); border-radius: 10px; overflow: hidden; }
+        .prog-fill { height: 100%; background: #fff; width: 0%; border-radius: 10px; transition: width 1s; }
 
-        .ch-body {
-            padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s;
-            background: rgba(0,0,0,0.05);
-        }
-        .ch-body.open { max-height: 500px; padding: 15px 15px 20px 15px; }
-        
-        .ch-desc { font-size: 13px; line-height: 1.6; opacity: 0.95; white-space: pre-wrap; margin-bottom: 15px; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 10px; }
-        
-        .join-btn {
-            background: #fff; color: #b45309; width: 100%; padding: 12px; border: none; border-radius: 12px;
-            font-weight: 800; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .progress-area { margin-top: 10px; }
-        .prog-info { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; font-weight: bold; }
-        .prog-track { height: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; }
-        .prog-fill { height: 100%; background: #fff; width: 0%; border-radius: 10px; transition: width 1s ease; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
-
-        /* --- STATS & INPUTS --- */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .stat-box { background: rgba(125,125,125,0.08); padding: 12px; border-radius: 14px; text-align: center; }
-        .stat-val { font-size: 20px; font-weight: 800; }
-        .stat-lbl { font-size: 11px; color: var(--text-muted); }
-
-        label { display: block; margin: 10px 0 5px 0; color: var(--text-muted); font-size: 12px; }
+        /* --- INPUTS & FONTS (BIGGER) --- */
+        label { display: block; margin: 15px 0 6px 0; color: var(--text-muted); font-size: 14px; font-weight: 600; }
         input, select {
-            width: 100%; padding: 12px; background: rgba(125,125,125,0.08);
-            border: 1px solid var(--border-color); border-radius: 12px;
-            color: var(--text-main); font-size: 15px; font-family: inherit; box-sizing: border-box;
+            width: 100%; padding: 16px; background: rgba(125,125,125,0.08);
+            border: 1px solid var(--border-color); border-radius: 14px;
+            color: var(--text-main); font-size: 16px; font-weight: 500; font-family: inherit; box-sizing: border-box;
         }
-        input:focus { outline: none; border-color: var(--primary); }
-        .btn { width: 100%; padding: 14px; border-radius: 12px; font-weight: bold; border: none; cursor: pointer; margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 8px;}
-        .btn-primary { background: var(--primary); color: white; }
+        input:focus { outline: none; border-color: var(--primary); background: rgba(125,125,125,0.12); }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        /* --- BOTTOM NAV --- */
+        .stat-box { background: rgba(125,125,125,0.08); padding: 15px; border-radius: 16px; text-align: center; }
+        .stat-val { font-size: 22px; font-weight: 800; }
+        .stat-lbl { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        .btn { width: 100%; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 16px; border: none; cursor: pointer; margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px var(--primary-glow); }
+
+        /* --- NAV --- */
         .bottom-nav {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
             width: 90%; max-width: 440px; background: var(--glass-bg);
-            backdrop-filter: blur(20px); border: 1px solid var(--border-color);
-            border-radius: 20px; display: flex; justify-content: space-around;
-            padding: 12px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 999;
+            backdrop-filter: blur(25px); border: 1px solid var(--border-color);
+            border-radius: 24px; display: flex; justify-content: space-around;
+            padding: 14px 0; box-shadow: 0 15px 40px rgba(0,0,0,0.4); z-index: 999;
         }
-        .nav-item { color: var(--text-muted); text-align: center; font-size: 10px; cursor: pointer; width: 25%; }
-        .nav-item i { display: block; font-size: 24px; margin-bottom: 3px; }
-        .nav-item.active { color: var(--primary); }
+        .nav-item { color: var(--text-muted); text-align: center; font-size: 11px; cursor: pointer; width: 25%; font-weight: 500; }
+        .nav-item i { display: block; font-size: 26px; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); transform: translateY(-3px); }
 
+        /* --- MODALS & UTILS --- */
         .view-section { display: none; }
         .view-section.active { display: block; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--bg-color); width: 85%; max-width: 400px; padding: 30px 25px; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .float-btns { position: fixed; bottom: 110px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
+        .float-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
         
-        /* Modals */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--bg-color); width: 85%; max-width: 400px; padding: 25px; border-radius: 20px; border: 1px solid var(--border-color); }
-        .float-btns { position: fixed; bottom: 100px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 900; }
-        .float-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--text-muted); backdrop-filter: blur(5px); }
+        .install-step { text-align: right; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--text-main); }
+        .install-step i { color: var(--secondary); font-size: 20px; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -179,9 +163,7 @@
             <div class="date-badge" id="dateDisplay">--</div>
             <div class="welcome-msg" id="headerGreeting"></div>
         </div>
-        <div class="logo-box">
-            <img src="ers-logo.png" class="logo-img" alt="ERS" onclick="window.scrollTo(0,0)">
-        </div>
+        <img src="ers-logo.png" class="logo-img" alt="ERS" onclick="window.scrollTo(0,0)">
     </div>
 </header>
 
@@ -190,7 +172,7 @@
     <div id="view-dashboard" class="view-section active">
         
         <div id="challengeLoader" style="font-size:12px; text-align:center; color:var(--text-muted); margin-bottom:10px;">
-            <i class="ri-loader-4-line ri-spin"></i> تحديث بيانات التحدي...
+            <i class="ri-loader-4-line ri-spin"></i> تحديث التحدي...
         </div>
 
         <div id="globalChallenge" class="challenge-card" style="display:none;">
@@ -203,58 +185,39 @@
                     </div>
                 </div>
                 <div class="ch-actions">
-                    <div class="icon-btn" onclick="event.stopPropagation(); fetchGlobalChallenge(true)">
-                        <i class="ri-refresh-line"></i>
-                    </div>
-                    <div class="icon-btn">
-                        <i class="ri-arrow-down-s-line chevron" id="chChevron"></i>
-                    </div>
+                    <div class="icon-btn" onclick="event.stopPropagation(); fetchGlobalChallenge(true)"><i class="ri-refresh-line"></i></div>
+                    <div class="icon-btn"><i class="ri-arrow-down-s-line chevron" id="chChevron"></i></div>
                 </div>
             </div>
-
             <div class="ch-body" id="chBody">
                 <div class="ch-desc" id="gcDesc">...</div>
-                
                 <div id="joinArea">
-                    <button class="join-btn" onclick="joinChallenge()">
-                        <i class="ri-flag-fill"></i> انضمام للتحدي
-                    </button>
+                    <button class="join-btn" onclick="joinChallenge()"><i class="ri-flag-fill"></i> انضمام للتحدي</button>
                 </div>
-
                 <div id="progressArea" class="progress-area" style="display:none;">
-                    <div class="prog-info">
-                        <span>تقدمك في التحدي</span>
-                        <span id="chProgressTxt">0 / 0 كم</span>
+                    <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:bold; margin-bottom:6px;">
+                        <span>تقدمك</span>
+                        <span id="chProgressTxt">0 / 0</span>
                     </div>
-                    <div class="prog-track">
-                        <div class="prog-fill" id="chProgressBar"></div>
-                    </div>
-                    <div style="text-align:center; font-size:11px; margin-top:5px; opacity:0.8;">
-                        <i class="ri-checkbox-circle-line"></i> أنت مشارك في هذا التحدي
-                    </div>
+                    <div class="prog-track"><div class="prog-fill" id="chProgressBar"></div></div>
+                    <div style="text-align:center; font-size:11px; margin-top:8px; opacity:0.8;">أنت مشارك في هذا التحدي ✅</div>
                 </div>
             </div>
         </div>
 
         <div class="card" style="border-right: 4px solid var(--primary);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 style="margin:0; font-size:15px; display:flex; gap:5px;"><i class="ri-robot-2-line" style="color:var(--primary)"></i> كوتش ERS</h3>
-                <span id="goalBadge" style="font-size:10px; background:rgba(34,197,94,0.1); color:var(--primary); padding:2px 8px; border-radius:8px;"></span>
+                <h3 style="margin:0; font-size:16px; display:flex; gap:5px;"><i class="ri-robot-2-line" style="color:var(--primary)"></i> كوتش ERS</h3>
+                <span id="goalBadge" style="font-size:11px; background:rgba(34,197,94,0.1); color:var(--primary); padding:3px 10px; border-radius:8px;"></span>
             </div>
-            <div id="smartSuggestion" style="font-size:14px; line-height:1.6; color:var(--text-main);">...</div>
+            <div id="smartSuggestion" style="font-size:15px; line-height:1.6; color:var(--text-main);">...</div>
         </div>
 
         <div class="card">
-            <h3 style="margin:0 0 15px 0; font-size:15px;">📊 الأداء</h3>
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-val" style="color:var(--primary)" id="weekDist">0</div>
-                    <div class="stat-lbl">أسبوعي</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-val" style="color:var(--secondary)" id="monthDist">0</div>
-                    <div class="stat-lbl">شهري</div>
-                </div>
+            <h3 style="margin:0 0 15px 0; font-size:16px;">📊 الأداء</h3>
+            <div class="grid-2">
+                <div class="stat-box"><div class="stat-val" style="color:var(--primary)" id="weekDist">0</div><div class="stat-lbl">أسبوعي</div></div>
+                <div class="stat-box"><div class="stat-val" style="color:var(--secondary)" id="monthDist">0</div><div class="stat-lbl">شهري</div></div>
             </div>
         </div>
         
@@ -264,7 +227,7 @@
     <div id="view-log" class="view-section">
         <div class="card">
             <h3>📝 نشاط جديد</h3>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div class="grid-2">
                 <div><label>مسافة (كم)</label><input type="number" id="logDist" step="0.1" inputmode="decimal"></div>
                 <div><label>زمن (دقيقة)</label><input type="number" id="logTime" inputmode="numeric"></div>
             </div>
@@ -288,18 +251,38 @@
     <div id="view-profile" class="view-section">
         <div class="card">
             <h3>👤 الملف الشخصي</h3>
-            <label>الاسم</label><input type="text" id="profName">
-            <label>الهدف</label>
+            <label>الاسم (مطلوب)</label><input type="text" id="profName" placeholder="الاسم ثلاثي">
+            
+            <label>الهدف الرئيسي</label>
             <select id="profGoalType">
-                <option value="fitness">لياقة وتخسيس</option>
-                <option value="endurance">تحمل ومسافات</option>
-                <option value="speed">سرعة</option>
+                <option value="fitness">لياقة وتخسيس (Fitness)</option>
+                <option value="endurance">تحمل ومسافات (Endurance)</option>
+                <option value="speed">سرعة (Speed)</option>
             </select>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
-                <div><label>هدف أسبوعي</label><input type="number" id="profGoalWeek"></div>
-                <div><label>هدف شهري</label><input type="number" id="profGoalMonth"></div>
+
+            <label style="color:var(--secondary); margin-top:25px;">البيانات الجسمانية</label>
+            <div class="grid-3">
+                <input type="number" id="profWeight" placeholder="وزن (kg)">
+                <input type="number" id="profHeight" placeholder="طول (cm)">
+                <input type="number" id="profWaist" placeholder="خصر (cm)">
             </div>
-            <button class="btn btn-primary" onclick="saveProfile()">حفظ</button>
+            <div id="bmiResult" style="text-align:center; font-size:12px; margin-top:5px; color:var(--text-muted);"></div>
+
+            <label style="color:var(--secondary); margin-top:20px;">الأرقام القياسية (PB)</label>
+            <div class="grid-2">
+                <input type="number" id="profPb5k" placeholder="5K (دقيقة)">
+                <input type="number" id="profPb10k" placeholder="10K (دقيقة)">
+            </div>
+            <label>أطول جرية آخر 30 يوم (كم)</label>
+            <input type="number" id="profLongest">
+            
+            <label style="color:var(--secondary); margin-top:20px;">الأهداف</label>
+            <div class="grid-2">
+                <div><label style="margin-top:0;">هدف أسبوعي</label><input type="number" id="profGoalWeek"></div>
+                <div><label style="margin-top:0;">هدف شهري</label><input type="number" id="profGoalMonth"></div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="saveProfile()">حفظ البيانات</button>
         </div>
     </div>
     
@@ -307,12 +290,12 @@
         <div class="card">
             <h3>⏱️ حاسبة الـ Pace</h3>
             <label>المسافة</label><input type="number" id="calcDist" placeholder="كم">
-            <div style="display:flex; gap:10px;">
+            <div class="grid-2">
                 <input type="number" id="calcHrs" placeholder="س"><input type="number" id="calcMins" placeholder="د">
             </div>
             <button class="btn btn-primary" onclick="calculatePace()">احسب</button>
-            <div id="calcResult" style="display:none; text-align:center; margin-top:10px;">
-                <h2 id="paceDisplay" style="color:var(--primary)"></h2>
+            <div id="calcResult" style="display:none; text-align:center; margin-top:20px;">
+                <h2 id="paceDisplay" style="color:var(--primary); font-size:32px;"></h2>
             </div>
         </div>
     </div>
@@ -332,18 +315,31 @@
 
 <div id="settingsModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
     <div class="modal-content">
-        <h3 style="text-align:center">الإعدادات</h3>
-        <button class="btn btn-outline" style="border:1px solid var(--border-color); color:var(--text-muted)" onclick="toggleTheme()">تغيير المظهر 🌓</button>
-        <button class="btn btn-primary" onclick="location.reload(true)" style="margin-top:10px">تحديث التطبيق 🔄</button>
+        <h3>الإعدادات</h3>
+        <button class="btn btn-primary" style="background:transparent; border:1px solid var(--border-color); color:var(--text-main);" onclick="toggleTheme()">تغيير المظهر 🌓</button>
+        <button class="btn btn-primary" onclick="forceUpdateApp()" style="margin-top:15px; background:var(--secondary);">تحديث التطبيق 🔄</button>
+        <p style="font-size:11px; margin-top:10px; opacity:0.6;">V5.5 - Force Update Enabled</p>
+    </div>
+</div>
+
+<div id="installModal" class="modal-overlay">
+    <div class="modal-content">
+        <div style="text-align:center; margin-bottom:15px;"><img src="ers-logo.png" style="width:80px;"></div>
+        <h3>أهلاً بك في ERS Velocity</h3>
+        <p style="font-size:14px; color:var(--text-muted); line-height:1.6;">لضمان أفضل تجربة، يرجى تثبيت التطبيق.</p>
+        <div class="install-step"><i class="ri-apple-fill"></i><div><strong>للآيفون:</strong><br>Share > Add to Home Screen.</div></div>
+        <div class="install-step"><i class="ri-android-fill"></i><div><strong>للأندرويد:</strong><br>Menu > Install App.</div></div>
+        <button class="btn btn-primary" onclick="closeInstallModal()">ابدأ الآن 🚀</button>
     </div>
 </div>
 
 <script>
     let appData = {
-        profile: { name: "", weeklyGoal: 30, goalType: "fitness", monthlyGoal: 100 },
+        profile: { name: "", weeklyGoal: 30, goalType: "fitness", monthlyGoal: 100, weight: "", height: "", waist: "", pb5k: "", pb10k: "", longestRun: "" },
         runs: [],
         settings: { theme: 'dark' },
-        challenge: { joined: false, targetDist: 0, titleHash: "" } // New Challenge State
+        challenge: { joined: false, targetDist: 0, titleHash: "" },
+        onboardingDone: false
     };
 
     function init() {
@@ -356,162 +352,137 @@
 
         updateUI();
         fetchGlobalChallenge();
+        
+        // Popup Logic
+        if (!appData.onboardingDone || !appData.profile.name) {
+            setTimeout(() => document.getElementById('installModal').style.display = 'flex', 1000);
+        }
+
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
     }
     
     function saveData() { localStorage.setItem('ers_data_v5', JSON.stringify(appData)); updateUI(); }
 
     function updateUI() {
-        document.getElementById('headerGreeting').innerHTML = `أهلاً، <span>${appData.profile.name.split(' ')[0] || 'كابتن'}</span>`;
+        const fName = appData.profile.name ? appData.profile.name.split(' ')[0] : 'كابتن';
+        document.getElementById('headerGreeting').innerHTML = `أهلاً، <span>${fName}</span>`;
         document.getElementById('goalBadge').innerText = {'fitness':'حرق', 'speed':'سرعة', 'endurance':'تحمل'}[appData.profile.goalType] || 'عام';
 
-        // Stats Logic
         const now = new Date();
         const startW = new Date(now.setDate(now.getDate() - now.getDay()));
         const startM = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-        
         const wDist = appData.runs.filter(r => new Date(r.date) >= startW).reduce((s,r)=>s+r.dist,0);
         const mDist = appData.runs.filter(r => new Date(r.date) >= startM).reduce((s,r)=>s+r.dist,0);
         
         document.getElementById('weekDist').innerText = wDist.toFixed(1);
         document.getElementById('monthDist').innerText = mDist.toFixed(1);
 
-        // Challenge UI Logic
         if(appData.challenge.joined) {
             document.getElementById('joinArea').style.display = 'none';
             document.getElementById('progressArea').style.display = 'block';
-            
-            // Calculate Progress based on Week Dist (Assuming weekly challenge based on context)
-            // Or compare against total if it's a "total since join" - Keeping it simple: Week Dist vs Target
-            const target = appData.challenge.targetDist;
-            const pct = Math.min((wDist / target) * 100, 100);
-            
+            const t = appData.challenge.targetDist;
+            const pct = t > 0 ? Math.min((wDist/t)*100, 100) : 0;
             document.getElementById('chProgressBar').style.width = pct + "%";
-            document.getElementById('chProgressTxt').innerText = `${wDist.toFixed(1)} / ${target} كم`;
-            
-            if(pct >= 100) document.getElementById('chProgressBar').style.backgroundColor = '#4ade80'; // Green on finish
+            document.getElementById('chProgressTxt').innerText = `${wDist.toFixed(1)} / ${t} كم`;
+            if(pct >= 100) document.getElementById('chProgressBar').style.backgroundColor = '#4ade80';
         } else {
             document.getElementById('joinArea').style.display = 'block';
             document.getElementById('progressArea').style.display = 'none';
         }
 
         renderLogs();
-        generateSuggestion(wDist);
+        generateSuggestion();
     }
 
-    // --- NEW CHALLENGE LOGIC ---
-    // Toggle Collapse
-    function toggleChallenge() {
-        const body = document.getElementById('chBody');
-        const chev = document.getElementById('chChevron');
-        body.classList.toggle('open');
-        chev.classList.toggle('rotate-down');
-    }
-
-    // Join Action
-    function joinChallenge() {
-        // Target is already extracted in fetchGlobalChallenge
-        // Just save state
-        if(!appData.challenge) appData.challenge = { joined: false, targetDist: 0 };
-        
-        // Extract target from the global var (hacky but works for single page) or re-parse
-        // Better: we saved parsed target in a temp var during fetch? 
-        // Let's rely on what we parsed in fetchGlobalChallenge, store it in appData when joining.
-        
-        // Ensure we have a target loaded
-        const titleText = document.getElementById('gcTitle').innerText;
-        if(titleText === "...") return alert("انتظر تحميل التحدي");
-
-        appData.challenge.joined = true;
-        appData.challenge.titleHash = titleText; // To detect if challenge changes later
-        saveData();
-        
-        // Animation effect
-        toggleChallenge(); // Auto close or stay open? Let's keep open but show progress
-        alert("مبروك! لقد انضممت للتحدي 🎯");
-    }
-
-    // Updated CSV Parser & Logic
-    async function fetchGlobalChallenge(force = false) {
-        if(force) document.getElementById('challengeLoader').style.display = 'block';
-        
-        let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSJ1EllXPDXThEec-zwpqZBMY5pYOI-jLNu0Zjr6nLI2wXONsNPKkN-BIIY1jRDJN7VG6KQAPFJX7Zr/pub?gid=0&single=true&output=csv";
-        url += "&t=" + Date.now();
-
-        try {
-            const res = await fetch(url, {cache: "no-store"});
-            const text = await res.text();
-            
-            // Simple robust CSV parse for Row 2 (Index 1)
-            const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
-            
-            if(rows.length > 1) {
-                const row2 = rows[1]; // A2, B2
-                let rawTitle = row2[0].replace(/"/g, '').trim(); // A2 (Contains "10k" etc)
-                let rawDesc = row2[1].replace(/"/g, '').trim(); // B2
-                
-                // Extract Number from A2 (e.g. "10k" -> 10)
-                let targetNum = parseFloat(rawTitle.match(/[\d.]+/));
-                if(isNaN(targetNum)) targetNum = 10; // Fallback
-
-                // Update UI
-                document.getElementById('gcTitle').innerText = rawTitle;
-                document.getElementById('gcDesc').innerText = rawDesc;
-                document.getElementById('gcSub').innerText = `المستهدف: ${targetNum} كم`;
-                
-                document.getElementById('globalChallenge').style.display = 'block';
-                document.getElementById('challengeLoader').style.display = 'none';
-
-                // Check if challenge changed (reset join if new title)
-                if(appData.challenge.titleHash && appData.challenge.titleHash !== rawTitle) {
-                    appData.challenge.joined = false; // Reset
-                }
-                
-                // Save target for calculation
-                appData.challenge.targetDist = targetNum;
-                // Don't save to LS here, only save on Join or generic update
-            }
-        } catch(e) { console.log(e); }
-    }
-
-    // --- STANDARD FUNCTIONS ---
-    function generateSuggestion(wDist) {
+    function generateSuggestion() {
         const goal = appData.profile.goalType;
-        let msg = "استمر في التدريب!";
+        const weight = parseFloat(appData.profile.weight) || 0;
+        let msg = "سجل أول جرية لتبدأ التوصيات!";
+        
         if(appData.runs.length > 0) {
             const last = appData.runs[0];
             const days = Math.floor((new Date() - new Date(last.date))/(86400000));
-            if(days === 0) msg = "راحة اليوم لاستشفاء العضلات 🧘";
-            else if(days > 4) msg = "عودة خفيفة: 3 كم هرولة";
-            else if(goal === 'speed') msg = "Intervals: 400m x 8 fast";
-            else msg = "Zone 2 Run لمدة 45 دقيقة";
+            
+            if(days === 0) msg = "لقد أديت ما عليك اليوم. الراحة (Recovery) مهمة! 🛌";
+            else if(days > 5) msg = "فترة انقطاع طويلة! ابدأ بـ 3 كم هرولة خفيفة جداً لتجنب الإصابة.";
+            else {
+                if(goal === 'fitness') {
+                     if(weight > 90) msg = "لحرق الدهون بأمان: مشي سريع أو هرولة خفيفة (Zone 2) لمدة 45 دقيقة.";
+                     else msg = "تمرين حرق الدهون: جري متواصل بسرعة مريحة لمدة 50 دقيقة.";
+                } else if(goal === 'speed') {
+                    if(last.type === 'interval') msg = "Recovery Run: 5 كم بسرعة بطيئة جداً.";
+                    else msg = "يوم السرعة: 10 دقايق تسخين + (400م سريع / 2د راحة) x 8.";
+                } else {
+                    msg = "بناء التحمل: 8-10 كم جري بوتيرة ثابتة (Steady Pace).";
+                }
+            }
         }
         document.getElementById('smartSuggestion').innerText = msg;
     }
 
+    async function forceUpdateApp() {
+        if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            for (let reg of regs) await reg.unregister();
+            const keys = await caches.keys();
+            for (let key of keys) await caches.delete(key);
+            window.location.reload(true);
+        } else location.reload(true);
+    }
+
+    function toggleChallenge() {
+        document.getElementById('chBody').classList.toggle('open');
+        document.getElementById('chChevron').classList.toggle('rotate-down');
+    }
+
+    function joinChallenge() {
+        const t = document.getElementById('gcTitle').innerText;
+        if(t === "...") return alert("انتظر التحميل");
+        if(!appData.challenge) appData.challenge = {};
+        appData.challenge.joined = true;
+        appData.challenge.titleHash = t;
+        saveData(); toggleChallenge(); alert("تم الانضمام! بالتوفيق 🎯");
+    }
+
+    async function fetchGlobalChallenge(force = false) {
+        if(force) document.getElementById('challengeLoader').style.display = 'block';
+        let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSJ1EllXPDXThEec-zwpqZBMY5pYOI-jLNu0Zjr6nLI2wXONsNPKkN-BIIY1jRDJN7VG6KQAPFJX7Zr/pub?gid=0&single=true&output=csv&t=" + Date.now();
+        try {
+            const txt = await (await fetch(url, {cache: "no-store"})).text();
+            const rows = txt.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+            if(rows.length > 1) {
+                let rt = rows[1][0].replace(/"/g, '').trim();
+                let rd = rows[1][1].replace(/"/g, '').trim();
+                let num = parseFloat(rt.match(/[\d.]+/));
+                if(isNaN(num)) num = 10;
+                
+                document.getElementById('gcTitle').innerText = rt;
+                document.getElementById('gcDesc').innerText = rd;
+                document.getElementById('gcSub').innerText = `المستهدف: ${num} كم`;
+                document.getElementById('globalChallenge').style.display = 'block';
+                document.getElementById('challengeLoader').style.display = 'none';
+                
+                if(appData.challenge.titleHash && appData.challenge.titleHash !== rt) appData.challenge.joined = false;
+                appData.challenge.targetDist = num;
+            }
+        } catch(e) {}
+    }
+
     function addRun() {
-        const d = parseFloat(document.getElementById('logDist').value);
-        const t = parseFloat(document.getElementById('logTime').value);
+        const d=parseFloat(document.getElementById('logDist').value), t=parseFloat(document.getElementById('logTime').value);
         if(!d || !t) return alert("أكمل البيانات");
         appData.runs.unshift({id:Date.now(), dist:d, time:t, type:document.getElementById('logType').value, date:document.getElementById('logDate').value});
         saveData(); switchView('dashboard');
     }
 
     function renderLogs() {
-        const l = document.getElementById('runsList'); l.innerHTML = "";
-        appData.runs.slice(0,15).forEach(r => l.innerHTML += `<div style="border-bottom:1px solid #ffffff10; padding:8px 0; display:flex; justify-content:space-between"><span>${r.dist}km</span><span style="opacity:0.6">${r.date}</span></div>`);
+        const l=document.getElementById('runsList'); l.innerHTML="";
+        appData.runs.slice(0,15).forEach(r=>l.innerHTML+=`<div style="border-bottom:1px solid rgba(255,255,255,0.1); padding:10px 0; display:flex; justify-content:space-between; font-size:14px;"><span>${r.dist}km</span><span style="opacity:0.6">${r.date}</span></div>`);
     }
 
     function calculatePace() {
-        let d = parseFloat(document.getElementById('calcDist').value);
-        let h = parseFloat(document.getElementById('calcHrs').value)||0;
-        let m = parseFloat(document.getElementById('calcMins').value)||0;
-        if(d) {
-            let p = ((h*60)+m)/d;
-            let pm = Math.floor(p), ps = Math.round((p-pm)*60);
-            document.getElementById('paceDisplay').innerText = `${pm}:${ps<10?'0'+ps:ps} /km`;
-            document.getElementById('calcResult').style.display='block';
-        }
+        let d=parseFloat(document.getElementById('calcDist').value), h=parseFloat(document.getElementById('calcHrs').value)||0, m=parseFloat(document.getElementById('calcMins').value)||0;
+        if(d){ let p=((h*60)+m)/d, pm=Math.floor(p), ps=Math.round((p-pm)*60); document.getElementById('paceDisplay').innerText=`${pm}:${ps<10?'0'+ps:ps}`; document.getElementById('calcResult').style.display='block'; }
     }
 
     function switchView(v) {
@@ -521,12 +492,25 @@
         const m={'dashboard':0,'calculator':1,'log':2,'profile':3};
         document.querySelectorAll('.nav-item')[m[v]].classList.add('active');
         window.scrollTo(0,0);
-        if(v==='profile') {
-            const p = appData.profile;
-            document.getElementById('profName').value=p.name;
-            document.getElementById('profGoalType').value=p.goalType;
-            document.getElementById('profGoalWeek').value=p.weeklyGoal;
-            document.getElementById('profGoalMonth').value=p.monthlyGoal;
+        if(v==='profile') populateProfile();
+    }
+
+    function populateProfile() {
+        const p = appData.profile;
+        document.getElementById('profName').value = p.name;
+        document.getElementById('profGoalType').value = p.goalType;
+        document.getElementById('profWeight').value = p.weight;
+        document.getElementById('profHeight').value = p.height;
+        document.getElementById('profWaist').value = p.waist;
+        document.getElementById('profPb5k').value = p.pb5k;
+        document.getElementById('profPb10k').value = p.pb10k;
+        document.getElementById('profLongest').value = p.longestRun;
+        document.getElementById('profGoalWeek').value = p.weeklyGoal;
+        document.getElementById('profGoalMonth').value = p.monthlyGoal;
+        
+        if(p.weight && p.height) {
+            const bmi = (p.weight / ((p.height/100)**2)).toFixed(1);
+            document.getElementById('bmiResult').innerHTML = `BMI: <strong>${bmi}</strong>`;
         }
     }
 
@@ -534,16 +518,24 @@
         const p = appData.profile;
         p.name = document.getElementById('profName').value;
         p.goalType = document.getElementById('profGoalType').value;
+        p.weight = document.getElementById('profWeight').value;
+        p.height = document.getElementById('profHeight').value;
+        p.waist = document.getElementById('profWaist').value;
+        p.pb5k = document.getElementById('profPb5k').value;
+        p.pb10k = document.getElementById('profPb10k').value;
+        p.longestRun = document.getElementById('profLongest').value;
         p.weeklyGoal = parseFloat(document.getElementById('profGoalWeek').value)||30;
         p.monthlyGoal = parseFloat(document.getElementById('profGoalMonth').value)||100;
         saveData(); alert("تم الحفظ"); switchView('dashboard');
     }
 
-    function toggleTheme() {
-        document.body.classList.toggle('light-mode');
-        appData.settings.theme = document.body.classList.contains('light-mode')?'light':'dark';
-        saveData();
+    function closeInstallModal() {
+        appData.onboardingDone = true; saveData();
+        document.getElementById('installModal').style.display='none';
+        if(!appData.profile.name) { alert("من فضلك أدخل اسمك"); switchView('profile'); }
     }
+
+    function toggleTheme() { document.body.classList.toggle('light-mode'); appData.settings.theme = document.body.classList.contains('light-mode')?'light':'dark'; saveData(); }
 
     init();
 </script>

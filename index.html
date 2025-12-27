@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ERS Velocity V5</title>
+    <title>ERS Velocity V5.1</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
@@ -67,13 +67,15 @@
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* BANNER */
+        /* BANNER (تم التعديل هنا) */
         .challenge-banner {
             background: linear-gradient(135deg, var(--accent), #d97706);
-            color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px;
+            color: white; padding: 20px 15px; border-radius: 16px; margin-bottom: 15px;
             position: relative; overflow: hidden; display: none;
+            box-shadow: 0 8px 20px -5px rgba(245, 158, 11, 0.5);
         }
-        .challenge-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 40px; opacity: 0.2; }
+        .challenge-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 50px; opacity: 0.25; rotate: -10deg; }
+        .challenge-header { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; font-weight: 700; }
 
         /* STATS GRID */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
@@ -130,9 +132,6 @@
             border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center;
             font-size: 20px; color: var(--text-muted); box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-
-        /* BMI Badge */
-        .bmi-badge { font-size:10px; padding:2px 8px; border-radius:10px; background:rgba(255,255,255,0.1); margin-right:5px; }
     </style>
 </head>
 <body>
@@ -152,8 +151,9 @@
         </div>
         <div id="globalChallengeBanner" class="challenge-banner">
             <i class="ri-trophy-fill challenge-icon"></i>
-            <h3 style="margin:0; font-size:16px;" id="gcTitle">تحدي الفريق</h3>
-            <p style="margin:5px 0 0 0; font-size:13px; opacity:0.9;" id="gcDesc">...</p>
+            <div class="challenge-header">🏆 تحدي الفريق</div>
+            <h3 style="margin:0 0 5px 0; font-size:18px; font-weight:900;" id="gcTitle">...</h3>
+            <p style="margin:0; font-size:13px; opacity:0.9; line-height:1.5;" id="gcDesc">...</p>
         </div>
 
         <div class="card" style="border-right: 4px solid var(--primary);">
@@ -285,23 +285,16 @@
 
 <div id="helpModal" class="modal-overlay" onclick="if(event.target===this) closeModal('helpModal')">
     <div class="modal-content" style="text-align:right;">
-        <h3 style="color:var(--primary); text-align:center;">دليل استخدام ERS V5</h3>
+        <h3 style="color:var(--primary); text-align:center;">دليل استخدام ERS V5.1</h3>
         <div style="font-size:13px; line-height:1.7;">
-            <p><strong>1. البروفايل الذكي:</strong><br>
-            - <strong>الوزن والطول:</strong> يساعدان في حساب الـ BMI واقتراح تمارين حرق الدهون.<br>
-            - <strong>الهدف الرئيسي:</strong> اختيارك لـ "لياقة" أو "سرعة" يغير نوع التمارين التي يقترحها الكوتش.<br>
-            - <strong>أطول جرية:</strong> تمنع الكوتش من اقتراح مسافات مستحيلة عليك.</p>
+            <p><strong>1. التحديات (جديد!):</strong><br>
+            يظهر في الصفحة الرئيسية "تحدي الفريق" الذي يتم تحديثه دورياً من قبل الكباتن. تأكد من اتصالك بالإنترنت لرؤيته.</p>
             <hr style="border-color:var(--border-color)">
-            <p><strong>2. الكوتش (المدرب):</strong><br>
-            يقوم بتحليل آخر تمرين لك + هدفك. إذا كان هدفك "تخسيس" وركضت بالأمس بسرعة، سيقترح اليوم مشي أو هرولة طويلة (Zone 2).</p>
+            <p><strong>2. البروفايل الذكي:</strong><br>
+            - <strong>الهدف الرئيسي:</strong> اختيارك لـ "لياقة" أو "سرعة" يغير نوع التمارين التي يقترحها الكوتش.</p>
             <hr style="border-color:var(--border-color)">
-            <p><strong>3. التحديات:</strong><br>
-            يتم جلب "تحدي الفريق" تلقائياً من الإنترنت. تأكد من اتصالك بالشبكة لرؤية التحدي الجديد.</p>
-            <hr style="border-color:var(--border-color)">
-            <p><strong>4. الرموز:</strong><br>
-            🔥 = يوم شدة عالية.<br>
-            🩹 = يوم استشفاء.<br>
-            🏃‍♂️ = يوم تحمل.</p>
+            <p><strong>3. الكوتش (المدرب):</strong><br>
+            يقوم بتحليل آخر تمرين لك + هدفك ليقترح تمرين اليوم الأنسب.</p>
         </div>
     </div>
 </div>
@@ -319,7 +312,7 @@
             <input type="file" id="importFile" style="display:none" onchange="importData(this)">
         </div>
         <button class="btn btn-primary" onclick="window.location.reload(true)" style="margin-top:20px;"><i class="ri-refresh-line"></i> تحديث التطبيق</button>
-        <p style="text-align:center; font-size:10px; color:var(--text-muted); margin-top:10px;">V5.0 PWA Edition</p>
+        <p style="text-align:center; font-size:10px; color:var(--text-muted); margin-top:10px;">V5.1 PWA Edition</p>
     </div>
 </div>
 
@@ -336,18 +329,15 @@
         const saved = localStorage.getItem('ers_data_v5');
         if (saved) appData = JSON.parse(saved);
         
-        // Apply Theme
         if (appData.settings.theme === 'light') document.body.classList.add('light-mode');
         
-        // Date
         const d = new Date();
         document.getElementById('dateDisplay').innerText = d.toLocaleDateString('ar-EG', {weekday:'long', year:'numeric', month:'short', day:'numeric'});
         document.getElementById('logDate').valueAsDate = d;
 
         updateUI();
-        fetchGlobalChallenge();
+        fetchGlobalChallenge(); // استدعاء دالة التحدي المعدلة
         
-        // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js');
         }
@@ -357,14 +347,11 @@
 
     // --- UI UPDATES ---
     function updateUI() {
-        // Welcome
         document.getElementById('headerGreeting').innerHTML = `أهلاً كابتن <span>${appData.profile.name || '...'}</span>`;
         
-        // Goals Text Map
         const goalsMap = { 'fitness': 'حرق وتخسيس', 'endurance': 'تحمل ومسافات', 'speed': 'سرعة' };
         document.getElementById('goalBadge').innerText = goalsMap[appData.profile.goalType] || 'عام';
 
-        // Stats
         const now = new Date();
         const startW = new Date(now.setDate(now.getDate() - now.getDay()));
         const startM = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
@@ -375,7 +362,6 @@
         document.getElementById('weekDist').innerText = wDist.toFixed(1);
         document.getElementById('monthDist').innerText = mDist.toFixed(1);
         
-        // Progress Bar
         const wGoal = appData.profile.weeklyGoal || 30;
         const pct = Math.min((wDist/wGoal)*100, 100);
         document.getElementById('weekBar').style.width = pct + "%";
@@ -385,7 +371,7 @@
         generateSmartSuggestion();
     }
 
-    // --- THE BRAIN: SMART COACH ---
+    // --- SMART COACH ---
     function generateSmartSuggestion() {
         const box = document.getElementById('smartSuggestion');
         const goal = appData.profile.goalType;
@@ -404,17 +390,13 @@
         } else if(daysDiff > 4) {
              advice = "غياب طويل! 🚨 ابدأ بجرية خفيفة <strong>(Easy Run 3-5km)</strong> لاستعادة اللياقة بدون إصابات.";
         } else {
-            // Logic based on Goal + Last Run
             if(goal === 'fitness') {
-                // Focus: Consistency & Duration (Zone 2)
                 if(lastRun.type === 'long' || lastRun.dist > 10) advice = "بعد المجهود الكبير، اليوم <strong>Recovery Walk/Jog</strong> لمدة 30 دقيقة.";
                 else advice = "لحرق الدهون: اركض ببطء شديد (تستطيع الكلام) لمدة <strong>45-60 دقيقة</strong>.";
             } else if(goal === 'speed') {
-                // Focus: Intervals & Tempo
                 if(lastRun.type === 'interval' || lastRun.type === 'tempo') advice = "أمس كان يوماً سريعاً. اليوم <strong>Easy Run</strong> لامتصاص التمرين.";
                 else advice = "لزيادة السرعة: <strong>Intervals</strong> 🔥 (1كم سريع / 2د راحة) × 5 مرات.";
             } else {
-                // Focus: Endurance (Default)
                 if(lastRun.type === 'long') advice = "استشفاء اليوم. مشي أو سباحة.";
                 else advice = "لبناء التحمل: <strong>Steady Run</strong> بوتيرة مريحة لأطول مسافة ممكنة.";
             }
@@ -422,74 +404,49 @@
         box.innerHTML = advice;
     }
 
-    // --- GLOBAL CHALLENGE (Google Sheets Integration) ---
+    // --- GLOBAL CHALLENGE (تم الإصلاح هنا) ---
     async function fetchGlobalChallenge() {
-        // 1. رابط الشيت الأساسي الذي أرسلته
-        const BASE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSJ1EllXPDXThEec-zwpqZBMY5pYOI-jLNu0Zjr6nLI2wXONsNPKkN-BIIY1jRDJN7VG6KQAPFJX7Zr/pub?gid=0&single=true&output=csv";
+        // الرابط الصحيح والمباشر لورقة العمل الأولى كـ CSV
+        let SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSJ1EllXPDXThEec-zwpqZBMY5pYOI-jLNu0Zjr6nLI2wXONsNPKkN-BIIY1jRDJN7VG6KQAPFJX7Zr/pub?gid=0&single=true&output=csv";
         
-        // 2. الحيلة السحرية: إضافة توقيت اللحظة للرابط لكسر الكاش (Cache Busting)
-        // هذا يجعل الرابط مختلفاً في كل مرة، فيجبر جوجل على إرسال بيانات جديدة
-        const SHEET_URL = `${BASE_URL}&t=${Date.now()}`;
+        // إضافة طابع زمني لتجاوز الكاش (Cache Busting)
+        SHEET_URL += "&t=" + new Date().getTime();
 
         const banner = document.getElementById('globalChallengeBanner');
         const loader = document.getElementById('challengeLoader');
-        const titleEl = document.getElementById('gcTitle');
-        const descEl = document.getElementById('gcDesc');
 
         try {
-            const res = await fetch(SHEET_URL);
+            const res = await fetch(SHEET_URL, { cache: "no-store" });
             const text = await res.text();
-            
-            // تقسيم النص إلى صفوف
             const rows = text.split('\n');
+            
+            // نفترض أن الصف الأول عناوين، والصف الثاني هو البيانات
+            if(rows.length > 1) {
+                // استخدام Regex لتقسيم الأعمدة والتعامل مع الفواصل داخل النصوص
+                const cols = rows[1].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                
+                if(cols && cols.length >= 2) {
+                    // إزالة علامات التنصيص الزائدة إن وجدت
+                    const title = cols[0].replace(/^"|"$/g, '').trim();
+                    const desc = cols[1].replace(/^"|"$/g, '').trim();
 
-            // التأكد أن لدينا صف بيانات (الصف الثاني)
-            if (rows.length > 1) {
-                // الصف الأول (index 0) هو العناوين Title, Description
-                // الصف الثاني (index 1) هو البيانات التي نريدها
-                const dataRow = rows[1];
-
-                // التعامل مع الفاصلة (CSV Parsing)
-                // هذه الطريقة تفصل النص بناءً على الفاصلة
-                // وتتعامل مع النصوص العربية بشكل أفضل
-                const cols = parseCSVRow(dataRow);
-
-                if (cols.length >= 2) {
-                    // العمود الأول: العنوان
-                    titleEl.innerText = cols[0]; 
-                    // العمود الثاني: الوصف
-                    descEl.innerText = cols[1];
-
-                    // إخفاء التحميل وإظهار البانر
-                    if (loader) loader.style.display = 'none';
-                    banner.style.display = 'block';
+                    if(title && desc) {
+                        document.getElementById('gcTitle').innerText = title;
+                        document.getElementById('gcDesc').innerText = desc;
+                        loader.style.display = 'none';
+                        banner.style.display = 'block';
+                        return; // نجاح
+                    }
                 }
             }
-        } catch (e) {
-            console.error("Error loading challenge:", e);
-            if (loader) loader.innerText = "تعذر تحميل التحدي (تأكد من الإنترنت)";
-        }
-    }
+            // إذا وصلنا هنا يعني لم نجد بيانات صالحة
+            throw new Error("No valid data found in row 2");
 
-    // دالة مساعدة لفك شفرة CSV بشكل دقيق حتى لو فيه فواصل داخل النص
-    function parseCSVRow(row) {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
-        
-        for (let i = 0; i < row.length; i++) {
-            const char = row[i];
-            if (char === '"') {
-                inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-                result.push(current.trim());
-                current = '';
-            } else {
-                current += char;
-            }
+        } catch (e) {
+            console.log("Error loading challenge:", e);
+            loader.innerText = "لا توجد تحديات نشطة حالياً، أو تأكد من الإنترنت.";
+            banner.style.display = 'none';
         }
-        result.push(current.trim());
-        return result.map(t => t.replace(/^"|"$/g, '').trim()); // تنظيف علامات التنصيص
     }
 
     // --- CORE FUNCTIONS ---
@@ -573,7 +530,6 @@
         document.getElementById('profGoalWeek').value = p.weeklyGoal;
         document.getElementById('profGoalMonth').value = p.monthlyGoal;
 
-        // BMI Logic
         if(p.weight && p.height) {
             const hM = p.height / 100;
             const bmi = (p.weight / (hM * hM)).toFixed(1);
@@ -606,5 +562,4 @@
     init();
 </script>
 </body>
-
 </html>

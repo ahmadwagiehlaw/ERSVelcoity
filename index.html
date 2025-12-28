@@ -469,12 +469,20 @@
 
         // Podium
         db.collection('users').orderBy('totalDistMonth', 'desc').limit(3).onSnapshot(snap => {
-            const container = document.getElementById('podiumContainer');
-            let html = '';
-            let teamTotal = 0;
-            let users = [];
-            snap.forEach(doc => { users.push(doc.data()); teamTotal += (doc.data().totalDistMonth || 0); });
-            while(users.length < 3) users.push({name:'...', totalDistMonth:0});
+           // ✅ حساب إجمالي الفريق صح (لكل الأعضاء)
+const allSnap = await getDocs(collection(db, 'users'));
+let teamTotal = 0;
+let membersCount = 0;
+
+allSnap.forEach(docu => {
+  const u = docu.data();
+  const v = Number(u.totalDistMonth || 0);
+  teamTotal += v;
+  membersCount += 1;
+});
+
+teamTotalEl.textContent = teamTotal.toFixed(1);
+
             
             const podiumOrder = [users[1], users[0], users[2]];
             const ranks = [2, 1, 3];
@@ -653,5 +661,6 @@
 
 </body>
 </html>
+
 
 

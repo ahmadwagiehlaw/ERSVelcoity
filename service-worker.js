@@ -1,5 +1,5 @@
 // ✅ Cache version (غيّر الرقم مع كل تحديث مهم)
-const CACHE_NAME = 'ers-velocity-v13-static';
+const CACHE_NAME = 'ers-velocity-v1.3-static';
 
 // ✅ خليك في المحلي فقط عشان install مايفشلش بسبب روابط خارجية
 const ASSETS = [

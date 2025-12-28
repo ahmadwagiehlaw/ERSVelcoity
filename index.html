@@ -58,16 +58,16 @@
         .welcome-msg span { color: var(--primary); }
         .logo-img { height: 48px; width: auto; filter: drop-shadow(0 0 8px rgba(255,255,255,0.15)); }
 
-        /* PODCAST SECTION (NEW) */
+        /* PODCAST BUTTONS (NEW) */
         .podcast-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .pod-btn {
             display: flex; align-items: center; justify-content: center; gap: 8px;
             padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 13px;
-            transition: transform 0.2s;
+            transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         .pod-btn:active { transform: scale(0.95); }
-        .pod-apple { background: #1c1c1e; color: white; border: 1px solid #3a3a3c; }
-        .pod-spotify { background: #1DB954; color: black; border: 1px solid #1ed760; }
+        .pod-apple { background: #ffffff; color: #000000; } /* Apple style */
+        .pod-spotify { background: #1DB954; color: black; } /* Spotify style */
 
         /* CARDS */
         .card {
@@ -75,6 +75,19 @@
             border-radius: 20px; padding: 18px; margin-bottom: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.15); position: relative; overflow: hidden;
         }
+
+        /* CHALLENGE HERO (Fixed Width Issue) */
+        .challenge-hero {
+            background: linear-gradient(135deg, #b45309, #d97706);
+            border-radius: 20px; padding: 25px 20px; margin-bottom: 20px; text-align: center;
+            border: 1px solid rgba(255,255,255,0.15); position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px -5px rgba(217, 119, 6, 0.4);
+            width: 100%; box-sizing: border-box; /* Fix for layout */
+        }
+        .ch-icon { font-size: 80px; color: rgba(255,255,255,0.1); position: absolute; right: -20px; bottom: -20px; rotate: -15deg; }
+        .ch-val { font-size: 38px; font-weight: 900; color: #fff; line-height: 1.1; margin: 10px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .ch-label { font-size: 12px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+        .ch-target { font-size: 11px; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 10px; display: inline-block; margin-top: 5px; }
 
         /* TEAM FEED (IMPROVED) */
         .feed-container { max-height: 300px; overflow-y: auto; }
@@ -107,17 +120,13 @@
         .lb-name { font-weight: bold; font-size: 14px; display: block; }
         .lb-val { font-weight: 900; color: var(--text-main); font-size: 15px; }
 
-        /* CHALLENGE HERO */
-        .challenge-hero {
-            background: linear-gradient(135deg, #b45309, #d97706);
-            border-radius: 20px; padding: 25px 20px; margin-bottom: 20px; text-align: center;
-            border: 1px solid rgba(255,255,255,0.15); position: relative; overflow: hidden;
-            box-shadow: 0 10px 30px -5px rgba(217, 119, 6, 0.4);
+        /* COACH CARD */
+        .coach-card {
+            background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(15,23,42,0.9));
+            border: 1px solid rgba(34,197,94,0.3); display: flex; gap: 15px; align-items: center; padding: 15px;
         }
-        .ch-icon { font-size: 80px; color: rgba(255,255,255,0.1); position: absolute; right: -20px; bottom: -20px; rotate: -15deg; }
-        .ch-val { font-size: 38px; font-weight: 900; color: #fff; line-height: 1.1; margin: 10px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .ch-label { font-size: 12px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
-        .ch-target { font-size: 11px; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 10px; display: inline-block; margin-top: 5px; }
+        .coach-avatar { width: 45px; height: 45px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; box-shadow: 0 0 20px var(--primary-glow); flex-shrink: 0; }
+        .coach-bubble { font-size: 14px; line-height: 1.5; color: #fff; font-weight: 500; }
 
         /* FORMS & BUTTONS */
         input, select {
@@ -125,10 +134,10 @@
             border: 1px solid var(--border-color); border-radius: 14px;
             color: white; font-family: inherit; margin-bottom: 12px; box-sizing: border-box; font-size: 16px;
         }
-        input:focus { border-color: var(--primary); outline: none; }
         .btn { width: 100%; padding: 15px; border-radius: 14px; font-weight: 800; border: none; cursor: pointer; display: flex; justify-content: center; gap: 8px; transition: 0.2s; font-size: 16px; }
         .btn:active { transform: scale(0.97); }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px var(--primary-glow); }
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
         
         /* NAV */
         .bottom-nav {
@@ -146,6 +155,7 @@
         /* FLOATERS */
         .float-btns { position: fixed; bottom: 110px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
         .float-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 25px rgba(0,0,0,0.4); cursor: pointer; transition: 0.2s; }
+        .float-btn:active { transform: scale(0.9); }
         .float-btn.update { border-color: var(--secondary); color: var(--secondary); }
 
         .view-section { display: none; animation: fadeIn 0.3s; }
@@ -153,7 +163,11 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* AUTH SCREEN */
-        #auth-screen { position: fixed; inset: 0; background: var(--bg-color); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+        #auth-screen {
+            position: fixed; inset: 0; background: var(--bg-color); z-index: 2000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px; text-align: center;
+        }
         
         /* IPHONE DATE FIX */
         .date-row { display: flex; gap: 10px; width: 100%; }
@@ -164,11 +178,6 @@
         /* ADMIN PANEL */
         #adminPanel { position: fixed; top: 90px; left: 15px; right: 15px; background: rgba(15, 23, 42, 0.98); border: 2px solid var(--accent); border-radius: 20px; padding: 20px; z-index: 1500; display: none; box-shadow: 0 20px 60px rgba(0,0,0,0.8); backdrop-filter: blur(20px); }
         
-        /* COACH */
-        .coach-card { background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(15,23,42,0.9)); border: 1px solid rgba(34,197,94,0.3); display: flex; gap: 15px; align-items: center; padding: 15px; }
-        .coach-icon { font-size: 30px; color: var(--primary); }
-        .coach-text { font-size: 14px; line-height: 1.5; color: white; }
-
         /* LOG STYLES */
         .log-accordion { background: rgba(125,125,125,0.05); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s ease; }
         .log-acc-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: rgba(0,0,0,0.1); }
@@ -193,6 +202,11 @@
         .calc-view { display: none; }
         .calc-view.active { display: block; animation: fadeIn 0.3s; }
         .result-display { text-align: center; margin-top: 20px; padding: 15px; background: rgba(125,125,125,0.08); border-radius: 16px; border: 1px solid var(--border-color); display: none; }
+        .result-val { font-size: 36px; font-weight: 900; color: var(--primary); }
+        
+        /* CREDITS */
+        .credits-box { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border-color); font-size: 12px; line-height: 1.8; color: var(--text-muted); }
+        .credits-box strong { color: var(--primary); display: block; margin-bottom: 5px; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -245,21 +259,21 @@
             </div>
 
             <div class="card coach-card">
-                <i class="ri-robot-2-fill coach-icon"></i>
-                <div class="coach-text" id="coachText">
-                    جاري الاتصال بالسيرفر وتحليل بياناتك...
+                <div class="coach-avatar"><i class="ri-robot-2-fill"></i></div>
+                <div class="coach-bubble" id="coachText">
+                    <i class="ri-loader-4-line ri-spin"></i> جاري الاتصال بالسيرفر...
                 </div>
             </div>
 
             <div class="card">
                 <h3 style="margin:0 0 15px 0; font-size:16px;">📊 ملخص الأداء</h3>
-                <div class="grid-2">
-                    <div class="stat-box">
-                        <div class="stat-val" style="color:var(--primary)" id="weekTotal">0</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:16px; text-align:center;">
+                        <div style="font-size:26px; font-weight:900; color:var(--primary)" id="weekTotal">0</div>
                         <div style="font-size:12px; color:var(--text-muted)">كم (أسبوعي)</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-val" style="color:var(--secondary)" id="monthTotal">0</div>
+                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:16px; text-align:center;">
+                        <div style="font-size:26px; font-weight:900; color:var(--secondary)" id="monthTotal">0</div>
                         <div style="font-size:12px; color:var(--text-muted)">كم (شهري)</div>
                     </div>
                 </div>
@@ -283,19 +297,19 @@
 
             <div class="podcast-grid">
                 <a href="https://podcasts.apple.com/us/podcast/running-cast-egypt/id1720689973" target="_blank" class="pod-btn pod-apple">
-                    Apple Podcast <i class="ri-apple-fill"></i>
+                    <i class="ri-apple-fill" style="font-size:18px;"></i> Apple Podcast
                 </a>
-                <a href="https://open.spotify.com/show/0zVn7X9QZ0Z0Z0Z0Z0Z0Z0" target="_blank" class="pod-btn pod-spotify">
-                    Spotify <i class="ri-spotify-fill"></i>
+                <a href="https://podcasts.apple.com/us/podcast/running-cast-egypt/id1800972032">
+                    <i class="ri-spotify-fill" style="font-size:18px;"></i> Spotify
                 </a>
             </div>
 
             <div class="card">
                 <h3 style="margin:0 0 15px 0; color:var(--secondary); display:flex; align-items:center; gap:8px;">
-                    <i class="ri-broadcast-line"></i> مباشر من الفريق
+                    <i class="ri-broadcast-line"></i> نشاط الفريق المباشر
                 </h3>
                 <div id="teamFeed" class="feed-container">
-                    <p style="text-align:center; font-size:13px; color:var(--text-muted)">جاري تحميل النشاط...</p>
+                    <p style="text-align:center; font-size:13px; color:var(--text-muted); padding:10px;">جاري تحميل النشاط...</p>
                 </div>
             </div>
 
@@ -376,6 +390,50 @@
 
 </div>
 
+<div id="settingsModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+    <div class="modal-content">
+        <h3>الإعدادات</h3>
+        <button class="btn btn-outline" onclick="document.body.classList.toggle('light-mode')">تغيير المظهر 🌓</button>
+        <button class="btn btn-primary" onclick="forceUpdateApp()" style="margin-top:20px; background:var(--secondary);">تحديث التطبيق 🔄</button>
+        
+        <div class="credits-box">
+            <strong>جميع الحقوق محفوظة لفريق ERS ©</strong>
+            تصميم وبرمجة: كوتش أحمد وجيه<br>
+            <a href="https://wa.me/201503017017" style="color:#25D366; text-decoration:none; font-weight:bold; font-size:14px; display:inline-block; margin-top:5px;">
+                <i class="ri-whatsapp-line"></i> 01503017017
+            </a>
+        </div>
+        <p style="font-size:10px; margin-top:10px; opacity:0.6;">V11.0 Community</p>
+    </div>
+</div>
+
+<div id="toolsModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+    <div class="modal-content">
+        <h3 style="margin-top:0;">🧰 أدوات العداء</h3>
+        <div class="calc-tabs">
+            <div class="calc-tab active" onclick="switchCalcTab('pace')">Pace</div>
+            <div class="calc-tab" onclick="switchCalcTab('predict')">توقعات</div>
+            <div class="calc-tab" onclick="switchCalcTab('hr')">نبض</div>
+        </div>
+        <div id="calc-pace" class="calc-view active">
+            <div class="grid-2"><div><label>مسافة (كم)</label><input type="number" id="calcDist"></div><div><label>زمن (د)</label><input type="number" id="calcTime"></div></div>
+            <button class="btn btn-primary" onclick="quickPace()">احسب</button>
+            <div id="paceRes" class="result-display"><div class="result-val">00:00</div>/km</div>
+        </div>
+        <div id="calc-predict" class="calc-view">
+            <label>مسافة حديثة</label><select id="predBaseDist"><option value="5">5 كم</option><option value="10">10 كم</option></select>
+            <label>الزمن (د)</label><input type="number" id="predTime">
+            <button class="btn btn-primary" onclick="predictRace()">توقع</button>
+            <div id="predRes" class="result-display" style="text-align:right; font-size:14px;"></div>
+        </div>
+        <div id="calc-hr" class="calc-view">
+            <label>العمر</label><input type="number" id="hrAge">
+            <button class="btn btn-primary" onclick="calcZones()">احسب</button>
+            <div id="hrRes" class="result-display" style="text-align:right; font-size:14px;"></div>
+        </div>
+    </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -429,6 +487,8 @@
                 await auth.signInWithEmailAndPassword(e, p);
             }
         } catch(err) {
+            // Enhanced Error Handling for iPhone
+            alert("خطأ في الدخول: " + err.message);
             document.getElementById('authMsg').innerText = err.message;
         }
     }
@@ -448,8 +508,6 @@
         db.collection('activity_feed').orderBy('timestamp', 'desc').limit(20).onSnapshot(snap => {
             const feed = document.getElementById('teamFeed');
             feed.innerHTML = "";
-            if(snap.empty) { feed.innerHTML = '<p style="text-align:center;color:gray">كن أول من يسجل اليوم! 🔥</p>'; return; }
-            
             snap.forEach(doc => {
                 const act = doc.data();
                 const timeAgo = getTimeAgo(act.timestamp ? act.timestamp.toDate() : new Date());
@@ -469,7 +527,7 @@
             });
         });
 
-        // C. Leaderboard & Stats
+        // C. Leaderboard & Stats (Enhanced Podium)
         db.collection('users').orderBy('totalDistMonth', 'desc').limit(10).onSnapshot(snap => {
             let html = '';
             let rank = 1;
@@ -496,6 +554,7 @@
                 setTimeout(() => { document.getElementById('teamProgBar').style.width = pct + "%"; }, 500);
                 document.getElementById('teamTotalDist').innerText = `${teamTotal.toFixed(0)} كم`;
                 document.getElementById('teamGoalTxt').innerText = `الهدف: ${config.goal} كم`;
+                
                 if(config.msg) {
                     const box = document.getElementById('teamMsgBox');
                     document.getElementById('teamMsgContent').innerText = config.msg;
@@ -635,6 +694,7 @@
         document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
         document.getElementById('view-'+v).classList.add('active');
+        
         const map = {'home':0, 'team':1, 'log':2, 'profile':3};
         document.querySelectorAll('.nav-item')[map[v]].classList.add('active');
         window.scrollTo(0,0);

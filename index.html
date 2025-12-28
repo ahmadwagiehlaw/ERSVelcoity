@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ERS Velocity V13.2</title>
+    <title>ERS Velocity V13.3</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
@@ -44,7 +44,7 @@
 
         .app-container { width: 100%; max-width: 480px; padding: 15px; box-sizing: border-box; overflow-x: hidden; }
 
-        /* HEADER */
+        /* HEADER & NOTIFICATIONS */
         header {
             position: fixed; top: 0; left: 0; right: 0;
             height: calc(var(--header-height) + env(safe-area-inset-top));
@@ -62,23 +62,31 @@
         .header-text { display: flex; flex-direction: column; }
         .date-badge { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-bottom: 2px; }
         .welcome-msg { font-size: 18px; font-weight: 900; line-height: 1.1; }
-        .welcome-msg span { color: var(--primary); }
-        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 0 8px rgba(255,255,255,0.1)); }
+        .logo-section { display: flex; align-items: center; gap: 15px; }
+        .logo-img { height: 45px; width: auto; filter: drop-shadow(0 0 8px rgba(255,255,255,0.1)); }
+        
+        /* Bell Icon */
+        .notif-btn { position: relative; font-size: 24px; color: var(--text-main); cursor: pointer; transition: 0.2s; }
+        .notif-btn:active { transform: scale(0.9); }
+        .notif-badge { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: var(--danger); border-radius: 50%; border: 2px solid var(--glass-bg); display: none; }
+        .notif-badge.active { display: block; }
 
-        /* CARDS */
+        /* CARDS & LAYOUT FIX */
         .card {
             background: var(--card-bg); border: 1px solid var(--border-color);
             border-radius: 20px; padding: 20px; margin-bottom: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: relative; overflow: hidden;
+            /* Layout Fix: Ensure no overflow */
+            max-width: 100%; box-sizing: border-box;
         }
 
-        /* CHALLENGE HERO */
+        /* CHALLENGE HERO (FIXED WIDTH) */
         .challenge-hero {
             background: linear-gradient(135deg, #b45309, #d97706);
             border-radius: 20px; padding: 25px 20px; margin-bottom: 15px; text-align: center;
             border: 1px solid rgba(255,255,255,0.15); position: relative; overflow: hidden;
             box-shadow: 0 10px 30px -5px rgba(217, 119, 6, 0.4);
-            width: 100%; box-sizing: border-box;
+            width: 100%; box-sizing: border-box; 
         }
         .ch-icon { font-size: 90px; color: rgba(255,255,255,0.08); position: absolute; right: -20px; bottom: -20px; rotate: -15deg; }
         .ch-val { font-size: 42px; font-weight: 900; color: #fff; line-height: 1; margin: 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
@@ -92,7 +100,6 @@
             padding: 15px; border-radius: 16px; text-decoration: none; font-weight: bold; font-size: 13px;
             transition: transform 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-align: center;
         }
-        .pod-btn:active { transform: scale(0.96); }
         .pod-apple { background: #ffffff; color: #000000; border: 1px solid #e5e5e5; }
         .pod-spotify { background: #1DB954; color: black; border: 1px solid #1ed760; }
 
@@ -110,10 +117,13 @@
         .feed-meta { font-size: 11px; color: var(--text-muted); display: block; margin-top: 2px; }
         
         .feed-body { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 12px; margin-left: 54px; border: 1px solid rgba(255,255,255,0.05); }
-        .feed-stat-row { display: flex; align-items: baseline; gap: 5px; }
+        .feed-stat-row { display: flex; align-items: baseline; gap: 5px; justify-content: space-between; }
         .feed-dist { font-size: 20px; font-weight: 900; color: var(--text-main); }
         .feed-type { font-size: 12px; color: var(--primary); font-weight: bold; text-transform: uppercase; }
         
+        /* SHOE BADGE IN FEED */
+        .shoe-badge { font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 10px; }
+
         .feed-actions { margin-top: 10px; margin-left: 54px; display: flex; gap: 15px; }
         .action-btn { background: transparent; border: 1px solid transparent; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px; padding: 6px 12px; border-radius: 20px; transition: all 0.2s; font-family: 'Tajawal', sans-serif; font-weight: 600; }
         .action-btn:active { transform: scale(0.9); }
@@ -139,15 +149,7 @@
         .coach-avatar { width: 45px; height: 45px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; box-shadow: 0 0 20px var(--primary-glow); flex-shrink: 0; }
         .coach-bubble { font-size: 14px; line-height: 1.5; color: #fff; font-weight: 500; }
 
-        /* LOGS */
-        .heatmap-container { display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; }
-        .heatmap-day { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-muted); position: relative; }
-        .heatmap-day.active { background: var(--primary); color: white; box-shadow: 0 0 10px var(--primary-glow); font-weight: bold; }
-        
-        .log-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
-        .log-item.best-dist::before { content:''; position:absolute; right:0; top:0; bottom:0; width:4px; background:var(--accent); }
-        
-        /* FORMS */
+        /* FORMS & INPUTS */
         input, select { width: 100%; padding: 15px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); border-radius: 14px; color: white; font-family: inherit; margin-bottom: 12px; box-sizing: border-box; font-size: 16px; }
         .btn { width: 100%; padding: 15px; border-radius: 14px; font-weight: 800; border: none; cursor: pointer; display: flex; justify-content: center; gap: 8px; transition: 0.2s; font-size: 16px; }
         .btn:active { transform: scale(0.97); }
@@ -170,14 +172,18 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* AUTH SCREEN */
-        #auth-screen { position: fixed; inset: 0; background: var(--bg-color); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        
-        /* MODALS */
+        /* MODALS (GENERAL) */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--bg-color); width: 85%; max-width: 400px; padding: 25px; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); max-height: 85vh; overflow-y: auto; }
         
-        /* RUNNER PROFILE STYLES */
+        /* NOTIFICATION LIST */
+        .notif-list { text-align: right; max-height: 300px; overflow-y: auto; }
+        .notif-item { padding: 12px 0; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .notif-icon { width: 30px; height: 30px; border-radius: 50%; background: rgba(34,197,94,0.15); color: var(--primary); display: flex; align-items: center; justify-content: center; }
+        .notif-text { font-size: 13px; line-height: 1.4; color: var(--text-main); }
+        .notif-time { font-size: 10px; color: var(--text-muted); display: block; margin-top: 2px; }
+
+        /* RUNNER PROFILE */
         .prof-header { text-align: center; margin-bottom: 20px; }
         .prof-avatar { width: 80px; height: 80px; margin: 0 auto 10px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; color: white; border: 4px solid rgba(255,255,255,0.1); }
         .prof-badge { font-size: 12px; background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 15px; color: var(--text-muted); font-weight: bold; display: inline-block; }
@@ -187,6 +193,30 @@
         .mini-run-list { text-align: right; margin-top: 15px; }
         .mini-run-item { padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 13px; display: flex; justify-content: space-between; }
 
+        /* LOG ACCORDION */
+        .log-accordion { background: rgba(125,125,125,0.05); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s ease; }
+        .log-acc-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: rgba(0,0,0,0.1); }
+        .log-acc-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; padding: 0 20px; }
+        .log-acc-body.open { max-height: 650px; padding: 20px; } /* Increased Height for Shoe Input */
+        .log-toggle-icon { transition: transform 0.3s; }
+        .log-toggle-icon.rotate { transform: rotate(180deg); }
+        
+        /* HEATMAP */
+        .heatmap-container { display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; }
+        .heatmap-day { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-muted); position: relative; }
+        .heatmap-day.active { background: var(--primary); color: white; box-shadow: 0 0 10px var(--primary-glow); font-weight: bold; }
+        
+        .log-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+        .log-item.best-dist::before { content:''; position:absolute; right:0; top:0; bottom:0; width:4px; background:var(--accent); }
+        
+        /* ADMIN & TOOLS */
+        #adminPanel { position: fixed; top: 90px; left: 15px; right: 15px; background: rgba(15, 23, 42, 0.98); border: 2px solid var(--accent); border-radius: 20px; padding: 20px; z-index: 1500; display: none; box-shadow: 0 20px 60px rgba(0,0,0,0.8); backdrop-filter: blur(20px); }
+        .date-row { display: flex; gap: 10px; width: 100%; }
+        .date-input-container { flex: 1; min-width: 0; }
+        #logDate { text-align: center; font-weight: bold; -webkit-appearance: none; min-width: 0; }
+        .yesterday-btn { width: 75px; flex-shrink: 0; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        
         /* CALC TABS */
         .calc-tabs { display: flex; background: rgba(0,0,0,0.2); border-radius: 14px; padding: 5px; margin-bottom: 25px; }
         .calc-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; color: var(--text-muted); border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
@@ -196,21 +226,6 @@
         .result-display { text-align: center; margin-top: 20px; padding: 15px; background: rgba(125,125,125,0.08); border-radius: 16px; border: 1px solid var(--border-color); display: none; }
         .result-val { font-size: 36px; font-weight: 900; color: var(--primary); }
         
-        /* LOG ACCORDION & OTHERS */
-        .log-accordion { background: rgba(125,125,125,0.05); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s ease; }
-        .log-acc-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: rgba(0,0,0,0.1); }
-        .log-acc-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; padding: 0 20px; }
-        .log-acc-body.open { max-height: 600px; padding: 20px; }
-        .log-toggle-icon { transition: transform 0.3s; }
-        .log-toggle-icon.rotate { transform: rotate(180deg); }
-        
-        /* ADMIN PANEL & DATE FIX */
-        #adminPanel { position: fixed; top: 90px; left: 15px; right: 15px; background: rgba(15, 23, 42, 0.98); border: 2px solid var(--accent); border-radius: 20px; padding: 20px; z-index: 1500; display: none; box-shadow: 0 20px 60px rgba(0,0,0,0.8); backdrop-filter: blur(20px); }
-        .date-row { display: flex; gap: 10px; width: 100%; }
-        .date-input-container { flex: 1; min-width: 0; }
-        #logDate { text-align: center; font-weight: bold; -webkit-appearance: none; min-width: 0; }
-        .yesterday-btn { width: 75px; flex-shrink: 0; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        
         /* CHART */
         .chart-wrapper { padding: 10px 0; position: relative; }
         .chart-container { height: 120px; width: 100%; border-left: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
@@ -218,19 +233,17 @@
         .line-dist { fill: none; stroke: var(--primary); stroke-width: 3; stroke-linecap: round; }
         .line-speed { fill: none; stroke: var(--secondary); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 4; }
         
-        /* CREDITS */
         .credits-box { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border-color); font-size: 12px; line-height: 1.8; color: var(--text-muted); }
         .credits-box strong { color: var(--primary); display: block; margin-bottom: 5px; font-size: 13px; }
         .badge { font-size: 10px; padding: 2px 6px; border-radius: 6px; border: 1px solid; }
         .badge-gold { background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.3); }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     </style>
 </head>
 <body>
 
 <div id="auth-screen">
     <img src="ers-logo.png" style="width: 130px; margin-bottom: 25px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));">
-    <h2 style="color:white; margin:0 0 5px 0;">ERS Velocity <span style="color:var(--primary); font-size:12px; vertical-align: top;">V13.2</span></h2>
+    <h2 style="color:white; margin:0 0 5px 0;">ERS Velocity <span style="color:var(--primary); font-size:12px; vertical-align: top;">V13.3</span></h2>
     <p style="color:var(--text-muted); font-size:14px; margin-bottom:35px; letter-spacing: 0.5px;">منصة العدائين المحترفين</p>
     
     <div style="width:100%; max-width:320px;">
@@ -262,7 +275,13 @@
                 <div class="date-badge" id="dateDisplay">--</div>
                 <div class="welcome-msg" id="headerGreeting">أهلاً كابتن</div>
             </div>
-            <img src="ers-logo.png" class="logo-img">
+            <div class="logo-section">
+                <div class="notif-btn" onclick="openModal('notifModal')">
+                    <i class="ri-notification-3-line"></i>
+                    <div class="notif-badge" id="notifBadge"></div>
+                </div>
+                <img src="ers-logo.png" class="logo-img">
+            </div>
         </div>
     </header>
 
@@ -338,8 +357,7 @@
 
         <div id="view-log" class="view-section">
             
-            <div class="heatmap-container" id="weekHeatmap">
-                </div>
+            <div class="heatmap-container" id="weekHeatmap"></div>
 
             <div class="log-accordion">
                 <div class="log-acc-header" onclick="toggleLogForm()">
@@ -359,6 +377,9 @@
                         <option value="Race">Race (سباق)</option>
                     </select>
                     
+                    <label>نوع الحذاء (Shoe)</label>
+                    <input type="text" id="logShoe" placeholder="مثلاً: Nike Pegasus 40">
+
                     <div class="date-row">
                         <div class="date-input-container"><input type="date" id="logDate"></div>
                         <button class="yesterday-btn" onclick="setYesterday()">أمس</button>
@@ -403,6 +424,16 @@
 
     </div>
 
+    <div id="notifModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+        <div class="modal-content">
+            <h3 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:10px;">🔔 الإشعارات</h3>
+            <div class="notif-list" id="notifList">
+                <p style="text-align:center; color:var(--text-muted); font-size:13px; padding:20px;">لا توجد إشعارات جديدة</p>
+            </div>
+            <button class="btn btn-outline" onclick="document.getElementById('notifModal').style.display='none'" style="margin-top:15px; font-size:14px;">إغلاق</button>
+        </div>
+    </div>
+
     <div class="float-btns">
         <div class="float-btn update" onclick="forceUpdateApp()"><i class="ri-rocket-2-fill"></i></div>
         <div class="float-btn" onclick="openModal('toolsModal')"><i class="ri-calculator-line" style="color:var(--secondary);"></i></div>
@@ -425,7 +456,6 @@
             <h3 style="margin:0 0 5px 0;" id="pubName">...</h3>
             <span class="prof-badge" id="pubLevel">تحميل...</span>
         </div>
-        
         <div class="grid-2" style="margin-bottom:20px;">
             <div class="mini-stat-box">
                 <div class="mini-stat-val" id="pubMonthDist">0</div>
@@ -436,7 +466,6 @@
                 <div class="mini-stat-lbl">عدد الجريات</div>
             </div>
         </div>
-
         <h4 style="margin:0 0 10px 0; text-align:right; font-size:14px; color:var(--text-muted); border-bottom:1px solid var(--border-color); padding-bottom:5px;">آخر نشاط</h4>
         <div class="mini-run-list" id="pubRecentRuns">
             <p style="font-size:12px; color:var(--text-muted);">جاري التحميل...</p>
@@ -449,7 +478,6 @@
         <h3>الإعدادات</h3>
         <button class="btn btn-outline" onclick="document.body.classList.toggle('light-mode')">تغيير المظهر 🌓</button>
         <button class="btn btn-primary" onclick="forceUpdateApp()" style="margin-top:20px; background:var(--secondary);">تحديث التطبيق 🔄</button>
-        
         <div class="credits-box">
             <strong>جميع الحقوق محفوظة لفريق ERS ©</strong>
             تصميم وبرمجة: كوتش أحمد وجيه<br>
@@ -457,7 +485,7 @@
                 <i class="ri-whatsapp-line"></i> 01503017017
             </a>
         </div>
-        <p style="font-size:10px; margin-top:10px; opacity:0.6;">V13.2 Ultimate</p>
+        <p style="font-size:10px; margin-top:10px; opacity:0.6;">V13.3 Ultimate</p>
     </div>
 </div>
 
@@ -552,10 +580,11 @@
                 userData = doc.data();
                 updateUI();
                 updateCoach();
+                checkNotifications(); // New: Check for likes
             }
         });
 
-        // B. Team Feed (Updated with click events)
+        // B. Team Feed
         db.collection('activity_feed').orderBy('timestamp', 'desc').limit(30).onSnapshot(snap => {
             const feed = document.getElementById('teamFeed');
             if(snap.empty) { feed.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted);">لسه مفيش نشاط.. انزل اجري وكن الأول! 🏃‍♂️</p>'; return; }
@@ -569,6 +598,7 @@
                 const isLiked = likes.includes(currentUser.uid);
                 const likeCount = likes.length;
                 const activeClass = isLiked ? 'active' : '';
+                const shoeBadge = act.shoe ? `<div class="shoe-badge"><i class="ri-footprint-line"></i> ${act.shoe}</div>` : '';
 
                 html += `
                 <div class="feed-item">
@@ -581,8 +611,11 @@
                     </div>
                     <div class="feed-body">
                         <div class="feed-stat-row">
-                            <span class="feed-dist">${act.dist} كم</span>
-                            <span class="feed-type">${act.type}</span>
+                            <div style="display:flex; align-items:baseline; gap:5px;">
+                                <span class="feed-dist">${act.dist} كم</span>
+                                <span class="feed-type">${act.type}</span>
+                            </div>
+                            ${shoeBadge}
                         </div>
                     </div>
                     <div class="feed-actions">
@@ -595,7 +628,7 @@
             feed.innerHTML = html;
         });
 
-        // C. Leaderboard (Updated with click events)
+        // C. Leaderboard
         db.collection('users').orderBy('totalDistMonth', 'desc').limit(10).onSnapshot(snap => {
             let html = '';
             let rank = 1;
@@ -605,7 +638,6 @@
                 teamTotal += (u.totalDistMonth || 0);
                 const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':`#${rank}`;
                 const rankClass = rank <= 3 ? `rank-${rank}` : '';
-                
                 html += `
                 <div class="lb-row ${rankClass}" onclick="showRunnerProfile('${u.name || 'مجهول'}')">
                     <div class="lb-rank">${medal}</div>
@@ -630,7 +662,47 @@
         });
     }
 
-    // NEW: SHOW RUNNER PROFILE
+    // 4. NOTIFICATION SYSTEM (NEW)
+    function checkNotifications() {
+        // Simple query: Get my posts that have likes
+        if(!userData.name) return;
+        
+        db.collection('activity_feed')
+            .where('userName', '==', userData.name)
+            .orderBy('timestamp', 'desc')
+            .limit(5)
+            .get()
+            .then(snap => {
+                const list = document.getElementById('notifList');
+                let html = '';
+                let totalNotifs = 0;
+
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const likes = data.likes || [];
+                    if(likes.length > 0) {
+                        totalNotifs++;
+                        html += `
+                        <div class="notif-item">
+                            <div class="notif-icon"><i class="ri-heart-3-fill"></i></div>
+                            <div class="notif-text">
+                                ${likes.length} أبطال شجعوك على جرية الـ <strong>${data.dist} كم</strong>!
+                                <span class="notif-time">${getTimeAgo(data.timestamp.toDate())}</span>
+                            </div>
+                        </div>`;
+                    }
+                });
+
+                if(html) {
+                    list.innerHTML = html;
+                    document.getElementById('notifBadge').classList.add('active');
+                } else {
+                    list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:13px; padding:20px;">لا توجد إشعارات جديدة</p>';
+                    document.getElementById('notifBadge').classList.remove('active');
+                }
+            });
+    }
+
     async function showRunnerProfile(targetName) {
         if(!targetName) return;
         document.getElementById('runnerProfileModal').style.display = 'flex';
@@ -639,7 +711,6 @@
         document.getElementById('pubLevel').innerText = "جاري التحميل...";
         document.getElementById('pubRecentRuns').innerHTML = '<p style="font-size:12px; color:var(--text-muted);">جاري التحميل...</p>';
         
-        // Find user by name (Note: works best if names are unique, otherwise picks first)
         const snap = await db.collection('users').where('name', '==', targetName).limit(1).get();
         
         if(!snap.empty) {
@@ -650,19 +721,16 @@
             document.getElementById('pubMonthDist').innerText = total.toFixed(1);
             document.getElementById('pubRunsCount').innerText = count;
             
-            // Determine Level
             let lvl = "مبتدئ (Rookie)";
             if(total > 50) lvl = "عداء (Pacer)";
             if(total > 150) lvl = "نخبة (Elite)";
             document.getElementById('pubLevel').innerText = lvl;
 
-            // Recent Runs
             let runsHtml = "";
             (data.runs || []).slice(0, 3).forEach(r => {
                 runsHtml += `<div class="mini-run-item"><span>${r.dist} كم (${r.type})</span><span style="color:var(--text-muted)">${r.date.slice(5)}</span></div>`;
             });
             document.getElementById('pubRecentRuns').innerHTML = runsHtml || "لا يوجد نشاط حديث";
-
         } else {
             document.getElementById('pubLevel').innerText = "غير مسجل";
             document.getElementById('pubRecentRuns').innerHTML = "تعذر تحميل البيانات";
@@ -683,7 +751,6 @@
         } catch (e) { console.error("Like error:", e); }
     }
 
-    // 4. COACH AI
     function updateCoach() {
         const box = document.getElementById('coachText');
         const runs = userData.runs || [];
@@ -712,7 +779,6 @@
         box.innerText = `${greeting} يا ${name}!\n${advice}`;
     }
 
-    // 5. UI UPDATES
     function updateUI() {
         document.getElementById('headerGreeting').innerText = `أهلاً، ${(userData.name||'').split(' ')[0]}`;
         
@@ -749,12 +815,14 @@
         let maxDist = 0; (userData.runs||[]).forEach(r => { if(r.dist > maxDist) maxDist = r.dist; });
         (userData.runs||[]).slice(0, 15).forEach(r => {
             let badge = r.dist >= maxDist && maxDist > 0 ? `<span class="badge badge-gold">🏆 الأطول</span>` : "";
+            let shoeInfo = r.shoe ? `<div style="font-size:10px; color:var(--primary); margin-top:2px;"><i class="ri-footprint-line"></i> ${r.shoe}</div>` : "";
             logContainer.innerHTML += `
             <div class="log-item">
                 <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
                     <div>
                         <div style="font-weight:bold; color:white; font-size:16px;">${r.dist} كم ${badge}</div>
                         <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">${r.type} • ${r.time}د</div>
+                        ${shoeInfo}
                     </div>
                     <div style="font-size:11px; color:var(--text-muted);">${r.date.slice(5)}</div>
                 </div>
@@ -763,14 +831,15 @@
         drawDualChart();
     }
 
-    // 6. ACTIONS
     function addRun() {
         const d = parseFloat(document.getElementById('logDist').value);
         const t = parseFloat(document.getElementById('logTime').value);
         const type = document.getElementById('logType').value;
+        const shoe = document.getElementById('logShoe').value; // New
         const date = document.getElementById('logDate').value;
         if(!d || !t || !date) return alert("أكمل البيانات يا كابتن");
-        const newRuns = [ {dist:d, time:t, type:type, date:date}, ...(userData.runs||[]) ];
+        
+        const newRuns = [ {dist:d, time:t, type:type, date:date, shoe:shoe}, ...(userData.runs||[]) ];
         const now = new Date();
         const startM = new Date(now.getFullYear(), now.getMonth(), 1);
         const totalM = newRuns.filter(r => new Date(r.date) >= startM).reduce((s,r)=>s+parseFloat(r.dist),0);
@@ -778,7 +847,8 @@
         db.collection('users').doc(currentUser.uid).update({ runs: newRuns, totalDistMonth: totalM });
         db.collection('activity_feed').add({
             userName: userData.name || "عضو فريق",
-            dist: d, type: type, timestamp: firebase.firestore.FieldValue.serverTimestamp(), likes: []
+            dist: d, type: type, shoe: shoe,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(), likes: []
         }).then(() => {
             alert("تم التسجيل والنشر للفريق! عاش 🔥");
             document.getElementById('logDist').value = ''; document.getElementById('logTime').value = '';
@@ -813,6 +883,7 @@
         const map = {'home':0, 'team':1, 'log':2, 'profile':3};
         document.querySelectorAll('.nav-item')[map[v]].classList.add('active');
         window.scrollTo(0,0);
+        if(v === 'home') checkNotifications(); // Re-check notifications on home
     }
     function toggleLogForm() { document.getElementById('logFormBody').classList.toggle('open'); document.getElementById('logToggleIcon').classList.toggle('rotate'); }
     function setYesterday() { const d = new Date(); d.setDate(d.getDate()-1); document.getElementById('logDate').valueAsDate=d; }

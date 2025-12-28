@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ERS Velocity V12.0</title>
+    <title>ERS Velocity V13.0</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
@@ -16,16 +16,17 @@
     <style>
         :root {
             --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.9);
+            --card-bg: rgba(30, 41, 59, 0.95); /* أكثر عتامة للقراءة */
             --glass-bg: rgba(15, 23, 42, 0.98);
             --primary: #22c55e;
+            --primary-glow: rgba(34, 197, 94, 0.3);
             --secondary: #3b82f6;
             --accent: #f59e0b;
             --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: rgba(255,255,255,0.1);
-            --header-height: 70px; /* Reduced Height */
+            --header-height: 80px;
         }
 
         body {
@@ -35,40 +36,40 @@
             margin: 0; padding: 0;
             display: flex; justify-content: center;
             min-height: 100vh;
-            padding-bottom: 90px; /* Space for fixed nav */
+            padding-bottom: 100px; /* مساحة للنافبار */
             padding-top: calc(var(--header-height) + env(safe-area-inset-top));
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .app-container { width: 100%; max-width: 480px; padding: 15px; box-sizing: border-box; }
+        .app-container { width: 100%; max-width: 480px; padding: 15px; box-sizing: border-box; overflow-x: hidden; }
 
-        /* HEADER (FIXED & CLEAN) */
+        /* HEADER (Fixed & Clean) */
         header {
             position: fixed; top: 0; left: 0; right: 0;
             height: calc(var(--header-height) + env(safe-area-inset-top));
             background: var(--glass-bg);
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
-            display: flex; align-items: flex-end; padding-bottom: 8px; /* Lifted up */
+            display: flex; align-items: flex-end; padding-bottom: 10px;
             justify-content: center; z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
         .header-content { 
             width: 100%; max-width: 480px; padding: 0 20px; 
             display: flex; justify-content: space-between; align-items: center; 
         }
-        .header-text { display: flex; flex-direction: column; justify-content: center; }
+        .header-text { display: flex; flex-direction: column; }
         .date-badge { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-bottom: 2px; }
-        .welcome-msg { font-size: 16px; font-weight: 900; line-height: 1.2; }
+        .welcome-msg { font-size: 18px; font-weight: 900; line-height: 1.1; }
         .welcome-msg span { color: var(--primary); }
-        .logo-img { height: 45px; width: auto; filter: drop-shadow(0 0 8px rgba(255,255,255,0.15)); }
+        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 0 8px rgba(255,255,255,0.1)); }
 
         /* CARDS */
         .card {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 20px; padding: 18px; margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15); position: relative; overflow: hidden;
+            border-radius: 20px; padding: 20px; margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: relative; overflow: hidden;
         }
 
         /* CHALLENGE HERO (FULL WIDTH FIX) */
@@ -77,64 +78,71 @@
             border-radius: 20px; padding: 25px 20px; margin-bottom: 15px; text-align: center;
             border: 1px solid rgba(255,255,255,0.15); position: relative; overflow: hidden;
             box-shadow: 0 10px 30px -5px rgba(217, 119, 6, 0.4);
-            width: 100%; box-sizing: border-box; /* Ensure full width */
+            width: 100%; box-sizing: border-box;
         }
-        .ch-icon { font-size: 80px; color: rgba(255,255,255,0.1); position: absolute; right: -20px; bottom: -20px; rotate: -15deg; }
+        .ch-icon { font-size: 90px; color: rgba(255,255,255,0.08); position: absolute; right: -20px; bottom: -20px; rotate: -15deg; }
         .ch-val { font-size: 42px; font-weight: 900; color: #fff; line-height: 1; margin: 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .ch-label { font-size: 13px; color: rgba(255,255,255,0.95); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
         .ch-target { font-size: 11px; background: rgba(0,0,0,0.25); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-top: 8px; backdrop-filter: blur(5px); }
 
-        /* PODCAST GRID */
-        .podcast-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        /* PODCAST GRID (Full Width) */
+        .podcast-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; width: 100%; }
         .pod-btn {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 14px; border-radius: 16px; text-decoration: none; font-weight: bold; font-size: 13px;
-            transition: transform 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+            padding: 15px; border-radius: 16px; text-decoration: none; font-weight: bold; font-size: 13px;
+            transition: transform 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-align: center;
         }
-        .pod-btn:active { transform: scale(0.95); }
+        .pod-btn i { font-size: 24px; margin-bottom: 2px; }
+        .pod-btn:active { transform: scale(0.96); }
         .pod-apple { background: #ffffff; color: #000000; border: 1px solid #e5e5e5; }
         .pod-spotify { background: #1DB954; color: black; border: 1px solid #1ed760; }
 
-        /* TEAM FEED */
-        .feed-container { max-height: 350px; overflow-y: auto; padding-right: 5px; }
+        /* TEAM FEED (Timeline Style) */
+        .feed-container { max-height: 350px; overflow-y: auto; padding-right: 2px; }
         .feed-item {
-            display: flex; gap: 12px; padding: 12px; margin-bottom: 8px;
-            background: rgba(255,255,255,0.03); border-radius: 12px;
-            border: 1px solid var(--border-color); animation: fadeIn 0.5s ease;
+            display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-color);
+            animation: fadeIn 0.5s ease; align-items: flex-start;
         }
         .feed-avatar {
-            width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; font-weight: 800;
+            width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; font-weight: 800;
             box-shadow: 0 2px 10px rgba(59,130,246,0.3); flex-shrink: 0;
         }
         .feed-content { flex: 1; }
-        .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .feed-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
         .feed-name { font-weight: bold; font-size: 14px; color: var(--text-main); }
         .feed-time { font-size: 10px; color: var(--text-muted); }
-        .feed-details { font-size: 13px; color: var(--text-muted); }
-        .feed-details strong { color: var(--accent); }
+        .feed-action { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+        .feed-action strong { color: var(--primary); }
 
-        /* LEADERBOARD (PODIUM) */
+        /* LEADERBOARD (Podium) */
         .lb-row { display: flex; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); }
         .lb-row.rank-1 { background: linear-gradient(90deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05)); border-color: rgba(251,191,36,0.4); }
         .lb-row.rank-2 { background: linear-gradient(90deg, rgba(148,163,184,0.15), rgba(148,163,184,0.05)); border-color: rgba(148,163,184,0.4); }
         .lb-row.rank-3 { background: linear-gradient(90deg, rgba(180,83,9,0.15), rgba(180,83,9,0.05)); border-color: rgba(180,83,9,0.4); }
-        
         .lb-rank { font-weight: 900; width: 35px; text-align: center; font-size: 14px; color: var(--text-muted); }
-        .lb-row.rank-1 .lb-rank { font-size: 22px; }
+        .lb-row.rank-1 .lb-rank { font-size: 20px; }
         .lb-info { flex: 1; margin-right: 5px; }
         .lb-name { font-weight: bold; font-size: 14px; display: block; }
         .lb-val { font-weight: 900; color: var(--text-main); font-size: 15px; }
 
-        /* COACH CARD */
+        /* COACH CARD (Restored) */
         .coach-card {
             background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(15,23,42,0.9));
             border: 1px solid rgba(34,197,94,0.3); display: flex; gap: 15px; align-items: center; padding: 15px;
         }
-        .coach-avatar { width: 48px; height: 48px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; box-shadow: 0 0 20px var(--primary-glow); flex-shrink: 0; }
+        .coach-avatar { width: 45px; height: 45px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; box-shadow: 0 0 20px var(--primary-glow); flex-shrink: 0; }
         .coach-bubble { font-size: 14px; line-height: 1.5; color: #fff; font-weight: 500; }
 
-        /* FORMS & BUTTONS */
+        /* LOG REVOLUTION (Heatmap & Cards) */
+        .heatmap-container { display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; }
+        .heatmap-day { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-muted); position: relative; }
+        .heatmap-day.active { background: var(--primary); color: white; box-shadow: 0 0 10px var(--primary-glow); font-weight: bold; }
+        
+        .log-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+        .log-item.best-dist::before { content:''; position:absolute; right:0; top:0; bottom:0; width:4px; background:var(--accent); }
+        
+        /* FORMS */
         input, select {
             width: 100%; padding: 15px; background: rgba(255,255,255,0.06);
             border: 1px solid var(--border-color); border-radius: 14px;
@@ -145,21 +153,21 @@
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px var(--primary-glow); }
         .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
         
-        /* NAV (FIXED & STABLE) */
+        /* NAV (FIXED) */
         .bottom-nav {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             width: 90%; max-width: 440px; background: var(--glass-bg);
             backdrop-filter: blur(25px); border: 1px solid var(--border-color);
             border-radius: 30px; display: flex; justify-content: space-around;
-            padding: 12px 0; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 9999; /* High Z-Index */
+            padding: 14px 0; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 9999;
         }
         .nav-item { color: var(--text-muted); text-align: center; font-size: 10px; cursor: pointer; width: 20%; transition: 0.3s; }
         .nav-item i { display: block; font-size: 26px; margin-bottom: 3px; }
-        .nav-item.active { color: var(--primary); transform: translateY(-5px); }
+        .nav-item.active { color: var(--primary); transform: translateY(-6px); }
         .nav-item.active i { color: var(--primary); }
 
         /* FLOATERS */
-        .float-btns { position: fixed; bottom: 100px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
+        .float-btns { position: fixed; bottom: 110px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
         .float-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 25px rgba(0,0,0,0.4); cursor: pointer; transition: 0.2s; }
         .float-btn.update { border-color: var(--secondary); color: var(--secondary); }
 
@@ -179,14 +187,6 @@
         /* ADMIN PANEL */
         #adminPanel { position: fixed; top: 90px; left: 15px; right: 15px; background: rgba(15, 23, 42, 0.98); border: 2px solid var(--accent); border-radius: 20px; padding: 20px; z-index: 1500; display: none; box-shadow: 0 20px 60px rgba(0,0,0,0.8); backdrop-filter: blur(20px); }
         
-        /* LOG STYLES */
-        .log-accordion { background: rgba(125,125,125,0.05); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s ease; }
-        .log-acc-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: rgba(0,0,0,0.1); }
-        .log-acc-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; padding: 0 20px; }
-        .log-acc-body.open { max-height: 600px; padding: 20px; }
-        .log-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
-        .log-item.best-dist::before { content:''; position:absolute; right:0; top:0; bottom:0; width:4px; background:var(--accent); }
-        
         /* UTILS */
         .badge { font-size: 10px; padding: 2px 6px; border-radius: 6px; border: 1px solid; }
         .badge-gold { background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.3); }
@@ -205,6 +205,21 @@
         .result-display { text-align: center; margin-top: 20px; padding: 15px; background: rgba(125,125,125,0.08); border-radius: 16px; border: 1px solid var(--border-color); display: none; }
         .result-val { font-size: 36px; font-weight: 900; color: var(--primary); }
         
+        /* LOG ACCORDION */
+        .log-accordion { background: rgba(125,125,125,0.05); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s ease; }
+        .log-acc-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: rgba(0,0,0,0.1); }
+        .log-acc-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; padding: 0 20px; }
+        .log-acc-body.open { max-height: 600px; padding: 20px; }
+        .log-toggle-icon { transition: transform 0.3s; }
+        .log-toggle-icon.rotate { transform: rotate(180deg); }
+        
+        /* CHART */
+        .chart-wrapper { padding: 10px 0; position: relative; }
+        .chart-container { height: 120px; width: 100%; border-left: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .chart-svg { width: 100%; height: 100%; overflow: visible; }
+        .line-dist { fill: none; stroke: var(--primary); stroke-width: 3; stroke-linecap: round; }
+        .line-speed { fill: none; stroke: var(--secondary); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 4; }
+        
         /* CREDITS */
         .credits-box { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border-color); font-size: 12px; line-height: 1.8; color: var(--text-muted); }
         .credits-box strong { color: var(--primary); display: block; margin-bottom: 5px; font-size: 13px; }
@@ -214,7 +229,7 @@
 
 <div id="auth-screen">
     <img src="ers-logo.png" style="width: 130px; margin-bottom: 25px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));">
-    <h2 style="color:white; margin:0 0 5px 0;">ERS Velocity <span style="color:var(--primary); font-size:12px; vertical-align: top;">V12.0</span></h2>
+    <h2 style="color:white; margin:0 0 5px 0;">ERS Velocity <span style="color:var(--primary); font-size:12px; vertical-align: top;">V13.0</span></h2>
     <p style="color:var(--text-muted); font-size:14px; margin-bottom:35px; letter-spacing: 0.5px;">منصة العدائين المحترفين</p>
     
     <div style="width:100%; max-width:320px;">
@@ -298,10 +313,10 @@
 
             <div class="podcast-grid">
                 <a href="https://podcasts.apple.com/us/podcast/running-cast-egypt/id1800972032" target="_blank" class="pod-btn pod-apple">
-                    <i class="ri-apple-fill" style="font-size:18px;"></i> Apple Podcast
+                    <i class="ri-apple-fill" style="font-size:24px;"></i> Apple Podcast
                 </a>
                 <a href="https://open.spotify.com/show/4cYIPTsFZa3cBIyHLTgcui?si=4bdb39afdf054103" target="_blank" class="pod-btn pod-spotify">
-                    <i class="ri-spotify-fill" style="font-size:18px;"></i> Spotify
+                    <i class="ri-spotify-fill" style="font-size:24px;"></i> Spotify
                 </a>
             </div>
 
@@ -321,6 +336,10 @@
         </div>
 
         <div id="view-log" class="view-section">
+            
+            <div class="heatmap-container" id="weekHeatmap">
+                </div>
+
             <div class="log-accordion">
                 <div class="log-acc-header" onclick="toggleLogForm()">
                     <div class="log-acc-title"><i class="ri-add-circle-fill" style="color:var(--primary); font-size:20px;"></i> تسجيل جرية</div>
@@ -345,6 +364,13 @@
                     </div>
 
                     <button class="btn btn-primary" onclick="addRun()" style="margin-top:15px;">حفظ ونشر للفريق 📣</button>
+                </div>
+            </div>
+
+            <div class="card" style="padding:15px;">
+                <div style="font-size:13px; font-weight:bold; margin-bottom:10px; color:var(--text-muted);">📈 التقدم (مسافة vs سرعة)</div>
+                <div class="chart-wrapper">
+                    <div class="chart-container"><svg class="chart-svg" id="dualChart" viewBox="0 0 100 50" preserveAspectRatio="none"></svg></div>
                 </div>
             </div>
 
@@ -404,7 +430,7 @@
                 <i class="ri-whatsapp-line"></i> 01503017017
             </a>
         </div>
-        <p style="font-size:10px; margin-top:10px; opacity:0.6;">V12.0 PWA</p>
+        <p style="font-size:10px; margin-top:10px; opacity:0.6;">V13.0 Ultimate</p>
     </div>
 </div>
 
@@ -488,7 +514,7 @@
                 await auth.signInWithEmailAndPassword(e, p);
             }
         } catch(err) {
-            // Enhanced Error Handling for iPhone
+            // Enhanced Error Handling
             alert("خطأ: " + err.message);
             document.getElementById('authMsg').innerText = err.message;
         }
@@ -516,12 +542,12 @@
                 <div class="feed-item">
                     <div class="feed-avatar">${act.userName.charAt(0)}</div>
                     <div class="feed-content">
-                        <div class="feed-header">
+                        <div class="feed-top">
                             <span class="feed-name">${act.userName}</span>
                             <span class="feed-time">${timeAgo}</span>
                         </div>
-                        <div class="feed-details">
-                            سجل <strong>${act.dist} كم</strong> (${act.type})
+                        <div class="feed-action">
+                            سجل <strong>${act.dist} كم</strong> <span style="font-size:11px">(${act.type})</span>
                         </div>
                     </div>
                 </div>`;
@@ -596,7 +622,7 @@
         box.innerText = `${greeting} يا ${name}!\n${advice}`;
     }
 
-    // 5. UI UPDATES
+    // 5. UI UPDATES (HEATMAP & LOGS)
     function updateUI() {
         document.getElementById('headerGreeting').innerText = `أهلاً، ${(userData.name||'').split(' ')[0]}`;
         
@@ -617,6 +643,21 @@
         document.getElementById('weekTotal').innerText = wDist.toFixed(1);
         document.getElementById('monthTotal').innerText = mDist.toFixed(1);
 
+        // Heatmap Logic
+        const heatContainer = document.getElementById('weekHeatmap');
+        heatContainer.innerHTML = "";
+        const days = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س'];
+        const todayIdx = new Date().getDay();
+        // Generate last 7 days
+        for(let i=6; i>=0; i--) {
+            const d = new Date(); d.setDate(d.getDate() - i);
+            const dateStr = d.toISOString().split('T')[0];
+            const didRun = (userData.runs||[]).some(r => r.date === dateStr);
+            const activeClass = didRun ? 'active' : '';
+            heatContainer.innerHTML += `<div class="heatmap-day ${activeClass}">${days[d.getDay()]}</div>`;
+        }
+
+        // Render Logs
         const logContainer = document.getElementById('activityLogList');
         logContainer.innerHTML = "";
         let maxDist = 0; (userData.runs||[]).forEach(r => { if(r.dist > maxDist) maxDist = r.dist; });
@@ -634,6 +675,7 @@
                 </div>
             </div>`;
         });
+        drawDualChart();
     }
 
     // 6. ACTIONS
@@ -714,6 +756,19 @@
     function toggleChallenge() { document.getElementById('chBody').classList.toggle('open'); document.getElementById('chChevron').classList.toggle('rotate'); }
     function switchCalcTab(t) { document.querySelectorAll('.calc-view').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.calc-tab').forEach(e=>e.classList.remove('active')); document.getElementById('calc-'+t).classList.add('active'); event.target.classList.add('active'); }
     
+    // Chart
+    function drawDualChart() {
+        const svg = document.getElementById('dualChart');
+        const data = (userData.runs||[]).slice(0, 10).reverse();
+        if(data.length < 2) { svg.innerHTML = ''; return; }
+        const dists = data.map(r => parseFloat(r.dist));
+        const speeds = data.map(r => r.time ? (r.dist/(r.time/60)) : 0);
+        const maxD = Math.max(...dists, 1), maxS = Math.max(...speeds, 1);
+        const pointsD = dists.map((v, i) => `${(i/(data.length-1))*100},${50-((v/maxD)*40)-5}`).join(' ');
+        const pointsS = speeds.map((v, i) => `${(i/(data.length-1))*100},${50-((v/maxS)*40)-5}`).join(' ');
+        svg.innerHTML = `<polyline points="${pointsD}" class="line-dist"/><polyline points="${pointsS}" class="line-speed"/>`;
+    }
+
     // Quick Calcs
     function quickPace() { let d=parseFloat(document.getElementById('calcDist').value), t=parseFloat(document.getElementById('calcTime').value); if(d&&t){ let p=t/d, pm=Math.floor(p), ps=Math.round((p-pm)*60); document.querySelector('#paceRes .result-val').innerText=`${pm}:${ps<10?'0'+ps:ps}`; document.getElementById('paceRes').style.display='block'; } }
     function predictRace() { let d1=parseFloat(document.getElementById('predBaseDist').value), t1=parseFloat(document.getElementById('predTime').value); if(t1) { let p=(d2)=> { let t=t1*Math.pow((d2/d1),1.06); return `${Math.floor(t/60)}س ${Math.round(t%60)}د`; }; document.getElementById('predRes').innerHTML = `10k: <b>${p(10)}</b><br>Half: <b>${p(21.1)}</b><br>Full: <b>${p(42.2)}</b>`; document.getElementById('predRes').style.display='block'; } }

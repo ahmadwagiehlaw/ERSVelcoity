@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ERS Velocity V2.1</title>
+    <title>ERS Velocity V2.2</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
@@ -16,15 +16,17 @@
     <style>
         :root {
             --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.8);
+            --card-bg: rgba(30, 41, 59, 0.85);
             --glass-bg: rgba(15, 23, 42, 0.95);
             --primary: #22c55e;
+            --primary-glow: rgba(34, 197, 94, 0.4);
             --secondary: #3b82f6;
             --accent: #f59e0b;
+            --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: rgba(255,255,255,0.08);
-            --header-height: 85px;
+            --header-height: 65px; /* تم الضغط */
         }
 
         body.light-mode {
@@ -45,36 +47,69 @@
             display: flex; justify-content: center;
             min-height: 100vh;
             padding-bottom: 110px;
-            padding-top: calc(var(--header-height) + env(safe-area-inset-top) + 10px);
+            /* ضبط المسافة العلوية بدقة */
+            padding-top: calc(var(--header-height) + env(safe-area-inset-top) + 15px);
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .app-container { width: 100%; max-width: 480px; padding: 0 20px; box-sizing: border-box; }
+        .app-container { width: 100%; max-width: 480px; padding: 0 15px; box-sizing: border-box; }
 
-        /* HEADER */
+        /* HEADER (COMPACT) */
         header {
             position: fixed; top: 0; left: 0; right: 0;
             height: calc(var(--header-height) + env(safe-area-inset-top));
             background: var(--glass-bg);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
-            display: flex; align-items: flex-end; padding-bottom: 10px;
+            display: flex; align-items: flex-end; padding-bottom: 8px;
             justify-content: center; z-index: 1000;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
         .header-content { width: 100%; max-width: 480px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; height: var(--header-height); }
         .header-info { text-align: right; }
-        .date-badge { font-size: 11px; color: var(--text-muted); }
-        .welcome-msg { font-size: 17px; font-weight: 800; }
+        .date-badge { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .welcome-msg { font-size: 16px; font-weight: 800; margin-top: 2px; }
         .welcome-msg span { color: var(--primary); }
-        .logo-img { height: 60px; width: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25)); display: block; }
+        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); display: block; }
 
         /* CARDS */
-        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); animation: slideUp 0.4s ease-out; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); animation: slideUp 0.4s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOG ACCORDION (Restored) */
+        /* AUTH SCREEN */
+        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; text-align: center; }
+        .auth-box { width: 100%; max-width: 400px; background: var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid var(--border-color); }
+
+        /* ADMIN EDIT BUTTON */
+        .admin-edit-btn {
+            background: rgba(255,255,255,0.2); width: 25px; height: 25px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            cursor: pointer; margin-right: 8px; vertical-align: middle;
+            display: none; /* Hidden by default */
+        }
+
+        /* TEAM UI */
+        .leaderboard-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        .rank { width: 30px; font-weight: 800; font-size: 16px; color: var(--text-muted); text-align: center; }
+        .rank.top1 { color: #fbbf24; font-size: 20px; } 
+        .rank.top2 { color: #94a3b8; font-size: 18px; }
+        .rank.top3 { color: #b45309; font-size: 18px; }
+        .user-info { flex: 1; margin-right: 10px; }
+        .user-name { font-weight: bold; }
+        .user-stats { font-size: 11px; color: var(--text-muted); }
+        .total-km { font-weight: 800; color: var(--primary); }
+
+        /* GENERAL INPUTS */
+        label { display: block; margin: 12px 0 6px 0; color: var(--text-muted); font-size: 13px; font-weight: 600; }
+        input, select { width: 100%; padding: 14px; background: rgba(125,125,125,0.08); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 16px; font-weight: 500; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--primary); background: rgba(125,125,125,0.12); }
+        .btn { width: 100%; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 16px; border: none; cursor: pointer; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px var(--primary-glow); }
+        .btn-secondary { background: var(--secondary); color: white; }
+        
+        /* LOG STYLES */
         .log-accordion { background: rgba(125,125,125,0.05); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s ease; }
         .log-acc-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: rgba(0,0,0,0.1); }
         .log-acc-title { font-weight: 800; font-size: 15px; display: flex; align-items: center; gap: 8px; }
@@ -82,65 +117,22 @@
         .log-acc-body.open { max-height: 600px; padding: 20px; }
         .log-toggle-icon { transition: transform 0.3s; }
         .log-toggle-icon.rotate { transform: rotate(180deg); }
-
-        /* CHART (Restored) */
-        .chart-wrapper { padding: 10px 0; position: relative; }
-        .chart-container { height: 140px; width: 100%; border-left: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; }
-        .chart-svg { width: 100%; height: 100%; overflow: visible; }
-        .line-dist { fill: none; stroke: var(--primary); stroke-width: 3; stroke-linecap: round; }
-        .line-speed { fill: none; stroke: var(--secondary); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 4; }
-        .chart-legend { display: flex; gap: 15px; justify-content: center; margin-top: 10px; font-size: 11px; }
-        .legend-item { display: flex; align-items: center; gap: 5px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
-
-        /* LOG ITEMS */
         .log-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
-        .log-item.best-dist::before { content:''; position:absolute; right:0; top:0; bottom:0; width:4px; background:var(--accent); }
-        .log-item.best-speed::before { content:''; position:absolute; right:0; top:0; bottom:0; width:4px; background:var(--secondary); }
-        .log-main { flex: 1; }
-        .log-dist { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-        .log-meta { font-size: 11px; color: var(--text-muted); display: flex; gap: 10px; margin-top: 4px; }
-        .badge { font-size: 10px; padding: 2px 6px; border-radius: 6px; border: 1px solid; }
-        .badge-gold { background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.3); }
-        .badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; border-color: rgba(59,130,246,0.3); }
+        
+        /* DATE FIX */
+        .date-row { display: flex; gap: 10px; align-items: stretch; width: 100%; }
+        .date-input-container { flex: 1; min-width: 0; position: relative; }
+        #logDate { width: 100%; text-align: center; font-weight: bold; -webkit-appearance: none; min-width: 0; }
+        .yesterday-btn { width: 70px; flex-shrink: 0; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 12px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* TEAM LEADERBOARD */
-        .leaderboard-row { display: flex; align-items: center; padding: 12px; background: rgba(255,255,255,0.03); margin-bottom: 8px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .leaderboard-row.me { border-color: var(--primary); background: rgba(34, 197, 94, 0.05); }
-        .rank { width: 30px; font-weight: 800; font-size: 16px; color: var(--text-muted); text-align: center; }
-        .rank.top1 { color: #fbbf24; font-size: 20px; } 
-        .rank.top2 { color: #94a3b8; font-size: 18px; }
-        .rank.top3 { color: #b45309; font-size: 18px; }
-        .user-info { flex: 1; margin-right: 10px; }
-        .user-name { font-weight: bold; font-size: 14px; }
-        .user-stats { font-size: 11px; color: var(--text-muted); }
-        .total-km { font-weight: 800; color: var(--primary); font-size: 15px; }
-
-        /* AUTH SCREEN */
-        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; text-align: center; }
-        .auth-box { width: 100%; max-width: 400px; background: var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid var(--border-color); }
-
-        /* INPUTS & GENERAL */
-        label { display: block; margin: 15px 0 8px 0; color: var(--text-muted); font-size: 13px; font-weight: 600; }
-        input, select { width: 100%; padding: 16px; background: rgba(125,125,125,0.08); border: 1px solid var(--border-color); border-radius: 14px; color: var(--text-main); font-size: 16px; font-weight: 500; box-sizing: border-box; outline: none; }
-        input:focus { border-color: var(--primary); background: rgba(125,125,125,0.12); }
-        .btn { width: 100%; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 16px; border: none; cursor: pointer; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.1s; }
-        .btn:active { transform: scale(0.98); }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px var(--primary-glow); }
-        .btn-secondary { background: var(--secondary); color: white; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         .stat-box { background: rgba(125,125,125,0.08); padding: 15px; border-radius: 16px; text-align: center; }
         .stat-val { font-size: 24px; font-weight: 800; }
 
-        /* FLOATING BUTTONS */
-        .float-btns { position: fixed; bottom: 110px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
-        .float-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); cursor: pointer; }
-
         /* NAV */
-        .bottom-nav { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 440px; background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--border-color); border-radius: 24px; display: flex; justify-content: space-around; padding: 14px 0; box-shadow: 0 15px 40px rgba(0,0,0,0.4); z-index: 999; }
+        .bottom-nav { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 440px; background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--border-color); border-radius: 24px; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 15px 40px rgba(0,0,0,0.4); z-index: 999; }
         .nav-item { color: var(--text-muted); text-align: center; font-size: 11px; cursor: pointer; width: 20%; font-weight: 500; transition: 0.3s; }
-        .nav-item i { display: block; font-size: 24px; margin-bottom: 4px; }
+        .nav-item i { display: block; font-size: 24px; margin-bottom: 3px; }
         .nav-item.active { color: var(--primary); transform: translateY(-3px); }
 
         .view-section { display: none; }
@@ -150,24 +142,24 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--bg-color); width: 85%; max-width: 400px; padding: 25px; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); max-height: 85vh; overflow-y: auto; }
         
-        /* CALCULATOR TABS (Inside Modal) */
-        .calc-tabs { display: flex; background: rgba(0,0,0,0.2); border-radius: 14px; padding: 5px; margin-bottom: 20px; }
-        .calc-tab { flex: 1; text-align: center; padding: 10px; font-size: 13px; color: var(--text-muted); border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .calc-tab.active { background: var(--card-bg); color: var(--primary); }
-        .calc-view { display: none; }
-        .calc-view.active { display: block; animation: fadeIn 0.3s; }
-        .result-display { text-align: center; margin-top: 15px; padding: 10px; background: rgba(125,125,125,0.08); border-radius: 12px; display: none; }
-        .result-val { font-size: 32px; font-weight: 900; color: var(--primary); }
+        /* CREDITS */
+        .credits-box { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border-color); font-size: 12px; line-height: 1.8; color: var(--text-muted); }
+        .credits-box strong { color: var(--primary); display: block; margin-bottom: 2px; font-size: 13px; }
         
-        /* Date Fix for iPhone */
-        .date-row { display: flex; gap: 10px; align-items: stretch; width: 100%; }
-        .date-input-container { flex: 1; min-width: 0; position: relative; }
-        #logDate { width: 100%; text-align: center; font-weight: bold; -webkit-appearance: none; min-width: 0; }
-        .yesterday-btn { width: 70px; flex-shrink: 0; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 14px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        
+        /* FLOATERS */
+        .float-btns { position: fixed; bottom: 100px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 900; }
+        .float-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); cursor: pointer; }
+
         /* Challenge Bar */
         .prog-track { height: 12px; background: rgba(0,0,0,0.25); border-radius: 10px; overflow: hidden; margin-top: 10px; }
         .prog-fill { height: 100%; background: var(--accent); width: 0%; border-radius: 10px; transition: width 1s; }
+        
+        /* Dual Chart */
+        .chart-wrapper { padding: 10px 0; position: relative; }
+        .chart-container { height: 120px; width: 100%; border-left: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .chart-svg { width: 100%; height: 100%; overflow: visible; }
+        .line-dist { fill: none; stroke: var(--primary); stroke-width: 3; stroke-linecap: round; }
+        .line-speed { fill: none; stroke: var(--secondary); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 4; }
     </style>
 </head>
 <body>
@@ -201,7 +193,10 @@
         <div id="view-dashboard" class="view-section active">
             <div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--primary);">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin:0; font-size: 15px; color: var(--primary);"><i class="ri-flag-2-fill"></i> تحدي الفريق الجماعي</h3>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span id="adminEditBtn" class="admin-edit-btn" onclick="adminEditChallenge()"><i class="ri-pencil-fill" style="font-size:14px; color:#fff;"></i></span>
+                        <h3 style="margin:0; font-size: 15px; color: var(--primary);" id="teamChallengeTitle">تحدي الفريق</h3>
+                    </div>
                     <span style="font-size: 12px; color: var(--text-muted);" id="teamGoalText">...</span>
                 </div>
                 <div class="prog-track"><div class="prog-fill" id="teamProgressBar" style="width: 0%;"></div></div>
@@ -228,7 +223,6 @@
         </div>
 
         <div id="view-log" class="view-section">
-            
             <div class="log-accordion">
                 <div class="log-acc-header" onclick="toggleLogForm()">
                     <div class="log-acc-title"><i class="ri-add-circle-fill" style="color:var(--primary); font-size:20px;"></i> تسجيل جرية</div>
@@ -261,10 +255,6 @@
                 <div class="chart-wrapper">
                     <div class="chart-container">
                         <svg class="chart-svg" id="dualChart" viewBox="0 0 100 50" preserveAspectRatio="none"></svg>
-                    </div>
-                    <div class="chart-legend">
-                        <div class="legend-item"><div class="dot" style="background:var(--primary)"></div> مسافة</div>
-                        <div class="legend-item"><div class="dot" style="background:var(--secondary)"></div> سرعة</div>
                     </div>
                 </div>
             </div>
@@ -307,31 +297,12 @@
 <div id="toolsModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
     <div class="modal-content">
         <h3 style="margin-top:0;">🧰 أدوات العداء</h3>
-        <div class="calc-tabs">
-            <div class="calc-tab active" onclick="switchCalcTab('pace')">Pace</div>
-            <div class="calc-tab" onclick="switchCalcTab('predict')">توقعات</div>
-            <div class="calc-tab" onclick="switchCalcTab('hr')">نبض</div>
+        <div class="grid-2">
+            <input type="number" id="calcDist" placeholder="مسافة (كم)">
+            <input type="number" id="calcTime" placeholder="زمن (دقيقة)">
         </div>
-
-        <div id="calc-pace" class="calc-view active">
-            <label>المسافة (كم)</label><input type="number" id="calcDist" placeholder="10">
-            <div class="grid-2"><div><label style="margin-top:0">س</label><input type="number" id="calcHrs"></div><div><label style="margin-top:0">د</label><input type="number" id="calcMins"></div></div>
-            <button class="btn btn-primary" onclick="calculatePace()">احسب</button>
-            <div id="paceResult" class="result-display"><div class="result-val">00:00</div>/km</div>
-        </div>
-
-        <div id="calc-predict" class="calc-view">
-            <label>مسافة حديثة</label><select id="predBaseDist"><option value="5">5 كم</option><option value="10">10 كم</option></select>
-            <label>الزمن (د)</label><input type="number" id="predTime">
-            <button class="btn btn-primary" onclick="predictRace()">توقع</button>
-            <div id="predResult" class="result-display" style="text-align:right; font-size:14px;"></div>
-        </div>
-
-        <div id="calc-hr" class="calc-view">
-            <label>العمر</label><input type="number" id="hrAge">
-            <button class="btn btn-primary" onclick="calcZones()">احسب</button>
-            <div id="hrResult" class="result-display" style="text-align:right; font-size:14px;"></div>
-        </div>
+        <button class="btn btn-primary" onclick="quickPaceCalc()">حساب السرعة</button>
+        <div id="quickResult" class="result-display" style="text-align:center; font-size:24px; font-weight:bold; color:var(--primary); margin-top:15px;"></div>
     </div>
 </div>
 
@@ -339,7 +310,20 @@
     <div class="modal-content">
         <h3>الإعدادات</h3>
         <button class="btn btn-outline" onclick="document.body.classList.toggle('light-mode')">تغيير المظهر 🌓</button>
-        <p style="font-size:11px; margin-top:20px; opacity:0.6;">ERS Velocity V2.1 Cloud</p>
+        
+        <h4 style="margin:20px 0 10px 0; font-size:14px; color:var(--secondary);">إدارة البيانات</h4>
+        <div class="grid-2">
+            <button class="btn btn-outline" style="margin-top:0; font-size:13px;" onclick="exportData()">💾 تصدير JSON</button>
+            <button class="btn btn-outline" style="margin-top:0; font-size:13px;" onclick="document.getElementById('importFile').click()">📂 استيراد</button>
+            <input type="file" id="importFile" style="display:none" onchange="importData(this)">
+        </div>
+
+        <div class="credits-box">
+            <strong>جميع الحقوق محفوظة لفريق ERS ©</strong>
+            تصميم وبرمجة: كوتش أحمد وجيه<br>
+            للتواصل والاقتراحات واتساب:<br>
+            <a href="https://wa.me/201503017017" style="color:var(--text-main); text-decoration:none;">01503017017</a>
+        </div>
     </div>
 </div>
 
@@ -371,13 +355,16 @@
 
     let currentUser = null;
     let userData = { profile: { name: "", goalType: "fitness" }, runs: [], totalDistMonth: 0 };
+    // Default challenge if not fetched
+    let teamChallenge = { title: "تحدي الفريق", goal: 2000 };
 
-    // --- AUTH LOGIC ---
+    // --- AUTH ---
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('app-content').style.display = 'block';
+            checkAdmin(); // Check if admin
             loadUserData();
             loadTeamStats();
         } else {
@@ -400,7 +387,29 @@
     }
     function logout() { auth.signOut(); }
 
-    // --- DATA SYNC ---
+    // --- ADMIN LOGIC ---
+    function checkAdmin() {
+        if(currentUser.email === 'ahmad.wagieh@gmail.com') {
+            document.getElementById('adminEditBtn').style.display = 'inline-flex';
+        }
+    }
+
+    async function adminEditChallenge() {
+        const newTitle = prompt("عنوان التحدي الجديد:", teamChallenge.title);
+        const newGoal = prompt("المسافة المستهدفة (كم):", teamChallenge.goal);
+        
+        if(newTitle && newGoal) {
+            // Save to Firestore 'system' collection
+            await db.collection('system').doc('challenge').set({
+                title: newTitle,
+                goal: parseFloat(newGoal)
+            });
+            alert("تم تحديث التحدي لجميع الأعضاء ✅");
+            loadTeamStats(); // refresh
+        }
+    }
+
+    // --- DATA & SYNC ---
     async function loadUserData() {
         const doc = await db.collection('users').doc(currentUser.uid).get();
         if (doc.exists) {
@@ -422,8 +431,17 @@
         updateUI(); loadTeamStats();
     }
 
-    // --- TEAM LOGIC ---
+    // --- TEAM STATS (Dynamic) ---
     async function loadTeamStats() {
+        // 1. Get Challenge Info
+        const chDoc = await db.collection('system').doc('challenge').get();
+        if(chDoc.exists) {
+            teamChallenge = chDoc.data();
+        }
+        document.getElementById('teamChallengeTitle').innerText = teamChallenge.title;
+        document.getElementById('teamGoalText').innerText = `الهدف: ${teamChallenge.goal} كم`;
+
+        // 2. Leaderboard & Total
         const q = await db.collection('users').orderBy('totalDistMonth', 'desc').limit(20).get();
         let html = ''; let rank = 1; let teamTotal = 0;
         
@@ -448,24 +466,21 @@
         });
         document.getElementById('leaderboardList').innerHTML = html;
         
-        // Team Challenge Bar
-        const teamGoal = 5000;
-        const pct = Math.min((teamTotal / teamGoal) * 100, 100);
+        // 3. Update Progress Bar
+        const pct = Math.min((teamTotal / teamChallenge.goal) * 100, 100);
         document.getElementById('teamProgressBar').style.width = pct + "%";
-        document.getElementById('teamProgressText').innerText = `إجمالي الفريق: ${teamTotal.toFixed(0)} / ${teamGoal} كم`;
+        document.getElementById('teamProgressText').innerText = `إجمالي الفريق: ${teamTotal.toFixed(0)} / ${teamChallenge.goal} كم`;
     }
 
-    // --- UI LOGIC ---
+    // --- UI HELPERS ---
     function updateUI() {
-        // Greeting
         const name = userData.profile.name || "كابتن";
         document.getElementById('headerGreeting').innerHTML = `أهلاً، <span>${name.split(' ')[0]}</span>`;
         if(document.getElementById('view-profile').style.display === 'block') {
             document.getElementById('profName').value = userData.profile.name;
             document.getElementById('profGoalType').value = userData.profile.goalType;
         }
-
-        // Stats & Log
+        
         const now = new Date();
         const startW = new Date(now.setDate(now.getDate() - now.getDay()));
         const startM = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
@@ -481,28 +496,20 @@
 
     function renderLogs() {
         const l = document.getElementById('runsList'); l.innerHTML = "";
-        // Find bests
-        let maxDist = 0, minPace = 999;
-        userData.runs.forEach(r => {
-            if(r.dist > maxDist) maxDist = r.dist;
-            if(r.time && r.dist) { const p = r.time/r.dist; if(p<minPace) minPace=p; }
-        });
-
         userData.runs.slice(0, 15).forEach(r => {
-            let paceTxt = "0:00", pVal = 999;
-            if(r.time && r.dist) { pVal = r.time/r.dist; let pm=Math.floor(pVal), ps=Math.round((pVal-pm)*60); paceTxt=`${pm}:${ps<10?'0'+ps:ps}`; }
-            
-            let classes = "log-item"; let badges = "";
-            if(r.dist >= maxDist && maxDist>0) { classes += " best-dist"; badges+=`<span class="badge badge-gold">أطول مسافة</span> `; }
-            if(Math.abs(pVal - minPace)<0.1 && minPace<999) { classes += " best-speed"; badges+=`<span class="badge badge-blue">أسرع بيس</span>`; }
-
+            let paceTxt = "0:00";
+            if(r.time && r.dist) {
+                let p = r.time/r.dist;
+                let pm=Math.floor(p), ps=Math.round((p-pm)*60);
+                paceTxt=`${pm}:${ps<10?'0'+ps:ps}`;
+            }
             l.innerHTML += `
-            <div class="${classes}">
+            <div class="log-item">
                 <div class="log-main">
-                    <div class="log-dist">${r.dist} كم ${badges}</div>
+                    <div class="log-dist">${r.dist} كم</div>
                     <div class="log-meta">
                         <span><i class="ri-time-line"></i> ${r.time}د</span>
-                        <span><i class="ri-speed-line"></i> ${paceTxt}/km</span>
+                        <span><i class="ri-speed-line"></i> ${paceTxt}/كم</span>
                         <span>${r.date.slice(5)}</span>
                     </div>
                 </div>
@@ -517,14 +524,11 @@
         const dists = data.map(r => parseFloat(r.dist));
         const speeds = data.map(r => r.time ? (r.dist/(r.time/60)) : 0);
         const maxD = Math.max(...dists, 1), maxS = Math.max(...speeds, 1);
-        
         const pointsD = dists.map((v, i) => `${(i/(data.length-1))*100},${50-((v/maxD)*40)-5}`).join(' ');
         const pointsS = speeds.map((v, i) => `${(i/(data.length-1))*100},${50-((v/maxS)*40)-5}`).join(' ');
-        
         svg.innerHTML = `<polyline points="${pointsD}" class="line-dist"/><polyline points="${pointsS}" class="line-speed"/>`;
     }
 
-    // --- ACTIONS ---
     function toggleLogForm() {
         document.getElementById('logFormBody').classList.toggle('open');
         document.getElementById('logToggleIcon').classList.toggle('rotate');
@@ -538,7 +542,6 @@
         const type = document.getElementById('logType').value;
         const date = document.getElementById('logDate').value;
         if(!d || !t || !date) return alert("أكمل البيانات");
-        
         userData.runs.unshift({ id: Date.now(), dist: d, time: t, type: type, date: date });
         saveToCloud().then(() => {
             alert("تم الحفظ والمزامنة! 🔥");
@@ -563,37 +566,27 @@
         updateUI();
     }
 
-    // Calculator Utils
-    function switchCalcTab(t) {
-        document.querySelectorAll('.calc-view').forEach(e => e.classList.remove('active'));
-        document.querySelectorAll('.calc-tab').forEach(e => e.classList.remove('active'));
-        document.getElementById('calc-'+t).classList.add('active');
-        event.target.classList.add('active');
-    }
-    function calculatePace() {
-        let d=parseFloat(document.getElementById('calcDist').value), h=parseFloat(document.getElementById('calcHrs').value)||0, m=parseFloat(document.getElementById('calcMins').value)||0;
-        if(d){ let p=((h*60)+m)/d, pm=Math.floor(p), ps=Math.round((p-pm)*60); document.querySelector('#paceResult .result-val').innerText=`${pm}:${ps<10?'0'+ps:ps}`; document.getElementById('paceResult').style.display='block'; }
-    }
-    function predictRace() {
-        let d1=parseFloat(document.getElementById('predBaseDist').value), t1=parseFloat(document.getElementById('predTime').value);
-        if(t1) {
-            let p=(d2)=> { let t=t1*Math.pow((d2/d1),1.06); return `${Math.floor(t/60)}س ${Math.round(t%60)}د`; };
-            document.getElementById('predResult').innerHTML = `10k: <b>${p(10)}</b><br>Half: <b>${p(21.1)}</b><br>Full: <b>${p(42.2)}</b>`;
-            document.getElementById('predResult').style.display='block';
-        }
-    }
-    function calcZones() {
-        let age=parseFloat(document.getElementById('hrAge').value);
-        if(age) {
-            let max=220-age;
-            document.getElementById('hrResult').innerHTML = `Max: <b>${max}</b><br>Zone2: ${Math.round(max*0.6)}-${Math.round(max*0.7)}`;
-            document.getElementById('hrResult').style.display='block';
+    function quickPaceCalc() {
+        let d=parseFloat(document.getElementById('calcDist').value), t=parseFloat(document.getElementById('calcTime').value);
+        if(d&&t) {
+            let p=t/d; let pm=Math.floor(p), ps=Math.round((p-pm)*60);
+            document.getElementById('quickResult').innerText=`${pm}:${ps<10?'0'+ps:ps} /km`;
         }
     }
 
     function openModal(id) { document.getElementById(id).style.display='flex'; }
     
-    // Init
+    // Backup Functions
+    function exportData() {
+        const s = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userData));
+        const a = document.createElement('a'); a.href=s; a.download="ers_cloud_backup.json"; a.click();
+    }
+    function importData(inp) {
+        const r = new FileReader();
+        r.onload = e => { userData = JSON.parse(e.target.result); saveToCloud(); alert("تم استرجاع البيانات ومزامنتها"); };
+        r.readAsText(inp.files[0]);
+    }
+
     document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('ar-EG');
     document.getElementById('logDate').valueAsDate = new Date();
 </script>

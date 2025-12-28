@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ERS Velocity V2.0</title>
+    <title>ERS Velocity V2.1</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
@@ -27,6 +27,16 @@
             --header-height: 85px;
         }
 
+        body.light-mode {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --primary: #15803d;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: rgba(0,0,0,0.06);
+        }
+
         body {
             font-family: 'Tajawal', sans-serif;
             background-color: var(--bg-color);
@@ -35,7 +45,7 @@
             display: flex; justify-content: center;
             min-height: 100vh;
             padding-bottom: 110px;
-            padding-top: calc(var(--header-height) + env(safe-area-inset-top) + 20px);
+            padding-top: calc(var(--header-height) + env(safe-area-inset-top) + 10px);
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
@@ -55,6 +65,7 @@
         }
         .header-content { width: 100%; max-width: 480px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; height: var(--header-height); }
         .header-info { text-align: right; }
+        .date-badge { font-size: 11px; color: var(--text-muted); }
         .welcome-msg { font-size: 17px; font-weight: 800; }
         .welcome-msg span { color: var(--primary); }
         .logo-img { height: 60px; width: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25)); display: block; }
@@ -63,35 +74,68 @@
         .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); animation: slideUp 0.4s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* AUTH SCREEN */
-        #auth-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color); z-index: 2000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 20px; box-sizing: border-box; text-align: center;
-        }
-        .auth-box { width: 100%; max-width: 400px; background: var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid var(--border-color); }
-        
-        /* TEAM TAB STYLES */
-        .leaderboard-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-color); font-size: 14px; align-items: center; }
-        .rank { width: 25px; font-weight: bold; color: var(--accent); }
-        .user-info { flex: 1; text-align: right; display: flex; flex-direction: column; }
-        .user-name { font-weight: bold; color: var(--text-main); }
-        .user-stats { font-size: 11px; color: var(--text-muted); }
-        .total-km { font-weight: 800; color: var(--primary); }
+        /* LOG ACCORDION (Restored) */
+        .log-accordion { background: rgba(125,125,125,0.05); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s ease; }
+        .log-acc-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: rgba(0,0,0,0.1); }
+        .log-acc-title { font-weight: 800; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        .log-acc-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; padding: 0 20px; }
+        .log-acc-body.open { max-height: 600px; padding: 20px; }
+        .log-toggle-icon { transition: transform 0.3s; }
+        .log-toggle-icon.rotate { transform: rotate(180deg); }
 
-        /* GENERAL UI */
-        label { display: block; margin: 15px 0 8px 0; color: var(--text-muted); font-size: 14px; font-weight: 600; }
-        input, select { width: 100%; padding: 16px; background: rgba(125,125,125,0.08); border: 1px solid var(--border-color); border-radius: 14px; color: var(--text-main); font-size: 17px; font-weight: 500; box-sizing: border-box; outline: none; }
+        /* CHART (Restored) */
+        .chart-wrapper { padding: 10px 0; position: relative; }
+        .chart-container { height: 140px; width: 100%; border-left: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; }
+        .chart-svg { width: 100%; height: 100%; overflow: visible; }
+        .line-dist { fill: none; stroke: var(--primary); stroke-width: 3; stroke-linecap: round; }
+        .line-speed { fill: none; stroke: var(--secondary); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 4; }
+        .chart-legend { display: flex; gap: 15px; justify-content: center; margin-top: 10px; font-size: 11px; }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        /* LOG ITEMS */
+        .log-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+        .log-item.best-dist::before { content:''; position:absolute; right:0; top:0; bottom:0; width:4px; background:var(--accent); }
+        .log-item.best-speed::before { content:''; position:absolute; right:0; top:0; bottom:0; width:4px; background:var(--secondary); }
+        .log-main { flex: 1; }
+        .log-dist { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .log-meta { font-size: 11px; color: var(--text-muted); display: flex; gap: 10px; margin-top: 4px; }
+        .badge { font-size: 10px; padding: 2px 6px; border-radius: 6px; border: 1px solid; }
+        .badge-gold { background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.3); }
+        .badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; border-color: rgba(59,130,246,0.3); }
+
+        /* TEAM LEADERBOARD */
+        .leaderboard-row { display: flex; align-items: center; padding: 12px; background: rgba(255,255,255,0.03); margin-bottom: 8px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .leaderboard-row.me { border-color: var(--primary); background: rgba(34, 197, 94, 0.05); }
+        .rank { width: 30px; font-weight: 800; font-size: 16px; color: var(--text-muted); text-align: center; }
+        .rank.top1 { color: #fbbf24; font-size: 20px; } 
+        .rank.top2 { color: #94a3b8; font-size: 18px; }
+        .rank.top3 { color: #b45309; font-size: 18px; }
+        .user-info { flex: 1; margin-right: 10px; }
+        .user-name { font-weight: bold; font-size: 14px; }
+        .user-stats { font-size: 11px; color: var(--text-muted); }
+        .total-km { font-weight: 800; color: var(--primary); font-size: 15px; }
+
+        /* AUTH SCREEN */
+        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; text-align: center; }
+        .auth-box { width: 100%; max-width: 400px; background: var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid var(--border-color); }
+
+        /* INPUTS & GENERAL */
+        label { display: block; margin: 15px 0 8px 0; color: var(--text-muted); font-size: 13px; font-weight: 600; }
+        input, select { width: 100%; padding: 16px; background: rgba(125,125,125,0.08); border: 1px solid var(--border-color); border-radius: 14px; color: var(--text-main); font-size: 16px; font-weight: 500; box-sizing: border-box; outline: none; }
         input:focus { border-color: var(--primary); background: rgba(125,125,125,0.12); }
         .btn { width: 100%; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 16px; border: none; cursor: pointer; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.1s; }
         .btn:active { transform: scale(0.98); }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px var(--primary-glow); }
         .btn-secondary { background: var(--secondary); color: white; }
-        
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         .stat-box { background: rgba(125,125,125,0.08); padding: 15px; border-radius: 16px; text-align: center; }
         .stat-val { font-size: 24px; font-weight: 800; }
+
+        /* FLOATING BUTTONS */
+        .float-btns { position: fixed; bottom: 110px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
+        .float-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); cursor: pointer; }
 
         /* NAV */
         .bottom-nav { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 440px; background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--border-color); border-radius: 24px; display: flex; justify-content: space-around; padding: 14px 0; box-shadow: 0 15px 40px rgba(0,0,0,0.4); z-index: 999; }
@@ -102,12 +146,27 @@
         .view-section { display: none; }
         .view-section.active { display: block; }
         
-        /* Utils */
-        .loader { width: 20px; height: 20px; border: 3px solid #FFF; border-bottom-color: transparent; border-radius: 50%; display: inline-block; box-sizing: border-box; animation: rotation 1s linear infinite; }
-        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* MODALS */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--bg-color); width: 85%; max-width: 400px; padding: 25px; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); max-height: 85vh; overflow-y: auto; }
+        
+        /* CALCULATOR TABS (Inside Modal) */
+        .calc-tabs { display: flex; background: rgba(0,0,0,0.2); border-radius: 14px; padding: 5px; margin-bottom: 20px; }
+        .calc-tab { flex: 1; text-align: center; padding: 10px; font-size: 13px; color: var(--text-muted); border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .calc-tab.active { background: var(--card-bg); color: var(--primary); }
+        .calc-view { display: none; }
+        .calc-view.active { display: block; animation: fadeIn 0.3s; }
+        .result-display { text-align: center; margin-top: 15px; padding: 10px; background: rgba(125,125,125,0.08); border-radius: 12px; display: none; }
+        .result-val { font-size: 32px; font-weight: 900; color: var(--primary); }
+        
+        /* Date Fix for iPhone */
+        .date-row { display: flex; gap: 10px; align-items: stretch; width: 100%; }
+        .date-input-container { flex: 1; min-width: 0; position: relative; }
+        #logDate { width: 100%; text-align: center; font-weight: bold; -webkit-appearance: none; min-width: 0; }
+        .yesterday-btn { width: 70px; flex-shrink: 0; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 14px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
         /* Challenge Bar */
-        .prog-track { height: 14px; background: rgba(0,0,0,0.25); border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        .prog-track { height: 12px; background: rgba(0,0,0,0.25); border-radius: 10px; overflow: hidden; margin-top: 10px; }
         .prog-fill { height: 100%; background: var(--accent); width: 0%; border-radius: 10px; transition: width 1s; }
     </style>
 </head>
@@ -116,15 +175,12 @@
 <div id="auth-screen">
     <div style="margin-bottom: 20px;"><img src="ers-logo.png" style="width: 100px;"></div>
     <div class="auth-box">
-        <h2 style="margin-top: 0;">تسجيل الدخول</h2>
+        <h2 style="margin-top: 0;">ERS Login</h2>
         <p style="color: var(--text-muted); font-size: 14px;">سجل دخولك لتزامن بياناتك مع الفريق</p>
-        
         <input type="email" id="email" placeholder="البريد الإلكتروني">
         <input type="password" id="password" placeholder="كلمة المرور" style="margin-top: 10px;">
-        
         <button class="btn btn-primary" onclick="handleAuth('login')">دخول <i class="ri-login-box-line"></i></button>
         <button class="btn btn-secondary" onclick="handleAuth('signup')" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-main); margin-top: 10px;">إنشاء حساب جديد</button>
-        
         <div id="authMsg" style="margin-top: 15px; font-size: 13px; color: var(--accent);"></div>
     </div>
 </div>
@@ -145,8 +201,8 @@
         <div id="view-dashboard" class="view-section active">
             <div class="card" style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--primary);">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin:0; font-size: 15px; color: var(--primary);"><i class="ri-flag-2-fill"></i> تحدي الفريق لشهر يناير</h3>
-                    <span style="font-size: 12px; color: var(--text-muted);">الهدف: 2000 كم</span>
+                    <h3 style="margin:0; font-size: 15px; color: var(--primary);"><i class="ri-flag-2-fill"></i> تحدي الفريق الجماعي</h3>
+                    <span style="font-size: 12px; color: var(--text-muted);" id="teamGoalText">...</span>
                 </div>
                 <div class="prog-track"><div class="prog-fill" id="teamProgressBar" style="width: 0%;"></div></div>
                 <div style="text-align: right; font-size: 12px; margin-top: 5px;" id="teamProgressText">جاري التحميل...</div>
@@ -164,35 +220,56 @@
 
         <div id="view-team" class="view-section">
             <div class="card">
-                <h3 style="margin-top: 0;"><i class="ri-trophy-line" style="color: var(--accent);"></i> لوحة المتصدرين (الشهر)</h3>
+                <h3 style="margin-top: 0;"><i class="ri-trophy-line" style="color: var(--accent);"></i> لوحة الأبطال (هذا الشهر)</h3>
                 <div id="leaderboardList">
-                    <p style="text-align: center; color: var(--text-muted);">جاري تحميل الأبطال...</p>
+                    <p style="text-align: center; color: var(--text-muted); padding: 20px;">جاري تحميل البيانات...</p>
                 </div>
             </div>
         </div>
 
         <div id="view-log" class="view-section">
-            <div class="card">
-                <h3>📝 تسجيل نشاط</h3>
-                <div class="grid-2">
-                    <div><label>مسافة (كم)</label><input type="number" id="logDist" step="0.1" inputmode="decimal"></div>
-                    <div><label>زمن (دقيقة)</label><input type="number" id="logTime" inputmode="numeric"></div>
+            
+            <div class="log-accordion">
+                <div class="log-acc-header" onclick="toggleLogForm()">
+                    <div class="log-acc-title"><i class="ri-add-circle-fill" style="color:var(--primary); font-size:20px;"></i> تسجيل جرية</div>
+                    <i class="ri-arrow-down-s-line log-toggle-icon" id="logToggleIcon"></i>
                 </div>
-                <label>نوع التمرين</label>
-                <select id="logType">
-                    <option value="easy">Easy Run</option>
-                    <option value="long">Long Run</option>
-                    <option value="tempo">Tempo</option>
-                    <option value="race">Race</option>
-                </select>
-                <label>التاريخ</label>
-                <input type="date" id="logDate">
-                <button class="btn btn-primary" onclick="addRun()">حفظ ومزامنة ☁️</button>
+                <div class="log-acc-body" id="logFormBody">
+                    <div class="grid-2">
+                        <div><label>مسافة (كم)</label><input type="number" id="logDist" step="0.1" inputmode="decimal"></div>
+                        <div><label>زمن (دقيقة)</label><input type="number" id="logTime" inputmode="numeric"></div>
+                    </div>
+                    <label>نوع التمرين</label>
+                    <select id="logType">
+                        <option value="easy">Easy Run</option>
+                        <option value="long">Long Run</option>
+                        <option value="tempo">Tempo</option>
+                        <option value="interval">Intervals</option>
+                        <option value="race">Race</option>
+                    </select>
+                    <label>التاريخ</label>
+                    <div class="date-row">
+                        <div class="date-input-container"><input type="date" id="logDate"></div>
+                        <button class="yesterday-btn" onclick="setYesterday()">أمس</button>
+                    </div>
+                    <button class="btn btn-primary" onclick="addRun()">حفظ ومزامنة ☁️</button>
+                </div>
             </div>
-            <div class="card">
-                <h4>سجلي (آخر 10)</h4>
-                <div id="runsList"></div>
+
+            <div class="card" style="padding:15px;">
+                <div style="font-size:13px; font-weight:bold; margin-bottom:10px; color:var(--text-muted);">📈 التقدم (مسافة vs سرعة)</div>
+                <div class="chart-wrapper">
+                    <div class="chart-container">
+                        <svg class="chart-svg" id="dualChart" viewBox="0 0 100 50" preserveAspectRatio="none"></svg>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item"><div class="dot" style="background:var(--primary)"></div> مسافة</div>
+                        <div class="legend-item"><div class="dot" style="background:var(--secondary)"></div> سرعة</div>
+                    </div>
+                </div>
             </div>
+
+            <div id="runsList"></div>
         </div>
 
         <div id="view-profile" class="view-section">
@@ -212,6 +289,12 @@
 
     </div>
 
+    <div class="float-btns">
+        <div class="float-btn" onclick="openModal('toolsModal')"><i class="ri-calculator-line" style="color:var(--secondary);"></i></div>
+        <div class="float-btn" onclick="openModal('tipsModal')"><i class="ri-lightbulb-flash-line" style="color:var(--accent);"></i></div>
+        <div class="float-btn" onclick="openModal('settingsModal')"><i class="ri-settings-3-line"></i></div>
+    </div>
+
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchView('dashboard')"><i class="ri-dashboard-line"></i><span>الرئيسية</span></div>
         <div class="nav-item" onclick="switchView('team')"><i class="ri-team-line"></i><span>الفريق</span></div>
@@ -221,12 +304,58 @@
 
 </div>
 
+<div id="toolsModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+    <div class="modal-content">
+        <h3 style="margin-top:0;">🧰 أدوات العداء</h3>
+        <div class="calc-tabs">
+            <div class="calc-tab active" onclick="switchCalcTab('pace')">Pace</div>
+            <div class="calc-tab" onclick="switchCalcTab('predict')">توقعات</div>
+            <div class="calc-tab" onclick="switchCalcTab('hr')">نبض</div>
+        </div>
+
+        <div id="calc-pace" class="calc-view active">
+            <label>المسافة (كم)</label><input type="number" id="calcDist" placeholder="10">
+            <div class="grid-2"><div><label style="margin-top:0">س</label><input type="number" id="calcHrs"></div><div><label style="margin-top:0">د</label><input type="number" id="calcMins"></div></div>
+            <button class="btn btn-primary" onclick="calculatePace()">احسب</button>
+            <div id="paceResult" class="result-display"><div class="result-val">00:00</div>/km</div>
+        </div>
+
+        <div id="calc-predict" class="calc-view">
+            <label>مسافة حديثة</label><select id="predBaseDist"><option value="5">5 كم</option><option value="10">10 كم</option></select>
+            <label>الزمن (د)</label><input type="number" id="predTime">
+            <button class="btn btn-primary" onclick="predictRace()">توقع</button>
+            <div id="predResult" class="result-display" style="text-align:right; font-size:14px;"></div>
+        </div>
+
+        <div id="calc-hr" class="calc-view">
+            <label>العمر</label><input type="number" id="hrAge">
+            <button class="btn btn-primary" onclick="calcZones()">احسب</button>
+            <div id="hrResult" class="result-display" style="text-align:right; font-size:14px;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="settingsModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+    <div class="modal-content">
+        <h3>الإعدادات</h3>
+        <button class="btn btn-outline" onclick="document.body.classList.toggle('light-mode')">تغيير المظهر 🌓</button>
+        <p style="font-size:11px; margin-top:20px; opacity:0.6;">ERS Velocity V2.1 Cloud</p>
+    </div>
+</div>
+
+<div id="tipsModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+    <div class="modal-content">
+        <h3>💡 تنويهات الفريق</h3>
+        <p style="font-size:14px; color:var(--text-muted); line-height:1.6;">تأكد من تسجيل اسمك في البروفايل ليظهر في لوحة المتصدرين. يتم تحديث الترتيب تلقائياً.</p>
+    </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <script>
-    // --- 1. FIREBASE CONFIG ---
+    // --- FIREBASE SETUP ---
     const firebaseConfig = {
         apiKey: "AIzaSyAJJC_wke6sQ4YvtFfdLpepWXQy72NUAlM",
         authDomain: "ers-velocity.firebaseapp.com",
@@ -236,21 +365,14 @@
         appId: "1:135031470762:web:c6ad1a7aca0d1cee93eed3",
         measurementId: "G-3K07YXWQEN"
     };
-
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // --- 2. STATE MANAGEMENT ---
     let currentUser = null;
-    let userData = {
-        profile: { name: "", goalType: "fitness" },
-        runs: [],
-        totalDistMonth: 0
-    };
+    let userData = { profile: { name: "", goalType: "fitness" }, runs: [], totalDistMonth: 0 };
 
-    // --- 3. AUTH & INIT LOGIC ---
+    // --- AUTH LOGIC ---
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
@@ -267,31 +389,18 @@
     async function handleAuth(type) {
         const email = document.getElementById('email').value;
         const pass = document.getElementById('password').value;
-        const msg = document.getElementById('authMsg');
-        
         try {
             if (type === 'signup') {
                 await auth.createUserWithEmailAndPassword(email, pass);
-                // Create initial doc
                 await db.collection('users').doc(auth.currentUser.uid).set({
-                    email: email,
-                    totalDistMonth: 0,
-                    runs: [],
-                    profile: { name: "كابتن جديد", goalType: "fitness" }
+                    email: email, totalDistMonth: 0, runs: [], profile: { name: "كابتن جديد", goalType: "fitness" }
                 });
-            } else {
-                await auth.signInWithEmailAndPassword(email, pass);
-            }
-        } catch (error) {
-            msg.innerText = "خطأ: " + error.message;
-        }
+            } else { await auth.signInWithEmailAndPassword(email, pass); }
+        } catch (error) { document.getElementById('authMsg').innerText = "خطأ: " + error.message; }
     }
+    function logout() { auth.signOut(); }
 
-    function logout() {
-        auth.signOut();
-    }
-
-    // --- 4. DATA SYNC ---
+    // --- DATA SYNC ---
     async function loadUserData() {
         const doc = await db.collection('users').doc(currentUser.uid).get();
         if (doc.exists) {
@@ -303,70 +412,63 @@
     }
 
     async function saveToCloud() {
-        // Calculate totals for leaderboard
         const now = new Date();
         const startM = new Date(now.getFullYear(), now.getMonth(), 1);
         const totalDist = userData.runs.filter(r => new Date(r.date) >= startM).reduce((s,r) => s + parseFloat(r.dist), 0);
         
         await db.collection('users').doc(currentUser.uid).update({
-            profile: userData.profile,
-            runs: userData.runs,
-            totalDistMonth: totalDist // Important for leaderboard
+            profile: userData.profile, runs: userData.runs, totalDistMonth: totalDist
         });
-        updateUI();
-        loadTeamStats(); // Refresh leaderboard
+        updateUI(); loadTeamStats();
     }
 
-    // --- 5. TEAM FEATURES ---
+    // --- TEAM LOGIC ---
     async function loadTeamStats() {
-        // 1. Leaderboard
-        const q = await db.collection('users').orderBy('totalDistMonth', 'desc').limit(10).get();
-        let html = '';
-        let rank = 1;
-        let teamTotal = 0;
-
+        const q = await db.collection('users').orderBy('totalDistMonth', 'desc').limit(20).get();
+        let html = ''; let rank = 1; let teamTotal = 0;
+        
         q.forEach(doc => {
             const u = doc.data();
-            teamTotal += (u.totalDistMonth || 0); // Simple sum of top 10 (For real total need aggregation)
+            teamTotal += (u.totalDistMonth || 0);
             const name = u.profile.name || "مجهول";
+            const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+            const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+            const isMe = doc.id === currentUser.uid ? 'me' : '';
+            
             html += `
-            <div class="leaderboard-row">
-                <div class="rank">#${rank++}</div>
+            <div class="leaderboard-row ${isMe}">
+                <div class="rank ${rankClass}">${medal}</div>
                 <div class="user-info">
-                    <span class="user-name">${name}</span>
-                    <span class="user-stats">هدف: ${u.profile.goalType}</span>
+                    <div class="user-name">${name}</div>
+                    <div class="user-stats">${u.profile.goalType}</div>
                 </div>
                 <div class="total-km">${(u.totalDistMonth || 0).toFixed(1)} كم</div>
             </div>`;
+            rank++;
         });
         document.getElementById('leaderboardList').innerHTML = html;
-
-        // 2. Team Challenge (Fake aggregation for now, real one requires Cloud Functions)
-        // Let's assume we fetch a 'stats' doc or just sum client side for MVP
-        // For MVP V2.0: We'll set a static goal and sum the top users for display
-        const teamGoal = 2000; 
+        
+        // Team Challenge Bar
+        const teamGoal = 5000;
         const pct = Math.min((teamTotal / teamGoal) * 100, 100);
         document.getElementById('teamProgressBar').style.width = pct + "%";
-        document.getElementById('teamProgressText').innerText = `${teamTotal.toFixed(0)} / ${teamGoal} كم (أعلى 10)`;
+        document.getElementById('teamProgressText').innerText = `إجمالي الفريق: ${teamTotal.toFixed(0)} / ${teamGoal} كم`;
     }
 
-    // --- 6. CORE LOGIC ---
+    // --- UI LOGIC ---
     function updateUI() {
         // Greeting
         const name = userData.profile.name || "كابتن";
-        document.getElementById('headerGreeting').innerHTML = `أهلاً، <span>${name}</span>`;
-        
-        // Populate inputs
+        document.getElementById('headerGreeting').innerHTML = `أهلاً، <span>${name.split(' ')[0]}</span>`;
         if(document.getElementById('view-profile').style.display === 'block') {
             document.getElementById('profName').value = userData.profile.name;
             document.getElementById('profGoalType').value = userData.profile.goalType;
         }
 
-        // Stats
+        // Stats & Log
         const now = new Date();
         const startW = new Date(now.setDate(now.getDate() - now.getDay()));
         const startM = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-        
         const wDist = userData.runs.filter(r => new Date(r.date) >= startW).reduce((s,r) => s+parseFloat(r.dist), 0);
         const mDist = userData.runs.filter(r => new Date(r.date) >= startM).reduce((s,r) => s+parseFloat(r.dist), 0);
         
@@ -374,21 +476,73 @@
         document.getElementById('monthDist').innerText = mDist.toFixed(1);
 
         renderLogs();
+        drawDualChart();
     }
+
+    function renderLogs() {
+        const l = document.getElementById('runsList'); l.innerHTML = "";
+        // Find bests
+        let maxDist = 0, minPace = 999;
+        userData.runs.forEach(r => {
+            if(r.dist > maxDist) maxDist = r.dist;
+            if(r.time && r.dist) { const p = r.time/r.dist; if(p<minPace) minPace=p; }
+        });
+
+        userData.runs.slice(0, 15).forEach(r => {
+            let paceTxt = "0:00", pVal = 999;
+            if(r.time && r.dist) { pVal = r.time/r.dist; let pm=Math.floor(pVal), ps=Math.round((pVal-pm)*60); paceTxt=`${pm}:${ps<10?'0'+ps:ps}`; }
+            
+            let classes = "log-item"; let badges = "";
+            if(r.dist >= maxDist && maxDist>0) { classes += " best-dist"; badges+=`<span class="badge badge-gold">أطول مسافة</span> `; }
+            if(Math.abs(pVal - minPace)<0.1 && minPace<999) { classes += " best-speed"; badges+=`<span class="badge badge-blue">أسرع بيس</span>`; }
+
+            l.innerHTML += `
+            <div class="${classes}">
+                <div class="log-main">
+                    <div class="log-dist">${r.dist} كم ${badges}</div>
+                    <div class="log-meta">
+                        <span><i class="ri-time-line"></i> ${r.time}د</span>
+                        <span><i class="ri-speed-line"></i> ${paceTxt}/km</span>
+                        <span>${r.date.slice(5)}</span>
+                    </div>
+                </div>
+            </div>`;
+        });
+    }
+
+    function drawDualChart() {
+        const svg = document.getElementById('dualChart');
+        const data = userData.runs.slice(0, 10).reverse();
+        if(data.length < 2) { svg.innerHTML = ''; return; }
+        const dists = data.map(r => parseFloat(r.dist));
+        const speeds = data.map(r => r.time ? (r.dist/(r.time/60)) : 0);
+        const maxD = Math.max(...dists, 1), maxS = Math.max(...speeds, 1);
+        
+        const pointsD = dists.map((v, i) => `${(i/(data.length-1))*100},${50-((v/maxD)*40)-5}`).join(' ');
+        const pointsS = speeds.map((v, i) => `${(i/(data.length-1))*100},${50-((v/maxS)*40)-5}`).join(' ');
+        
+        svg.innerHTML = `<polyline points="${pointsD}" class="line-dist"/><polyline points="${pointsS}" class="line-speed"/>`;
+    }
+
+    // --- ACTIONS ---
+    function toggleLogForm() {
+        document.getElementById('logFormBody').classList.toggle('open');
+        document.getElementById('logToggleIcon').classList.toggle('rotate');
+    }
+    
+    function setYesterday() { const d = new Date(); d.setDate(d.getDate()-1); document.getElementById('logDate').valueAsDate=d; }
 
     function addRun() {
         const d = parseFloat(document.getElementById('logDist').value);
         const t = parseFloat(document.getElementById('logTime').value);
         const type = document.getElementById('logType').value;
         const date = document.getElementById('logDate').value;
-
         if(!d || !t || !date) return alert("أكمل البيانات");
-
-        const newRun = { id: Date.now(), dist: d, time: t, type: type, date: date };
-        userData.runs.unshift(newRun);
         
+        userData.runs.unshift({ id: Date.now(), dist: d, time: t, type: type, date: date });
         saveToCloud().then(() => {
             alert("تم الحفظ والمزامنة! 🔥");
+            document.getElementById('logFormBody').classList.remove('open');
             switchView('dashboard');
         });
     }
@@ -399,38 +553,49 @@
         saveToCloud().then(() => alert("تم تحديث البروفايل"));
     }
 
-    function renderLogs() {
-        const l = document.getElementById('runsList');
-        l.innerHTML = "";
-        userData.runs.slice(0, 10).forEach(r => {
-            l.innerHTML += `
-            <div style="border-bottom:1px solid rgba(255,255,255,0.1); padding:10px 0; display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <div style="font-weight:bold; color:var(--primary)">${r.dist} كم</div>
-                    <div style="font-size:11px; color:var(--text-muted)">${r.type}</div>
-                </div>
-                <div style="font-size:12px;">${r.date}</div>
-            </div>`;
-        });
-    }
-
     function switchView(v) {
         document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
         document.getElementById('view-'+v).classList.add('active');
-        
-        // Highlight nav
         const map = {'dashboard':0, 'team':1, 'log':2, 'profile':3};
         document.querySelectorAll('.nav-item')[map[v]].classList.add('active');
-        
         if (v === 'team') loadTeamStats();
         updateUI();
     }
 
-    // Init Date
+    // Calculator Utils
+    function switchCalcTab(t) {
+        document.querySelectorAll('.calc-view').forEach(e => e.classList.remove('active'));
+        document.querySelectorAll('.calc-tab').forEach(e => e.classList.remove('active'));
+        document.getElementById('calc-'+t).classList.add('active');
+        event.target.classList.add('active');
+    }
+    function calculatePace() {
+        let d=parseFloat(document.getElementById('calcDist').value), h=parseFloat(document.getElementById('calcHrs').value)||0, m=parseFloat(document.getElementById('calcMins').value)||0;
+        if(d){ let p=((h*60)+m)/d, pm=Math.floor(p), ps=Math.round((p-pm)*60); document.querySelector('#paceResult .result-val').innerText=`${pm}:${ps<10?'0'+ps:ps}`; document.getElementById('paceResult').style.display='block'; }
+    }
+    function predictRace() {
+        let d1=parseFloat(document.getElementById('predBaseDist').value), t1=parseFloat(document.getElementById('predTime').value);
+        if(t1) {
+            let p=(d2)=> { let t=t1*Math.pow((d2/d1),1.06); return `${Math.floor(t/60)}س ${Math.round(t%60)}د`; };
+            document.getElementById('predResult').innerHTML = `10k: <b>${p(10)}</b><br>Half: <b>${p(21.1)}</b><br>Full: <b>${p(42.2)}</b>`;
+            document.getElementById('predResult').style.display='block';
+        }
+    }
+    function calcZones() {
+        let age=parseFloat(document.getElementById('hrAge').value);
+        if(age) {
+            let max=220-age;
+            document.getElementById('hrResult').innerHTML = `Max: <b>${max}</b><br>Zone2: ${Math.round(max*0.6)}-${Math.round(max*0.7)}`;
+            document.getElementById('hrResult').style.display='block';
+        }
+    }
+
+    function openModal(id) { document.getElementById(id).style.display='flex'; }
+    
+    // Init
     document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('ar-EG');
     document.getElementById('logDate').valueAsDate = new Date();
-
 </script>
 </body>
 </html>

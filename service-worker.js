@@ -1,40 +1,42 @@
-// غيرنا الاسم هنا لـ V12 عشان نجبر المتصفح يحمل التحديث الجديد
-const CACHE_NAME = 'ers-velocity-v12-static';
+// ✅ Cache version (غيّر الرقم مع كل تحديث مهم)
+const CACHE_NAME = 'ers-velocity-v13-static';
+
+// ✅ خليك في المحلي فقط عشان install مايفشلش بسبب روابط خارجية
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './ers-logo.png',
-  // ضيف أي ملفات تانية لو عندك صور تانية
-  'https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css',
-  'https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap'
+  './service-worker.js'
 ];
 
-self.addEventListener('install', event => {
-  self.skipWaiting(); // مهم: يخلي التحديث ينزل فوراً
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
 });
 
-self.addEventListener('activate', event => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.map(key => key !== CACHE_NAME ? caches.delete(key) : null)
-    ))
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)))
+    )
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', event => {
-  // استراتيجية: الشبكة أولاً للملف الرئيسي، عشان دايما يشوف آخر تحديث
+self.addEventListener('fetch', (event) => {
+  // ✅ صفحات التنقل: Network-first لضمان آخر نسخة
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
+      fetch(event.request).catch(() => caches.match('./index.html'))
     );
-  } else {
-    event.respondWith(
-      caches.match(event.request).then(res => res || fetch(event.request))
-    );
+    return;
   }
+
+  // ✅ باقي الملفات: Cache-first
+  event.respondWith(
+    caches.match(event.request).then((res) => res || fetch(event.request))
+  );
 });

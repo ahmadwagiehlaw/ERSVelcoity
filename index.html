@@ -467,58 +467,70 @@
             feed.innerHTML = html;
         });
 
-        // Podium
-        db.collection('users').orderBy('totalDistMonth', 'desc').limit(3).onSnapshot(snap => {
-           // ✅ حساب إجمالي الفريق صح (لكل الأعضاء)
-const allSnap = await getDocs(collection(db, 'users'));
-let teamTotal = 0;
-let membersCount = 0;
+        <script>
+/* ================= TEAM & PODIUM FIX ================= */
 
-allSnap.forEach(docu => {
-  const u = docu.data();
-  const v = Number(u.totalDistMonth || 0);
-  teamTotal += v;
-  membersCount += 1;
-});
+function loadTeamStats() {
 
-teamTotalEl.textContent = teamTotal.toFixed(1);
+  // 1️⃣ Podium (Top 3)
+  db.collection('users')
+    .orderBy('totalDistMonth', 'desc')
+    .limit(3)
+    .onSnapshot(snap => {
 
-            
-            const podiumOrder = [users[1], users[0], users[2]];
-            const ranks = [2, 1, 3];
-            podiumOrder.forEach((u, idx) => {
-                const rank = ranks[idx];
-                const crown = rank === 1 ? '<div class="rank-crown"><i class="ri-vip-crown-fill"></i></div>' : '';
-                html += `
-                <div class="podium-item rank-${rank}">
-                    ${crown}
-                    <div class="p-avatar">${u.name ? u.name.charAt(0) : '?'}</div>
-                    <div class="p-name">${u.name || '...'}</div>
-                    <div class="p-val">${(u.totalDistMonth||0).toFixed(1)}</div>
-                </div>`;
-            });
-            container.innerHTML = html;
+      const container = document.getElementById('podiumContainer');
+      container.innerHTML = '';
 
-            // System Config
-            db.collection('system').doc('config').onSnapshot(sys => {
-                const conf = sys.data() || { goal: 1000 };
-                document.getElementById('teamTotalDist').innerText = teamTotal.toFixed(0);
-                document.getElementById('teamGoalTxt').innerText = `الهدف: ${conf.goal}`;
-                const pct = Math.min((teamTotal/conf.goal)*100, 100);
-                document.getElementById('teamProgBar').style.width = pct + "%";
-                if(conf.msg) {
-                    document.getElementById('teamMsgContent').innerText = conf.msg;
-                    document.getElementById('teamMsgBox').style.display = 'block';
-                }
-            });
-        });
-    }
+      const users = [];
+      snap.forEach(doc => users.push(doc.data()));
 
-    function toggleTheme() {
-        document.body.classList.toggle('light-mode');
-        // Save preference could be added here
-        document.getElementById('settingsModal').style.display='none';
-    }
+      const podiumOrder = [users[1], users[0], users[2]];
+      const ranks = [2, 1, 3];
+
+      podiumOrder.forEach((u, idx) => {
+        if (!u) return;
+        const rank = ranks[idx];
+        const crown = rank === 1
+          ? '<div class="rank-crown"><i class="ri-vip-crown-fill"></i></div>'
+          : '';
+
+        container.innerHTML += `
+          <div class="podium-item rank-${rank}">
+            ${crown}
+            <div class="p-avatar">${u.name ? u.name.charAt(0) : '?'}</div>
+            <div class="p-name">${u.name || '...'}</div>
+            <div class="p-val">${(u.totalDistMonth || 0).toFixed(1)}</div>
+          </div>
+        `;
+      });
+    });
+
+  // 2️⃣ Team Total (ALL users)
+  db.collection('users').onSnapshot(snap => {
+    let teamTotal = 0;
+
+    snap.forEach(doc => {
+      teamTotal += Number(doc.data().totalDistMonth || 0);
+    });
+
+    document.getElementById('teamTotalDist').innerText = teamTotal.toFixed(0);
+
+    // System Config (Goal + Message)
+    db.collection('system').doc('config').get().then(sys => {
+      const conf = sys.exists ? sys.data() : { goal: 1000 };
+      document.getElementById('teamGoalTxt').innerText = `الهدف: ${conf.goal}`;
+
+      const pct = Math.min((teamTotal / conf.goal) * 100, 100);
+      document.getElementById('teamProgBar').style.width = pct + '%';
+
+      if (conf.msg) {
+        document.getElementById('teamMsgContent').innerText = conf.msg;
+        document.getElementById('teamMsgBox').style.display = 'block';
+      }
+    });
+  });
+}
+</script>
 
     // ACTIONS
     function addRun() {
@@ -661,6 +673,7 @@ teamTotalEl.textContent = teamTotal.toFixed(1);
 
 </body>
 </html>
+
 
 
 

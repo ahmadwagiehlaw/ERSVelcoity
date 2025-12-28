@@ -8,10 +8,9 @@
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -22,7 +21,6 @@
             --primary-glow: rgba(34, 197, 94, 0.4);
             --secondary: #3b82f6;
             --accent: #f59e0b;
-            --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: rgba(255,255,255,0.1);
@@ -67,7 +65,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: relative; overflow: hidden;
         }
 
-        /* COACH CARD (The Personality) */
+        /* COACH CARD (PERSONALITY) */
         .coach-card {
             background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(15,23,42,0.8));
             border: 1px solid var(--primary);
@@ -77,29 +75,31 @@
         .coach-bubble { font-size: 14px; line-height: 1.6; color: #fff; font-weight: 500; }
         .coach-tag { font-size: 10px; background: var(--primary); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-right: auto; }
 
-        /* CHALLENGES */
-        .challenge-item {
+        /* TEAM FEED (NEW) */
+        .feed-item {
+            display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            animation: fadeIn 0.5s ease;
+        }
+        .feed-avatar {
+            width: 35px; height: 35px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-muted); font-weight: bold;
+        }
+        .feed-content { flex: 1; }
+        .feed-name { font-weight: bold; font-size: 14px; color: var(--text-main); margin-bottom: 2px; }
+        .feed-action { font-size: 12px; color: var(--text-muted); }
+        .feed-action strong { color: var(--primary); }
+        .feed-time { font-size: 10px; color: var(--text-muted); opacity: 0.7; }
+
+        /* CHALLENGE HERO */
+        .challenge-hero {
             background: linear-gradient(135deg, #b45309, #78350f);
-            border-radius: 16px; padding: 15px; margin-bottom: 10px; position: relative;
-            border: 1px solid rgba(255,255,255,0.1); color: white;
+            border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center;
+            border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;
         }
-        .ch-title { font-weight: 900; font-size: 16px; margin-bottom: 5px; display: flex; justify-content: space-between; }
-        .ch-meta { font-size: 12px; opacity: 0.8; margin-bottom: 10px; }
-        .prog-track { height: 8px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; }
-        .prog-fill { height: 100%; background: #fff; width: 0%; border-radius: 10px; transition: width 1s; }
-        .admin-controls { margin-top: 10px; display: none; gap: 10px; } /* Hidden by default */
-
-        /* LOG ITEMS */
-        .log-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px; margin-bottom: 10px; background: rgba(255,255,255,0.03);
-            border-radius: 14px; border: 1px solid var(--border-color);
-        }
-        .log-icon { width: 40px; height: 40px; border-radius: 12px; background: rgba(59,130,246,0.1); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-left: 10px; }
-        .log-info h4 { margin: 0; font-size: 15px; color: var(--text-main); }
-        .log-info span { font-size: 11px; color: var(--text-muted); }
-        .log-val { font-weight: 900; font-size: 16px; color: var(--primary); }
-
+        .ch-icon { font-size: 40px; color: rgba(255,255,255,0.2); position: absolute; right: 10px; top: 10px; }
+        .ch-val { font-size: 32px; font-weight: 900; color: #fff; line-height: 1.1; margin: 10px 0; }
+        .ch-label { font-size: 13px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px; }
+        
         /* ADMIN PANEL (Floating) */
         #adminPanel {
             position: fixed; top: 80px; left: 15px; right: 15px;
@@ -108,18 +108,16 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
         }
 
-        /* FORMS */
-        input, select, textarea {
+        /* FORMS & BUTTONS */
+        input, select {
             width: 100%; padding: 14px; background: rgba(255,255,255,0.05);
             border: 1px solid var(--border-color); border-radius: 12px;
             color: white; font-family: inherit; margin-bottom: 10px; box-sizing: border-box;
         }
-        input:focus { outline: none; border-color: var(--primary); }
-        
-        .btn { width: 100%; padding: 14px; border-radius: 12px; font-weight: bold; border: none; cursor: pointer; display: flex; justify-content: center; gap: 5px; }
+        .btn { width: 100%; padding: 14px; border-radius: 12px; font-weight: bold; border: none; cursor: pointer; display: flex; justify-content: center; gap: 5px; transition: 0.2s; }
+        .btn:active { transform: scale(0.98); }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-sm { padding: 8px 12px; font-size: 12px; width: auto; }
-        .btn-danger { background: var(--danger); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
 
         /* NAV */
         .bottom-nav {
@@ -133,7 +131,7 @@
         .nav-item i { display: block; font-size: 24px; margin-bottom: 3px; }
         .nav-item.active { color: var(--primary); transform: translateY(-5px); }
 
-        .view-section { display: none; animation: fadeIn 0.4s; }
+        .view-section { display: none; animation: fadeIn 0.3s; }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -143,6 +141,16 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 20px; text-align: center;
         }
+        
+        /* UTILS */
+        .float-btns { position: fixed; bottom: 100px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 900; }
+        .float-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); cursor: pointer; }
+        
+        /* IPHONE DATE FIX */
+        .date-row { display: flex; gap: 10px; width: 100%; }
+        .date-input-container { flex: 1; min-width: 0; }
+        #logDate { text-align: center; font-weight: bold; -webkit-appearance: none; min-width: 0; }
+        .yesterday-btn { width: 70px; flex-shrink: 0; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 12px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -150,7 +158,7 @@
 <div id="auth-screen">
     <img src="ers-logo.png" style="width: 120px; margin-bottom: 20px;">
     <h2 style="color:white; margin:0 0 10px 0;">ERS Velocity <span style="color:var(--primary); font-size:12px;">V10.0</span></h2>
-    <p style="color:var(--text-muted); font-size:14px; margin-bottom:30px;">منصة فريق ERS الرسمية</p>
+    <p style="color:var(--text-muted); font-size:14px; margin-bottom:30px;">منصة فريق ERS للجري</p>
     
     <div style="width:100%; max-width:350px;">
         <input type="email" id="email" placeholder="البريد الإلكتروني">
@@ -163,19 +171,14 @@
 
 <div id="adminPanel">
     <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-        <h3 style="margin:0; color:var(--accent);">👑 لوحة تحكم القائد</h3>
+        <h3 style="margin:0; color:var(--accent);">👑 لوحة القائد</h3>
         <i class="ri-close-circle-line" style="font-size:24px; cursor:pointer;" onclick="toggleAdminPanel()"></i>
     </div>
-    
-    <label>عنوان التحدي الجديد</label>
-    <input type="text" id="admChTitle" placeholder="مثال: تحدي الـ 1000 كم">
-    <label>الوصف</label>
-    <textarea id="admChDesc" rows="2" placeholder="وصف محفز..."></textarea>
-    <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <div><label>الهدف (كم)</label><input type="number" id="admChGoal"></div>
-        <div><label>النوع</label><select id="admChType"><option value="distance">مسافة جماعية</option></select></div>
-    </div>
-    <button class="btn btn-primary" onclick="adminCreateChallenge()">نشر التحدي للفريق 🚀</button>
+    <label>رسالة الفريق (التنبيهات)</label>
+    <input type="text" id="admMsg" placeholder="مثال: التجمع الجمعة ٧ صباحاً">
+    <label>هدف التحدي الجماعي (كم)</label>
+    <input type="number" id="admGoal">
+    <button class="btn btn-primary" onclick="adminUpdate()">تحديث النظام 🚀</button>
 </div>
 
 <div id="app-content" style="display:none;">
@@ -197,38 +200,55 @@
             <div class="card coach-card">
                 <div class="coach-header">
                     <div class="coach-avatar"><i class="ri-robot-2-fill"></i></div>
-                    <div class="coach-tag">ERS Coach</div>
+                    <div class="coach-tag">كوتش ERS</div>
                 </div>
                 <div class="coach-bubble" id="coachText">
-                    جاري تحليل بياناتك وتجهيز الخطة... 🤖
+                    جاري تحميل بياناتك... 🤖
                 </div>
             </div>
 
+            <div id="teamMsgBox" style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); padding:12px; border-radius:12px; margin-bottom:15px; display:none; color:#fbbf24; font-size:13px; font-weight:bold; text-align:center;">
+                </div>
+
             <div class="card">
-                <h3 style="margin:0 0 15px 0;">📊 ملخص سريع</h3>
+                <h3 style="margin:0 0 15px 0;">📊 ملخصي</h3>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                     <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; text-align:center;">
                         <div style="font-size:24px; font-weight:900; color:var(--primary)" id="weekTotal">0</div>
-                        <div style="font-size:12px; color:var(--text-muted)">كم هذا الأسبوع</div>
+                        <div style="font-size:12px; color:var(--text-muted)">أسبوعي (كم)</div>
                     </div>
                     <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; text-align:center;">
                         <div style="font-size:24px; font-weight:900; color:var(--secondary)" id="monthTotal">0</div>
-                        <div style="font-size:12px; color:var(--text-muted)">كم هذا الشهر</div>
+                        <div style="font-size:12px; color:var(--text-muted)">شهري (كم)</div>
                     </div>
                 </div>
             </div>
-
-            <div id="challengesContainer">
-                </div>
-
         </div>
 
         <div id="view-team" class="view-section">
-            <div class="card">
-                <h3 style="margin:0 0 15px 0; color:var(--accent);">🏆 أبطال الشهر (Leaderboard)</h3>
-                <div id="leaderboardList">
-                    <p style="text-align:center; font-size:13px; color:var(--text-muted)">جاري تحميل الأبطال...</p>
+            
+            <div class="challenge-hero">
+                <i class="ri-flag-2-fill ch-icon"></i>
+                <div class="ch-label">إجمالي جري الفريق (الشهر)</div>
+                <div class="ch-val" id="teamTotalDist">0 كم</div>
+                <div style="height:6px; background:rgba(0,0,0,0.3); border-radius:10px; margin-top:5px; overflow:hidden;">
+                    <div id="teamProgBar" style="height:100%; width:0%; background:#fff; transition:width 1s;"></div>
                 </div>
+                <div style="text-align:right; font-size:11px; margin-top:5px; opacity:0.8;" id="teamGoalTxt">الهدف: 0 كم</div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin:0 0 15px 0; color:var(--accent); display:flex; align-items:center; gap:5px;">
+                    <i class="ri-pulse-line"></i> نشاط الفريق (مباشر)
+                </h3>
+                <div id="teamFeed">
+                    <p style="text-align:center; font-size:13px; color:var(--text-muted)">جاري تحميل النشاط...</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin:0 0 15px 0;">🏆 الأبطال</h3>
+                <div id="leaderboardList"></div>
             </div>
         </div>
 
@@ -246,18 +266,22 @@
                     <option value="Intervals">Intervals (تكرارات)</option>
                     <option value="Race">Race (سباق)</option>
                 </select>
-                <input type="date" id="logDate">
-                <button class="btn btn-primary" onclick="addRun()">حفظ النشاط</button>
+                
+                <div class="date-row">
+                    <div class="date-input-container"><input type="date" id="logDate"></div>
+                    <button class="yesterday-btn" onclick="setYesterday()">أمس</button>
+                </div>
+
+                <button class="btn btn-primary" onclick="addRun()" style="margin-top:15px;">حفظ ونشر 🔥</button>
             </div>
 
-            <div id="activityLogList" style="padding-bottom:20px;">
-                </div>
+            <div id="activityLogList" style="padding-bottom:20px;"></div>
         </div>
 
         <div id="view-profile" class="view-section">
             <div class="card">
                 <h3>👤 الملف الشخصي</h3>
-                <label>الاسم (كما يظهر للفريق)</label>
+                <label>الاسم (يظهر للفريق)</label>
                 <input type="text" id="profName">
                 
                 <label>الهدف الرئيسي</label>
@@ -281,9 +305,14 @@
 
     </div>
 
+    <div class="float-btns">
+        <div class="float-btn" onclick="alert('قريباً: أدوات العداء المتقدمة')"><i class="ri-calculator-line"></i></div>
+        <div class="float-btn" onclick="location.reload(true)"><i class="ri-refresh-line"></i></div>
+    </div>
+
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchView('home')"><i class="ri-home-5-line"></i><span>الرئيسية</span></div>
-        <div class="nav-item" onclick="switchView('team')"><i class="ri-cup-line"></i><span>الفريق</span></div>
+        <div class="nav-item" onclick="switchView('team')"><i class="ri-team-line"></i><span>الفريق</span></div>
         <div class="nav-item" onclick="switchView('log')"><i class="ri-file-list-3-line"></i><span>السجل</span></div>
         <div class="nav-item" onclick="switchView('profile')"><i class="ri-user-settings-line"></i><span>أنا</span></div>
     </div>
@@ -320,7 +349,6 @@
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('app-content').style.display = 'block';
             
-            // Setup Admin
             if(user.email === ADMIN_EMAIL) document.getElementById('btnAdmin').style.display = 'flex';
 
             initApp();
@@ -336,12 +364,8 @@
         try {
             if(type === 'signup') {
                 await auth.createUserWithEmailAndPassword(e, p);
-                // Create user doc
                 await db.collection('users').doc(auth.currentUser.uid).set({
-                    name: "كابتن جديد",
-                    goal: "fitness",
-                    runs: [],
-                    totalDistMonth: 0
+                    name: "كابتن جديد", goal: "fitness", runs: [], totalDistMonth: 0
                 });
             } else {
                 await auth.signInWithEmailAndPassword(e, p);
@@ -351,9 +375,9 @@
         }
     }
 
-    // 3. CORE FUNCTIONS
+    // 3. CORE FUNCTIONS (REAL-TIME)
     function initApp() {
-        // Listen to User Data
+        // A. User Data
         db.collection('users').doc(currentUser.uid).onSnapshot(doc => {
             if(doc.exists) {
                 userData = doc.data();
@@ -362,38 +386,33 @@
             }
         });
 
-        // Listen to Challenges
-        db.collection('challenges').orderBy('createdAt', 'desc').onSnapshot(snap => {
-            const container = document.getElementById('challengesContainer');
-            container.innerHTML = `<h4 style="margin:10px 0;">🚀 التحديات النشطة</h4>`;
-            
+        // B. Team Feed (The Social Feature)
+        db.collection('activity_feed').orderBy('timestamp', 'desc').limit(20).onSnapshot(snap => {
+            const feed = document.getElementById('teamFeed');
+            feed.innerHTML = "";
             snap.forEach(doc => {
-                const ch = doc.data();
-                const totalTeamDist = ch.currentTotal || 0; // In a real app, calculate this
-                const pct = Math.min((totalTeamDist / ch.goal) * 100, 100);
-                
-                // Admin Delete Button
-                const delBtn = currentUser.email === ADMIN_EMAIL 
-                    ? `<button class="btn-sm btn-danger" onclick="deleteChallenge('${doc.id}')" style="position:absolute; top:10px; left:10px;">حذف</button>` 
-                    : '';
-
-                container.innerHTML += `
-                <div class="challenge-item">
-                    ${delBtn}
-                    <div class="ch-title"><span>${ch.title}</span> <span>${ch.goal} كم</span></div>
-                    <div class="ch-meta">${ch.desc}</div>
-                    <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
-                    <div style="text-align:right; font-size:11px; margin-top:5px;">تم تحقيق ${totalTeamDist.toFixed(0)} كم من ${ch.goal} كم</div>
+                const act = doc.data();
+                const timeAgo = getTimeAgo(act.timestamp.toDate());
+                feed.innerHTML += `
+                <div class="feed-item">
+                    <div class="feed-avatar">${act.userName.charAt(0)}</div>
+                    <div class="feed-content">
+                        <div class="feed-name">${act.userName}</div>
+                        <div class="feed-action">سجل <strong>${act.dist} كم</strong> (${act.type})</div>
+                        <div class="feed-time">${timeAgo}</div>
+                    </div>
                 </div>`;
             });
         });
 
-        // Listen to Leaderboard
+        // C. Leaderboard & Stats
         db.collection('users').orderBy('totalDistMonth', 'desc').limit(10).onSnapshot(snap => {
             let html = '';
             let rank = 1;
+            let teamTotal = 0;
             snap.forEach(doc => {
                 const u = doc.data();
+                teamTotal += (u.totalDistMonth || 0); // Approx team total from top users
                 const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':`#${rank}`;
                 html += `
                 <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:14px;">
@@ -401,26 +420,40 @@
                         <span style="font-weight:bold; width:25px;">${medal}</span>
                         <span>${u.name || 'مجهول'}</span>
                     </div>
-                    <div style="font-weight:bold; color:var(--primary)">${(u.totalDistMonth||0).toFixed(1)} كم</div>
+                    <div style="font-weight:bold; color:var(--primary)">${(u.totalDistMonth||0).toFixed(1)}</div>
                 </div>`;
                 rank++;
             });
             document.getElementById('leaderboardList').innerHTML = html;
+            
+            // Get Goal from System
+            db.collection('system').doc('config').get().then(doc => {
+                const config = doc.data() || { goal: 5000, msg: "" };
+                const pct = Math.min((teamTotal/config.goal)*100, 100);
+                document.getElementById('teamTotalDist').innerText = `${teamTotal.toFixed(0)} كم`;
+                document.getElementById('teamGoalTxt').innerText = `الهدف: ${config.goal} كم`;
+                document.getElementById('teamProgBar').style.width = pct + "%";
+                
+                if(config.msg) {
+                    const box = document.getElementById('teamMsgBox');
+                    box.innerText = `🔔 ${config.msg}`;
+                    box.style.display = 'block';
+                }
+            });
         });
     }
 
-    // 4. THE COACH "ZEKA" LOGIC 🧠
+    // 4. THE COACH "ZEKA" AI 🧠
     function updateCoach() {
         const box = document.getElementById('coachText');
         const runs = userData.runs || [];
         const name = (userData.name || 'كابتن').split(' ')[0];
         
-        // Time of day greeting
         const hour = new Date().getHours();
         let greeting = hour < 12 ? "صباح النشاط" : "مساء الفل";
 
         if(runs.length === 0) {
-            box.innerText = `${greeting} يا ${name}! أنا كوتش ERS. لسه ما سجلتش ولا جرية؟ يالا وريني الهمة وسجل أول تمرين!`;
+            box.innerText = `${greeting} يا ${name}! أنا كوتش ERS. شكلك لسه مسجلتش ولا جرية؟ يالا وريني الهمة وسجل أول تمرين عشان أبدأ أحلل أدائك!`;
             return;
         }
 
@@ -431,33 +464,28 @@
 
         let advice = "";
         
-        // Scenario 1: Ran today
         if(diffDays === 0) {
-            advice = `عاش يا وحش! سجلت ${lastRun.dist}كم النهاردة. دلوقتي وقت الراحة والاستشفاء. اشرب مية كويس!`;
-        }
-        // Scenario 2: Lazy (3+ days)
-        else if(diffDays >= 3) {
-            advice = `فينك يا ${name}؟ بقالك ${diffDays} أيام مريح! اللياقة بتنزل يا بطل. انزل النهاردة حتى لو 3كم خفيفة.`;
-        }
-        // Scenario 3: Routine
-        else {
+            advice = `عاش يا وحش! سجلت ${lastRun.dist}كم النهاردة. دلوقتي ريح واشرب مية، العضلات بتتبني وانتا مريح.`;
+        } else if(diffDays >= 4) {
+            advice = `فينك يا ${name}؟ بقالك ${diffDays} أيام مريح! اللياقة بتنزل يا بطل. انزل النهاردة حتى لو 3كم خفيفة عشان ترجع الفورمة.`;
+        } else {
             if(userData.goal === 'fitness') {
-                advice = `عشان تحرق دهون صح، خليك في الـ Easy Run مسافة أطول وبسرعة هادية.`;
+                advice = `عشان تحرق دهون صح، خليك في الـ Easy Run مسافة أطول وبسرعة هادية (Zone 2).`;
             } else if(userData.goal === 'speed') {
                 advice = `عايز تسرع؟ جرب النهاردة Interval Run (دقيقة سريع / دقيقة مشي) × 10 مرات.`;
             } else {
-                advice = `حافظ على استمراريتك. النهاردة يوم مناسب لجرية متوسطة 5-7 كم.`;
+                advice = `حافظ على استمراريتك. النهاردة يوم مناسب لجرية متوسطة 5-7 كم بوتيرة ثابتة.`;
             }
         }
 
         box.innerText = `${greeting} يا ${name}! 👋\n${advice}`;
     }
 
-    // 5. UPDATE UI & LOGS
+    // 5. UPDATE UI
     function updateUI() {
         document.getElementById('headerGreeting').innerText = `أهلاً، ${(userData.name||'').split(' ')[0]}`;
         
-        // Fill Profile Form
+        // Fill Profile
         document.getElementById('profName').value = userData.name || "";
         document.getElementById('profGoal').value = userData.goal || "fitness";
         document.getElementById('profWeight').value = userData.weight || "";
@@ -495,7 +523,7 @@
         });
     }
 
-    // 6. ACTIONS
+    // 6. ACTIONS (THE SYNC MAGIC)
     function addRun() {
         const d = parseFloat(document.getElementById('logDist').value);
         const t = parseFloat(document.getElementById('logTime').value);
@@ -506,7 +534,7 @@
 
         const newRuns = [ {dist:d, time:t, type:type, date:date}, ...(userData.runs||[]) ];
         
-        // Recalc monthly total for leaderboard
+        // 1. Update Local User
         const now = new Date();
         const startM = new Date(now.getFullYear(), now.getMonth(), 1);
         const totalM = newRuns.filter(r => new Date(r.date) >= startM).reduce((s,r)=>s+parseFloat(r.dist),0);
@@ -514,25 +542,17 @@
         db.collection('users').doc(currentUser.uid).update({
             runs: newRuns,
             totalDistMonth: totalM
-        }).then(() => {
-            alert("تم تسجيل الجرية! عاش 🔥");
-            // Update global challenge progress (Simulated: read, add, write)
-            // In a real app, use Cloud Functions or Transactions
-            updateGlobalStats(d);
-            switchView('home');
         });
-    }
 
-    function updateGlobalStats(dist) {
-        // Simple increment for demo purposes
-        // Ideally handled by server
-        db.collection('challenges').get().then(snap => {
-            snap.forEach(doc => {
-                const ch = doc.data();
-                db.collection('challenges').doc(doc.id).update({
-                    currentTotal: (ch.currentTotal || 0) + dist
-                });
-            });
+        // 2. Add to Public Feed (New Collection)
+        db.collection('activity_feed').add({
+            userName: userData.name || "عضو فريق",
+            dist: d,
+            type: type,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            alert("تم تسجيل الجرية ونشرها للفريق! 🔥");
+            switchView('home');
         });
     }
 
@@ -551,24 +571,15 @@
         p.style.display = p.style.display === 'block' ? 'none' : 'block';
     }
 
-    function adminCreateChallenge() {
-        const title = document.getElementById('admChTitle').value;
-        const desc = document.getElementById('admChDesc').value;
-        const goal = parseFloat(document.getElementById('admChGoal').value);
+    function adminUpdate() {
+        const msg = document.getElementById('admMsg').value;
+        const goal = parseFloat(document.getElementById('admGoal').value);
         
-        if(title && goal) {
-            db.collection('challenges').add({
-                title, desc, goal, currentTotal: 0, createdAt: new Date().toISOString()
-            }).then(() => {
-                alert("تم نشر التحدي!");
+        if(goal) {
+            db.collection('system').doc('config').set({ goal, msg }, {merge: true}).then(() => {
+                alert("تم تحديث النظام!");
                 toggleAdminPanel();
             });
-        }
-    }
-
-    function deleteChallenge(id) {
-        if(confirm("حذف التحدي؟")) {
-            db.collection('challenges').doc(id).delete();
         }
     }
 
@@ -578,13 +589,22 @@
         document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
         document.getElementById('view-'+v).classList.add('active');
         
-        // Nav Highlight
         const map = {'home':0, 'team':1, 'log':2, 'profile':3};
         document.querySelectorAll('.nav-item')[map[v]].classList.add('active');
         window.scrollTo(0,0);
     }
 
-    // Init Date
+    function getTimeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        let interval = seconds / 3600;
+        if (interval > 1) return "منذ " + Math.floor(interval) + " ساعة";
+        interval = seconds / 60;
+        if (interval > 1) return "منذ " + Math.floor(interval) + " دقيقة";
+        return "الآن";
+    }
+
+    function setYesterday() { const d = new Date(); d.setDate(d.getDate()-1); document.getElementById('logDate').valueAsDate=d; }
+
     document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('ar-EG');
     document.getElementById('logDate').valueAsDate = new Date();
 

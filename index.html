@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ERS Velocity V6.4</title>
+    <title>ERS Velocity V7.0</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
     <meta name="theme-color" content="#0f172a">
@@ -83,30 +83,54 @@
         }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* CHALLENGE */
-        .challenge-card {
-            background: linear-gradient(135deg, #b45309, #f59e0b);
-            color: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px;
-            box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3);
-            border: 1px solid rgba(255,255,255,0.15); position: relative;
+        /* --- FOLDABLE LOG FORM --- */
+        .log-accordion {
+            background: rgba(125,125,125,0.05); border: 1px solid var(--border-color);
+            border-radius: 16px; margin-bottom: 20px; overflow: hidden;
+            transition: all 0.3s ease;
         }
-        .ch-super-header {
-            background: rgba(0,0,0,0.2); padding: 8px 18px; font-size: 11px; font-weight: 800;
-            text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.9);
-            display: flex; align-items: center; gap: 5px;
+        .log-acc-header {
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; background: rgba(0,0,0,0.1);
         }
-        .ch-header { padding: 15px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .ch-title-text { font-size: 20px; font-weight: 900; line-height: 1.2; }
-        .ch-sub { font-size: 13px; opacity: 0.95; margin-top:4px; display:block; font-weight: 500;}
-        .ch-actions { display: flex; gap: 10px; }
-        .icon-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .ch-body { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s; background: rgba(0,0,0,0.1); }
-        .ch-body.open { max-height: 800px; padding: 10px 18px 25px 18px; }
-        .ch-desc { font-size: 15px; line-height: 1.6; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .join-btn { width: 100%; padding: 16px; background: #fff; color: #b45309; border: none; border-radius: 14px; font-weight: 800; font-size: 16px; cursor: pointer; display: flex; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .progress-area { margin-top: 15px; }
-        .prog-track { height: 14px; background: rgba(0,0,0,0.25); border-radius: 10px; overflow: hidden; }
-        .prog-fill { height: 100%; background: #fff; width: 0%; border-radius: 10px; transition: width 1s; }
+        .log-acc-title { font-weight: 800; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        .log-acc-body {
+            max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease;
+            padding: 0 20px;
+        }
+        .log-acc-body.open { max-height: 500px; padding: 20px; }
+        .log-toggle-icon { transition: transform 0.3s; }
+        .log-toggle-icon.rotate { transform: rotate(180deg); }
+
+        /* --- PROGRESS CHART (SVG) --- */
+        .chart-container {
+            height: 120px; width: 100%; margin-bottom: 20px; position: relative;
+            border-bottom: 1px solid var(--border-color); border-left: 1px solid var(--border-color);
+            padding: 5px; box-sizing: border-box;
+        }
+        .chart-svg { width: 100%; height: 100%; overflow: visible; }
+        .chart-line { fill: none; stroke: var(--primary); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 4px 6px var(--primary-glow)); }
+        .chart-dot { fill: var(--bg-color); stroke: var(--primary); stroke-width: 2; r: 4; }
+        .chart-label { font-size: 10px; fill: var(--text-muted); }
+
+        /* --- ENHANCED LOG ITEM --- */
+        .log-item {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 15px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: relative; overflow: hidden;
+        }
+        .log-item::before {
+            content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 4px;
+            background: var(--border-color); border-radius: 4px 0 0 4px;
+        }
+        .log-item.best::before { background: var(--accent); box-shadow: 0 0 10px var(--accent); } /* Highlight best runs */
+        .log-main { display: flex; flex-direction: column; gap: 4px; }
+        .log-dist { font-size: 20px; font-weight: 800; color: var(--text-main); }
+        .log-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 10px; align-items: center; }
+        .log-pace { font-family: monospace; background: rgba(125,125,125,0.1); padding: 2px 6px; border-radius: 4px; }
+        .log-rating { font-size: 14px; }
+        .log-badge { font-size: 10px; background: rgba(245, 158, 11, 0.2); color: #fbbf24; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(245, 158, 11, 0.3); }
 
         /* INPUTS & FIX FOR IPHONE DATE */
         label { display: block; margin: 15px 0 8px 0; color: var(--text-muted); font-size: 14px; font-weight: 600; }
@@ -117,24 +141,12 @@
         }
         input:focus { outline: none; border-color: var(--primary); background: rgba(125,125,125,0.12); }
         
-        /* --- IPHONE FIX: Date Row --- */
+        /* IPHONE FIX: Date Row */
         .date-row { display: flex; gap: 10px; align-items: stretch; width: 100%; }
-        .date-input-container { 
-            flex: 1; /* يأخذ المساحة المتاحة */
-            min-width: 0; /* هام جداً: يمنع العنصر من الخروج عن الشاشة في فليكس */
-            position: relative; 
-        }
-        #logDate {
-            width: 100%;
-            text-align: center;
-            font-weight: bold;
-            -webkit-appearance: none; /* يحسن العرض في سفاري */
-            min-width: 0;
-        }
+        .date-input-container { flex: 1; min-width: 0; position: relative; }
+        #logDate { width: 100%; text-align: center; font-weight: bold; -webkit-appearance: none; min-width: 0; }
         .yesterday-btn {
-            width: 80px; /* حجم ثابت للزر */
-            flex-shrink: 0; /* منع الزر من الانكماش */
-            background: transparent; border: 1px solid var(--border-color); color: var(--text-muted);
+            width: 80px; flex-shrink: 0; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted);
             border-radius: 14px; font-size: 14px; font-weight: bold; cursor: pointer;
             display: flex; align-items: center; justify-content: center; transition: 0.2s;
         }
@@ -143,28 +155,10 @@
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
-        /* RESULTS */
-        .result-display {
-            text-align: center; margin-top: 20px; padding: 15px;
-            background: rgba(125,125,125,0.08); border-radius: 16px; border: 1px solid var(--border-color);
-            display: none; animation: fadeIn 0.3s;
-        }
-        .result-val { font-size: 36px; font-weight: 900; color: var(--primary); line-height: 1.1; }
-        .result-sub { font-size: 14px; color: var(--text-muted); margin-top: 5px; }
-        .result-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 15px; }
-        .result-row:last-child { border: none; }
-
         .btn { width: 100%; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 16px; border: none; cursor: pointer; margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.1s; }
         .btn:active { transform: scale(0.98); }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px var(--primary-glow); }
         .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
-
-        /* CALCULATOR TABS */
-        .calc-tabs { display: flex; background: rgba(0,0,0,0.2); border-radius: 14px; padding: 5px; margin-bottom: 25px; }
-        .calc-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; color: var(--text-muted); border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .calc-tab.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .calc-view { display: none; }
-        .calc-view.active { display: block; animation: fadeIn 0.3s; }
 
         /* NAV */
         .bottom-nav {
@@ -186,10 +180,34 @@
         .stat-box { background: rgba(125,125,125,0.08); padding: 15px; border-radius: 16px; text-align: center; }
         .stat-val { font-size: 24px; font-weight: 800; }
         
-        /* Floating Buttons */
         .float-btns { position: fixed; bottom: 110px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
         .float-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); cursor: pointer; }
 
+        /* Challenge Styles (Minified for space) */
+        .challenge-card { background: linear-gradient(135deg, #b45309, #f59e0b); color: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3); border: 1px solid rgba(255,255,255,0.15); position: relative; }
+        .ch-super-header { background: rgba(0,0,0,0.2); padding: 8px 18px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 5px; }
+        .ch-header { padding: 15px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .ch-title-text { font-size: 20px; font-weight: 900; line-height: 1.2; }
+        .ch-sub { font-size: 13px; opacity: 0.95; margin-top:4px; display:block; font-weight: 500;}
+        .icon-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .ch-body { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s; background: rgba(0,0,0,0.1); }
+        .ch-body.open { max-height: 800px; padding: 10px 18px 25px 18px; }
+        .ch-desc { font-size: 15px; line-height: 1.6; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        .join-btn { width: 100%; padding: 16px; background: #fff; color: #b45309; border: none; border-radius: 14px; font-weight: 800; font-size: 16px; cursor: pointer; display: flex; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .progress-area { margin-top: 15px; }
+        .prog-track { height: 14px; background: rgba(0,0,0,0.25); border-radius: 10px; overflow: hidden; }
+        .prog-fill { height: 100%; background: #fff; width: 0%; border-radius: 10px; transition: width 1s; }
+        
+        .calc-tabs { display: flex; background: rgba(0,0,0,0.2); border-radius: 14px; padding: 5px; margin-bottom: 25px; }
+        .calc-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; color: var(--text-muted); border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .calc-tab.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .calc-view { display: none; }
+        .calc-view.active { display: block; animation: fadeIn 0.3s; }
+        .result-display { text-align: center; margin-top: 20px; padding: 15px; background: rgba(125,125,125,0.08); border-radius: 16px; border: 1px solid var(--border-color); display: none; animation: fadeIn 0.3s; }
+        .result-val { font-size: 36px; font-weight: 900; color: var(--primary); line-height: 1.1; }
+        .result-sub { font-size: 14px; color: var(--text-muted); margin-top: 5px; }
+        .result-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 15px; }
+        .result-row:last-child { border: none; }
         .install-step { text-align: right; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--text-main); }
         .install-step i { color: var(--secondary); font-size: 20px; margin-top: 2px; }
     </style>
@@ -209,42 +227,31 @@
 <div class="app-container">
 
     <div id="view-dashboard" class="view-section active">
-        
         <div id="challengeLoader" style="font-size:13px; text-align:center; color:var(--text-muted); margin-bottom:15px;">
             <i class="ri-loader-4-line ri-spin"></i> تحديث...
         </div>
-
         <div id="globalChallenge" class="challenge-card" style="display:none;">
             <div class="ch-super-header"><i class="ri-flag-2-fill"></i> تحدي الفريق الرسمي</div>
             <div class="ch-header" onclick="toggleChallenge()">
-                <div>
-                    <div class="ch-title-text" id="gcTitle">...</div>
-                    <span class="ch-sub" id="gcSub">اضغط للتفاصيل</span>
-                </div>
+                <div><div class="ch-title-text" id="gcTitle">...</div><span class="ch-sub" id="gcSub">اضغط للتفاصيل</span></div>
                 <div style="display:flex; gap:10px;">
                     <div class="icon-btn" onclick="event.stopPropagation(); fetchGlobalChallenge(true)"><i class="ri-refresh-line"></i></div>
                     <div class="icon-btn"><i class="ri-arrow-down-s-line chevron" id="chChevron"></i></div>
                 </div>
             </div>
-            
             <div class="ch-body" id="chBody">
                 <div class="ch-desc" id="gcDesc">...</div>
                 <button id="joinBtn" class="join-btn" onclick="joinChallenge()">انضمام للتحدي 🎯</button>
                 <div id="progressArea" class="progress-area" style="display:none;">
-                    <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:bold; margin-bottom:8px;">
-                        <span>تقدمك</span>
-                        <span id="chProgressTxt">0 / 0</span>
-                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:bold; margin-bottom:8px;"><span>تقدمك</span><span id="chProgressTxt">0 / 0</span></div>
                     <div class="prog-track"><div class="prog-fill" id="chProgressBar"></div></div>
-                    <div style="text-align:center; font-size:12px; margin-top:10px; opacity:0.8; font-weight:500;">
-                        <i class="ri-checkbox-circle-fill" style="color:#86efac"></i> أنت مشارك في هذا التحدي
-                    </div>
+                    <div style="text-align:center; font-size:12px; margin-top:10px; opacity:0.8; font-weight:500;"><i class="ri-checkbox-circle-fill" style="color:#86efac"></i> أنت مشارك في هذا التحدي</div>
                 </div>
             </div>
         </div>
 
         <div class="card" style="border-right: 4px solid var(--primary);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <h3 style="margin:0; font-size:17px; display:flex; gap:6px;"><i class="ri-robot-2-line"></i> كوتش ERS</h3>
                 <span id="goalBadge" style="font-size:11px; background:rgba(34,197,94,0.1); color:var(--primary); padding:3px 10px; border-radius:8px;"></span>
             </div>
@@ -262,35 +269,42 @@
     </div>
 
     <div id="view-log" class="view-section">
-        <div class="card">
-            <h3>📝 تسجيل نشاط</h3>
-            <div class="grid-2">
-                <div><label>مسافة (كم)</label><input type="number" id="logDist" step="0.1" inputmode="decimal"></div>
-                <div><label>زمن (دقيقة)</label><input type="number" id="logTime" inputmode="numeric"></div>
+        
+        <div class="log-accordion">
+            <div class="log-acc-header" onclick="toggleLogForm()">
+                <div class="log-acc-title"><i class="ri-add-circle-fill" style="color:var(--primary); font-size:20px;"></i> تسجيل جرية جديدة</div>
+                <i class="ri-arrow-down-s-line log-toggle-icon" id="logToggleIcon"></i>
             </div>
-            <label>نوع التمرين</label>
-            <select id="logType">
-                <option value="easy">Easy Run</option>
-                <option value="long">Long Run</option>
-                <option value="tempo">Tempo</option>
-                <option value="interval">Intervals</option>
-                <option value="race">Race</option>
-            </select>
-            
-            <label>تاريخ التمرين</label>
-            <div class="date-row">
-                <div class="date-input-container">
-                    <input type="date" id="logDate">
+            <div class="log-acc-body" id="logFormBody">
+                <div class="grid-2">
+                    <div><label>مسافة (كم)</label><input type="number" id="logDist" step="0.1" inputmode="decimal"></div>
+                    <div><label>زمن (دقيقة)</label><input type="number" id="logTime" inputmode="numeric"></div>
                 </div>
-                <button class="yesterday-btn" onclick="setYesterday()">أمس</button>
+                <label>نوع التمرين</label>
+                <select id="logType">
+                    <option value="easy">Easy Run</option>
+                    <option value="long">Long Run</option>
+                    <option value="tempo">Tempo</option>
+                    <option value="interval">Intervals</option>
+                    <option value="race">Race</option>
+                </select>
+                <label>تاريخ التمرين</label>
+                <div class="date-row">
+                    <div class="date-input-container"><input type="date" id="logDate"></div>
+                    <button class="yesterday-btn" onclick="setYesterday()">أمس</button>
+                </div>
+                <button class="btn btn-primary" onclick="addRun()">حفظ النشاط</button>
             </div>
+        </div>
 
-            <button class="btn btn-primary" onclick="addRun()">حفظ</button>
+        <div class="card" style="padding:15px;">
+            <div style="font-size:14px; font-weight:bold; margin-bottom:10px; color:var(--text-muted);">📈 منحنى التقدم (آخر 10)</div>
+            <div class="chart-container">
+                <svg class="chart-svg" id="progressChart" viewBox="0 0 100 50" preserveAspectRatio="none"></svg>
+            </div>
         </div>
-        <div class="card">
-            <h4>السجل</h4>
-            <div id="runsList" style="max-height:300px; overflow-y:auto;"></div>
-        </div>
+
+        <div id="runsList" style="padding-bottom:20px;"></div>
     </div>
 
     <div id="view-calculator" class="view-section">
@@ -301,32 +315,19 @@
                 <div class="calc-tab" onclick="switchCalcTab('predict')">توقعات</div>
                 <div class="calc-tab" onclick="switchCalcTab('hr')">نبض القلب</div>
             </div>
-
             <div id="calc-pace" class="calc-view active">
                 <label>المسافة (كم)</label><input type="number" id="calcDist" placeholder="مثال: 10">
-                <div class="grid-2">
-                    <div><label style="margin-top:0">ساعات</label><input type="number" id="calcHrs" placeholder="0"></div>
-                    <div><label style="margin-top:0">دقائق</label><input type="number" id="calcMins" placeholder="00"></div>
-                </div>
+                <div class="grid-2"><div><label style="margin-top:0">ساعات</label><input type="number" id="calcHrs" placeholder="0"></div><div><label style="margin-top:0">دقائق</label><input type="number" id="calcMins" placeholder="00"></div></div>
                 <button class="btn btn-primary" onclick="calculatePace()">احسب الوتيرة</button>
-                <div id="paceResult" class="result-display">
-                    <div class="result-val">00:00</div>
-                    <div class="result-sub">دقيقة / كم</div>
-                </div>
+                <div id="paceResult" class="result-display"><div class="result-val">00:00</div><div class="result-sub">دقيقة / كم</div></div>
             </div>
-
             <div id="calc-predict" class="calc-view">
                 <label>مسافة جريتها حديثاً</label>
-                <select id="predBaseDist">
-                    <option value="5">5 كم</option>
-                    <option value="10">10 كم</option>
-                    <option value="21.1">نصف ماراثون</option>
-                </select>
+                <select id="predBaseDist"><option value="5">5 كم</option><option value="10">10 كم</option><option value="21.1">نصف ماراثون</option></select>
                 <label>الزمن (دقائق)</label><input type="number" id="predTime" placeholder="مثال: 25">
                 <button class="btn btn-primary" onclick="predictRace()">توقع أرقامي 🔮</button>
                 <div id="predResult" class="result-display" style="text-align:right; font-size:15px; line-height:2;"></div>
             </div>
-
             <div id="calc-hr" class="calc-view">
                 <label>عمرك (سنة)</label><input type="number" id="hrAge" placeholder="30">
                 <button class="btn btn-primary" onclick="calcZones()">احسب المناطق ❤️</button>
@@ -338,33 +339,17 @@
     <div id="view-profile" class="view-section">
         <div class="card">
             <h3>👤 الملف الشخصي</h3>
-            <label>الاسم</label><input type="text" id="profName">
+            <label>الاسم</label><input type="text" id="profName" placeholder="الاسم ثلاثي">
             <label>الهدف</label>
-            <select id="profGoalType">
-                <option value="fitness">لياقة وتخسيس</option>
-                <option value="endurance">تحمل ومسافات</option>
-                <option value="speed">سرعة</option>
-            </select>
+            <select id="profGoalType"><option value="fitness">لياقة وتخسيس</option><option value="endurance">تحمل ومسافات</option><option value="speed">سرعة</option></select>
             <label style="color:var(--secondary); margin-top:25px;">الجسم</label>
-            <div class="grid-3">
-                <input type="number" id="profWeight" placeholder="وزن">
-                <input type="number" id="profHeight" placeholder="طول">
-                <input type="number" id="profWaist" placeholder="خصر">
-            </div>
+            <div class="grid-3"><input type="number" id="profWeight" placeholder="وزن"><input type="number" id="profHeight" placeholder="طول"><input type="number" id="profWaist" placeholder="خصر"></div>
             <div id="bmiResult" style="text-align:center; font-size:13px; margin-top:8px;"></div>
-
             <label style="color:var(--secondary); margin-top:25px;">أفضل أرقام (PB)</label>
-            <div class="grid-2">
-                <input type="number" id="profPb5k" placeholder="5K (دقيقة)">
-                <input type="number" id="profPb10k" placeholder="10K (دقيقة)">
-            </div>
+            <div class="grid-2"><input type="number" id="profPb5k" placeholder="5K (دقيقة)"><input type="number" id="profPb10k" placeholder="10K (دقيقة)"></div>
             <label>أطول جرية آخر 30 يوم</label><input type="number" id="profLongest" placeholder="كم">
-            
             <label style="color:var(--secondary); margin-top:25px;">الأهداف</label>
-            <div class="grid-2">
-                <div><label style="margin-top:0;">أسبوعي</label><input type="number" id="profGoalWeek"></div>
-                <div><label style="margin-top:0;">شهري</label><input type="number" id="profGoalMonth"></div>
-            </div>
+            <div class="grid-2"><div><label style="margin-top:0;">أسبوعي</label><input type="number" id="profGoalWeek"></div><div><label style="margin-top:0;">شهري</label><input type="number" id="profGoalMonth"></div></div>
             <button class="btn btn-primary" onclick="saveProfile()">حفظ</button>
         </div>
     </div>
@@ -372,12 +357,8 @@
 </div>
 
 <div class="float-btns">
-    <div class="float-btn" onclick="openModal('installModal')">
-        <i class="ri-lightbulb-flash-line" style="color:var(--accent);"></i>
-    </div>
-    <div class="float-btn" onclick="openModal('settingsModal')">
-        <i class="ri-settings-3-line"></i>
-    </div>
+    <div class="float-btn" onclick="openModal('installModal')"><i class="ri-lightbulb-flash-line" style="color:var(--accent);"></i></div>
+    <div class="float-btn" onclick="openModal('settingsModal')"><i class="ri-settings-3-line"></i></div>
 </div>
 
 <div class="bottom-nav">
@@ -398,7 +379,7 @@
             <input type="file" id="importFile" style="display:none" onchange="importData(this)">
         </div>
         <button class="btn btn-primary" onclick="forceUpdateApp()" style="margin-top:20px; background:var(--secondary);">تحديث التطبيق 🔄</button>
-        <p style="font-size:11px; margin-top:10px; opacity:0.6;">ERS V6.4 Pro</p>
+        <p style="font-size:11px; margin-top:10px; opacity:0.6;">ERS V7.0 Pro</p>
     </div>
 </div>
 
@@ -406,14 +387,9 @@
     <div class="modal-content">
         <div style="text-align:center; margin-bottom:15px;"><img src="ers-logo.png" style="width:80px;"></div>
         <h3>تنويهات الفريق</h3>
-        <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:20px;">
-            1. يرجى تثبيت التطبيق على هاتفك.<br>
-            2. <strong>هام:</strong> أدخل اسمك وهدفك في البروفايل ليعمل الكوتش بدقة.
-        </p>
-        
+        <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:20px;">1. يرجى تثبيت التطبيق على هاتفك.<br>2. <strong>هام:</strong> أدخل اسمك وهدفك في البروفايل ليعمل الكوتش بدقة.</p>
         <div class="install-step"><i class="ri-apple-fill"></i><div><strong>للآيفون:</strong><br>Share > Add to Home Screen.</div></div>
         <div class="install-step"><i class="ri-android-fill"></i><div><strong>للأندرويد:</strong><br>Menu > Install App.</div></div>
-        
         <button class="btn btn-primary" onclick="closeInstallModal()">فهمت، لنبدأ! 🚀</button>
     </div>
 </div>
@@ -451,7 +427,6 @@
         updateUI();
         fetchGlobalChallenge();
         
-        // Show Popup for new users or incomplete profile
         if (!appData.onboardingDone || !appData.profile.name) {
             setTimeout(() => document.getElementById('installModal').style.display = 'flex', 1500);
         }
@@ -462,7 +437,12 @@
     function saveData() { localStorage.setItem('ers_data_v6', JSON.stringify(appData)); updateUI(); }
 
     function updateUI() {
-        const fName = appData.profile.name ? appData.profile.name.split(' ')[0] : 'كابتن';
+        // Welcome Logic: Get first 2 names
+        let fName = 'كابتن';
+        if(appData.profile.name) {
+            const parts = appData.profile.name.trim().split(' ');
+            fName = parts.length > 1 ? `${parts[0]} ${parts[1]}` : parts[0];
+        }
         document.getElementById('headerGreeting').innerHTML = `أهلاً، <span>${fName}</span>`;
         document.getElementById('goalBadge').innerText = {'fitness':'حرق', 'speed':'سرعة', 'endurance':'تحمل'}[appData.profile.goalType] || 'عام';
 
@@ -488,10 +468,10 @@
         }
 
         renderLogs();
+        drawChart(); // Draw chart whenever UI updates
         generateSuggestion();
     }
 
-    // --- ENGINE 2.0 (With Context) ---
     function generateSuggestion() {
         const p = appData.profile;
         const box = document.getElementById('smartSuggestion');
@@ -536,18 +516,95 @@
         `;
     }
 
-    // --- HELPERS ---
-    function setYesterday() {
-        const d = new Date();
-        d.setDate(d.getDate() - 1);
-        document.getElementById('logDate').valueAsDate = d;
+    // --- LOG V7.0 FEATURES ---
+    function toggleLogForm() {
+        const body = document.getElementById('logFormBody');
+        const icon = document.getElementById('logToggleIcon');
+        body.classList.toggle('open');
+        icon.classList.toggle('rotate');
     }
+
+    function renderLogs() {
+        const l = document.getElementById('runsList');
+        l.innerHTML = "";
+        
+        // Analyze run vs profile for rating
+        const bestDist = parseFloat(appData.profile.longestRun) || 0;
+        
+        appData.runs.slice(0, 15).forEach(r => {
+            let pace = "0:00";
+            if(r.time && r.dist) {
+                let p = r.time / r.dist;
+                let pm = Math.floor(p);
+                let ps = Math.round((p - pm) * 60);
+                pace = `${pm}:${ps<10?'0'+ps:ps}`;
+            }
+
+            // Rating Logic
+            let badge = "";
+            let itemClass = "";
+            if(r.dist > bestDist && bestDist > 0) {
+                badge = `<span class="log-badge">⚡ أطول مسافة!</span>`;
+                itemClass = "best";
+            } else if(r.type === 'race' || r.type === 'interval') {
+                badge = `<span class="log-rating">⭐⭐⭐</span>`;
+            } else {
+                badge = `<span class="log-rating">⭐⭐</span>`;
+            }
+
+            l.innerHTML += `
+            <div class="log-item ${itemClass}">
+                <div class="log-main">
+                    <div class="log-dist">${r.dist} كم ${badge}</div>
+                    <div class="log-meta">
+                        <span><i class="ri-time-line"></i> ${r.time}د</span>
+                        <span class="log-pace"><i class="ri-speed-line"></i> ${pace}/كم</span>
+                    </div>
+                </div>
+                <div style="text-align:left;">
+                    <div style="font-size:12px; color:var(--text-muted);">${r.type}</div>
+                    <div style="font-size:11px; opacity:0.6;">${r.date.slice(5)}</div>
+                </div>
+            </div>`;
+        });
+    }
+
+    function drawChart() {
+        const svg = document.getElementById('progressChart');
+        // Get last 10 runs reversed (chronological)
+        const data = appData.runs.slice(0, 10).reverse().map(r => r.dist);
+        if(data.length < 2) { svg.innerHTML = ''; return; }
+
+        const max = Math.max(...data, 10);
+        const points = data.map((val, i) => {
+            const x = (i / (data.length - 1)) * 100;
+            const y = 50 - ((val / max) * 40) - 5; // padding
+            return `${x},${y}`;
+        }).join(' ');
+
+        svg.innerHTML = `
+            <polyline points="${points}" class="chart-line" />
+            ${data.map((val, i) => {
+                const x = (i / (data.length - 1)) * 100;
+                const y = 50 - ((val / max) * 40) - 5;
+                return `<circle cx="${x}" cy="${y}" class="chart-dot" />`;
+            }).join('')}
+        `;
+    }
+
+    // --- CORE & UTILS ---
+    function setYesterday() { const d = new Date(); d.setDate(d.getDate() - 1); document.getElementById('logDate').valueAsDate = d; }
 
     function addRun() {
         const d=parseFloat(document.getElementById('logDist').value), t=parseFloat(document.getElementById('logTime').value);
         if(!d||!t) return alert("أكمل البيانات");
         appData.runs.unshift({id:Date.now(), dist:d, time:t, type:document.getElementById('logType').value, date:document.getElementById('logDate').value});
         saveData(); 
+        
+        // Auto-close form on save
+        document.getElementById('logFormBody').classList.remove('open');
+        document.getElementById('logToggleIcon').classList.remove('rotate');
+        
         document.getElementById('successModal').style.display = 'flex';
     }
 
@@ -558,43 +615,32 @@
         document.getElementById('logTime').value = '';
     }
 
-    // --- CALCULATORS ---
     function predictRace() {
-        const d1 = parseFloat(document.getElementById('predBaseDist').value);
-        const t1 = parseFloat(document.getElementById('predTime').value);
+        const d1=parseFloat(document.getElementById('predBaseDist').value), t1=parseFloat(document.getElementById('predTime').value);
         if(!t1) return;
         const predict = (d2) => {
             const t2 = t1 * Math.pow((d2/d1), 1.06);
             const h = Math.floor(t2/60); const m = Math.round(t2%60);
             return `${h>0?h+'س ':''}${m}د`;
         };
-        const res = document.getElementById('predResult');
-        res.innerHTML = `
+        document.getElementById('predResult').innerHTML = `
             <div class="result-row"><span>10 كم</span> <span style="color:var(--primary); font-weight:bold">${predict(10)}</span></div>
             <div class="result-row"><span>نصف ماراثون</span> <span style="color:var(--accent); font-weight:bold">${predict(21.1)}</span></div>
             <div class="result-row"><span>ماراثون</span> <span style="color:var(--secondary); font-weight:bold">${predict(42.2)}</span></div>
         `;
-        res.style.display = 'block';
+        document.getElementById('predResult').style.display = 'block';
     }
 
     function calcZones() {
         const age = parseFloat(document.getElementById('hrAge').value);
         if(!age) return;
         const maxHr = 220 - age;
-        const res = document.getElementById('hrResult');
-        res.innerHTML = `
+        document.getElementById('hrResult').innerHTML = `
             <div class="result-row"><span>Max HR</span> <strong>${maxHr}</strong></div>
             <div class="result-row"><span>Zone 2 (Fat Burn)</span> <span>${Math.round(maxHr*0.6)}-${Math.round(maxHr*0.7)}</span></div>
             <div class="result-row"><span>Zone 4 (Threshold)</span> <span>${Math.round(maxHr*0.8)}-${Math.round(maxHr*0.9)}</span></div>
         `;
-        res.style.display = 'block';
-    }
-
-    function switchCalcTab(tab) {
-        document.querySelectorAll('.calc-view').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.calc-tab').forEach(el => el.classList.remove('active'));
-        document.getElementById('calc-'+tab).classList.add('active');
-        event.target.classList.add('active');
+        document.getElementById('hrResult').style.display = 'block';
     }
 
     function calculatePace() {
@@ -606,7 +652,6 @@
         }
     }
 
-    // --- UTILS ---
     function toggleChallenge() {
         document.getElementById('chBody').classList.toggle('open');
         document.getElementById('chChevron').classList.toggle(document.getElementById('chBody').classList.contains('open') ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line');
@@ -639,11 +684,6 @@
                 appData.challenge.targetDist = num;
             }
         } catch(e){}
-    }
-
-    function renderLogs() {
-        const l=document.getElementById('runsList'); l.innerHTML="";
-        appData.runs.slice(0,15).forEach(r=>l.innerHTML+=`<div style="border-bottom:1px solid rgba(255,255,255,0.1); padding:10px 0; display:flex; justify-content:space-between; font-size:15px;"><span>${r.dist}km</span><span style="opacity:0.6">${r.date}</span></div>`);
     }
 
     function saveProfile() {
@@ -688,6 +728,13 @@
         window.scrollTo(0,0);
         if(v==='profile') populateProfile();
     }
+    
+    function switchCalcTab(tab) {
+        document.querySelectorAll('.calc-view').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.calc-tab').forEach(el => el.classList.remove('active'));
+        document.getElementById('calc-'+tab).classList.add('active');
+        event.target.classList.add('active');
+    }
 
     async function forceUpdateApp() {
         if('serviceWorker' in navigator) {
@@ -699,7 +746,7 @@
     
     function exportData() {
         const s = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
-        const a = document.createElement('a'); a.href=s; a.download="ers_v6_backup.json"; a.click();
+        const a = document.createElement('a'); a.href=s; a.download="ers_v7_backup.json"; a.click();
     }
     
     function importData(inp) {

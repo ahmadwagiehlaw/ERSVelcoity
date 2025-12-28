@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ERS Velocity V14.0</title>
+    <title>ERS Velocity V14.1</title>
+    
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="ers-logo.png">
-    <meta name="theme-color" content="#0f172a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="ers-logo.png"> <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
+    <meta name="theme-color" content="#0f172a">
+
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
+            /* Dark Mode (Default) */
             --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7); /* أكثر شفافية */
-            --glass-bg: rgba(15, 23, 42, 0.85);
-            --primary: #10b981; /* لون أخضر عصري */
+            --card-bg: rgba(30, 41, 59, 0.75);
+            --glass-bg: rgba(15, 23, 42, 0.9);
+            --primary: #10b981;
             --primary-glow: rgba(16, 185, 129, 0.4);
             --secondary: #3b82f6;
             --gold: #f59e0b;
@@ -26,12 +28,28 @@
             --text-main: #ffffff;
             --text-muted: #94a3b8;
             --border-color: rgba(255,255,255,0.08);
-            --header-height: 70px;
+            --header-height: 75px;
         }
+
+        /* Light Mode Classes */
+        body.light-mode {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: rgba(0,0,0,0.1);
+        }
+        body.light-mode .th-label, body.light-mode .ch-label { color: #b45309; }
+        body.light-mode .notif-btn { background: rgba(0,0,0,0.05); }
+        body.light-mode input, body.light-mode select { background: #f8fafc; color: #0f172a; border-color: #cbd5e1; }
+        body.light-mode .pod-btn-mini { background: #f1f5f9; color: #334155; border-color: #e2e8f0; }
+        body.light-mode .pod-btn-mini.apple i { color: #000; }
 
         body {
             font-family: 'Tajawal', sans-serif;
             background-color: var(--bg-color);
+            /* Subtle Pattern */
             background-image: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 20%);
             color: var(--text-main);
             margin: 0; padding: 0;
@@ -41,11 +59,12 @@
             padding-top: calc(var(--header-height) + env(safe-area-inset-top));
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease;
         }
 
-        .app-container { width: 100%; max-width: 500px; padding: 15px; box-sizing: border-box; overflow-x: hidden; }
+        .app-container { width: 100%; max-width: 500px; padding: 12px; box-sizing: border-box; overflow-x: hidden; }
 
-        /* HEADER REMASTERED */
+        /* HEADER */
         header {
             position: fixed; top: 0; left: 0; right: 0;
             height: calc(var(--header-height) + env(safe-area-inset-top));
@@ -60,161 +79,143 @@
             display: flex; justify-content: space-between; align-items: center; 
         }
         .header-left { display: flex; align-items: center; gap: 15px; }
-        .logo-img { height: 35px; width: auto; }
+        .logo-img { height: 50px; width: auto; /* Increased Size */ filter: drop-shadow(0 0 8px rgba(255,255,255,0.1)); transition: 0.3s; }
         .welcome-msg { font-size: 16px; font-weight: 800; color: var(--text-main); }
         .date-badge { font-size: 10px; color: var(--text-muted); }
 
         /* NOTIFICATION BELL */
         .notif-btn { position: relative; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--border-color); transition: 0.2s; }
-        .notif-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
+        .notif-btn:active { transform: scale(0.95); }
         .notif-btn i { font-size: 20px; color: var(--text-main); }
         .notif-badge { position: absolute; top: 8px; right: 10px; width: 8px; height: 8px; background: var(--danger); border-radius: 50%; box-shadow: 0 0 5px var(--danger); display: none; }
         .notif-badge.active { display: block; }
 
-        /* SECTION TITLES */
-        .section-title { font-size: 18px; font-weight: 800; margin: 20px 0 15px 0; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
-        .section-title i { color: var(--primary); }
-
         /* CARDS */
         .card {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 24px; padding: 20px; margin-bottom: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2); backdrop-filter: blur(10px);
-            position: relative; overflow: hidden;
+            border-radius: 20px; padding: 15px; margin-bottom: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(10px);
+            position: relative; overflow: hidden; width: 100%; box-sizing: border-box;
         }
+        .section-title { font-size: 16px; font-weight: 800; margin: 15px 0 10px 0; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
+        .section-title i { color: var(--primary); }
 
-        /* --- TEAM PAGE REDESIGN --- */
-        
-        /* 1. HERO (Progress) */
+        /* --- TEAM PAGE FIXES --- */
         .team-hero {
             background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.02));
-            border: 1px solid rgba(245,158,11,0.3); border-radius: 24px; padding: 25px; text-align: center; margin-bottom: 20px;
-            position: relative; overflow: hidden;
+            border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; padding: 25px; text-align: center; margin-bottom: 20px;
+            position: relative; overflow: hidden; width: 100%; box-sizing: border-box;
         }
         .th-bg-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg); font-size: 120px; opacity: 0.05; color: var(--gold); pointer-events: none; }
-        .th-val { font-size: 48px; font-weight: 900; color: var(--text-main); line-height: 1; text-shadow: 0 4px 20px rgba(245,158,11,0.3); }
-        .th-label { font-size: 12px; color: var(--gold); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
-        .th-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 20px; overflow: hidden; }
+        .th-val { font-size: 48px; font-weight: 900; color: var(--text-main); line-height: 1; text-shadow: 0 4px 20px rgba(245,158,11,0.3); margin: 10px 0; }
+        .th-label { font-size: 12px; color: var(--gold); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        .th-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 15px; overflow: hidden; }
         .th-bar-fill { height: 100%; background: var(--gold); border-radius: 10px; width: 0%; transition: width 1.5s ease; box-shadow: 0 0 15px var(--gold); }
         .th-target { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 8px; font-weight: bold; }
 
-        /* 2. PODCAST COMPACT */
-        .pod-row { display: flex; gap: 10px; margin-bottom: 25px; }
+        /* PODCAST (Moved to Bottom) */
+        .pod-row { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); }
         .pod-btn-mini { 
             flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 12px; border-radius: 16px; font-weight: bold; font-size: 12px; text-decoration: none;
+            padding: 10px; border-radius: 12px; font-weight: bold; font-size: 11px; text-decoration: none;
             background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-muted);
             transition: 0.2s;
         }
-        .pod-btn-mini:active { background: rgba(255,255,255,0.1); transform: scale(0.98); }
-        .pod-btn-mini i { font-size: 18px; }
-        .pod-btn-mini.spotify i { color: #1DB954; }
-        .pod-btn-mini.apple i { color: #fff; }
+        .pod-btn-mini i { font-size: 16px; }
 
-        /* 3. PODIUM (NEW!) */
-        .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 15px; margin: 30px 0 10px 0; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+        /* PODIUM */
+        .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 10px; margin: 20px 0 10px 0; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
         .podium-item { display: flex; flex-direction: column; align-items: center; width: 30%; position: relative; cursor: pointer; }
         .p-avatar { 
-            width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--border-color);
-            display: flex; align-items: center; justify-content: center; font-weight: bold; margin-bottom: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 2; position: relative;
+            width: 45px; height: 45px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center; font-weight: bold; margin-bottom: 6px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 2; position: relative; color: var(--text-main);
         }
-        .p-rank { font-size: 10px; font-weight: bold; margin-top: 5px; opacity: 0.7; }
-        .p-name { font-size: 11px; font-weight: bold; text-align: center; line-height: 1.2; height: 26px; overflow: hidden; width: 100%; }
-        .p-val { font-size: 12px; font-weight: 900; margin-top: 2px; }
+        .p-name { font-size: 10px; font-weight: bold; text-align: center; line-height: 1.2; height: 24px; overflow: hidden; width: 100%; color: var(--text-main); }
+        .p-val { font-size: 12px; font-weight: 900; margin-top: 2px; color: var(--text-main); }
         
-        .podium-item.rank-1 .p-avatar { width: 70px; height: 70px; border-color: var(--gold); box-shadow: 0 0 20px rgba(245,158,11,0.4); font-size: 24px; }
+        .podium-item.rank-1 .p-avatar { width: 65px; height: 65px; border-color: var(--gold); box-shadow: 0 0 20px rgba(245,158,11,0.4); font-size: 22px; }
         .podium-item.rank-1 .p-val { color: var(--gold); font-size: 14px; }
-        .podium-item.rank-1 { transform: translateY(-15px); }
-        .rank-crown { position: absolute; top: -22px; color: var(--gold); font-size: 20px; animation: float 2s infinite ease-in-out; }
-        
+        .rank-crown { position: absolute; top: -18px; color: var(--gold); font-size: 18px; animation: float 2s infinite ease-in-out; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-        /* 4. FEED (CLEANER) */
-        .feed-item { padding: 15px 0; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px; }
-        .f-avatar { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.1); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        /* FEED */
+        .feed-item { padding: 12px 0; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px; align-items: center; }
+        .f-avatar { width: 38px; height: 38px; border-radius: 12px; background: rgba(255,255,255,0.1); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-main); }
         .f-content { flex: 1; }
-        .f-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .f-name { font-size: 14px; font-weight: bold; color: var(--text-main); }
-        .f-time { font-size: 10px; color: var(--text-muted); }
-        .f-stat { font-size: 13px; color: var(--text-muted); }
-        .f-stat strong { color: var(--text-main); font-weight: 800; font-size: 15px; }
-        .f-shoe { font-size: 10px; color: var(--border-color); opacity: 0.6; margin-top: 2px; display: block; }
-        .f-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+        .f-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+        .f-name { font-size: 13px; font-weight: bold; color: var(--text-main); }
+        .f-time { font-size: 9px; color: var(--text-muted); }
+        .f-stat { font-size: 12px; color: var(--text-muted); }
+        .f-stat strong { color: var(--text-main); font-weight: 800; font-size: 14px; }
+        .f-actions { margin-left: auto; }
         .like-btn { 
-            background: rgba(255,255,255,0.05); border: 1px solid transparent; border-radius: 20px;
-            padding: 4px 12px; font-size: 12px; color: var(--text-muted); cursor: pointer; display: flex; gap: 5px; align-items: center; transition: 0.2s;
+            background: transparent; border: 1px solid var(--border-color); border-radius: 15px;
+            padding: 4px 10px; font-size: 11px; color: var(--text-muted); cursor: pointer; display: flex; gap: 4px; align-items: center;
         }
-        .like-btn.active { background: rgba(16, 185, 129, 0.15); color: var(--primary); border-color: rgba(16, 185, 129, 0.3); }
-
-        /* --- END TEAM REDESIGN --- */
+        .like-btn.active { background: rgba(16, 185, 129, 0.15); color: var(--primary); border-color: var(--primary); }
 
         /* COACH CARD */
         .coach-card {
-            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(15,23,42,0.6));
-            border-color: rgba(16,185,129,0.3); display: flex; gap: 15px; align-items: center; padding: 20px;
+            background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(15,23,42,0.8));
+            border: 1px solid rgba(16,185,129,0.3); display: flex; gap: 15px; align-items: center; padding: 20px; border-radius: 20px; margin-bottom: 20px;
         }
         .coach-icon { width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #000; box-shadow: 0 0 15px var(--primary-glow); flex-shrink: 0; }
-        .coach-text { font-size: 13px; line-height: 1.6; color: #fff; }
+        .coach-text { font-size: 13px; line-height: 1.6; color: var(--text-main); font-weight: 500; }
 
         /* FORMS */
-        input, select { width: 100%; padding: 16px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 16px; color: white; font-family: inherit; margin-bottom: 12px; box-sizing: border-box; font-size: 16px; outline: none; transition: 0.3s; }
-        input:focus, select:focus { border-color: var(--primary); background: rgba(16,185,129,0.05); }
-        .btn { width: 100%; padding: 16px; border-radius: 16px; font-weight: 800; border: none; cursor: pointer; display: flex; justify-content: center; gap: 8px; transition: 0.2s; font-size: 16px; align-items: center; }
-        .btn:active { transform: scale(0.98); }
-        .btn-primary { background: var(--primary); color: #000; box-shadow: 0 4px 20px var(--primary-glow); }
+        input, select { width: 100%; padding: 15px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 14px; color: var(--text-main); font-family: inherit; margin-bottom: 10px; box-sizing: border-box; font-size: 16px; outline: none; }
+        input:focus, select:focus { border-color: var(--primary); }
+        .btn { width: 100%; padding: 15px; border-radius: 14px; font-weight: 800; border: none; cursor: pointer; display: flex; justify-content: center; gap: 8px; font-size: 16px; align-items: center; }
+        .btn-primary { background: var(--primary); color: #000; box-shadow: 0 4px 15px var(--primary-glow); }
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
         
-        /* NAV */
-        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 460px; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 25px; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 9999; }
-        .nav-item { color: var(--text-muted); text-align: center; font-size: 10px; cursor: pointer; width: 20%; transition: 0.3s; opacity: 0.6; }
+        /* NAV & FLOATERS */
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 460px; background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 25px; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 9999; }
+        .nav-item { color: var(--text-muted); text-align: center; font-size: 10px; cursor: pointer; width: 20%; transition: 0.3s; opacity: 0.7; }
         .nav-item i { display: block; font-size: 24px; margin-bottom: 3px; }
         .nav-item.active { color: var(--primary); opacity: 1; transform: translateY(-5px); }
-        .nav-item.active i { color: var(--primary); text-shadow: 0 0 15px var(--primary-glow); }
+        .nav-item.active i { color: var(--primary); }
 
+        .float-btns { position: fixed; bottom: 100px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
+        .float-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 25px rgba(0,0,0,0.4); cursor: pointer; transition: 0.2s; }
+        
         /* UTILS */
         .view-section { display: none; animation: fadeIn 0.4s ease; }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* AUTH & MODALS */
-        #auth-screen { position: fixed; inset: 0; background: var(--bg-color); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; background-image: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.1), transparent 60%); }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
-        .modal-content { background: #1e293b; width: 85%; max-width: 400px; padding: 25px; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; max-height: 85vh; overflow-y: auto; }
+        #auth-screen { position: fixed; inset: 0; background: var(--bg-color); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--bg-color); width: 85%; max-width: 400px; padding: 25px; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
 
-        /* NOTIFICATIONS LIST */
+        /* NOTIFICATIONS */
         .notif-list { text-align: right; max-height: 300px; overflow-y: auto; }
-        .notif-item { padding: 12px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.02); margin-bottom: 5px; border-radius: 10px; }
+        .notif-item { padding: 12px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; }
         .notif-icon { width: 32px; height: 32px; border-radius: 50%; background: rgba(16,185,129,0.15); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 14px; }
         .notif-text { font-size: 13px; line-height: 1.4; color: var(--text-main); flex: 1; }
-        
-        /* OTHER */
-        .float-btns { position: fixed; bottom: 100px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
-        .float-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--text-muted); backdrop-filter: blur(10px); box-shadow: 0 8px 25px rgba(0,0,0,0.4); cursor: pointer; }
-        
-        .log-accordion { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 20px; margin-bottom: 20px; overflow: hidden; }
+
+        .log-accordion { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; margin-bottom: 20px; overflow: hidden; }
         .log-acc-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .log-acc-body { max-height: 0; overflow: hidden; transition: 0.4s; padding: 0 20px; }
-        .log-acc-body.open { max-height: 650px; padding: 20px; }
+        .log-acc-body.open { max-height: 700px; padding: 20px; }
         .date-row { display: flex; gap: 10px; } .date-input-container { flex: 1; }
-        .yesterday-btn { width: 70px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 12px; font-weight: bold; cursor: pointer; }
-        
-        /* HEATMAP */
-        .heatmap-container { display: flex; justify-content: space-between; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 16px; margin-bottom: 15px; }
+        .yesterday-btn { width: 70px; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* HEATMAP & LOGS */
+        .heatmap-container { display: flex; justify-content: space-between; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 16px; margin-bottom: 15px; }
         .heatmap-day { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-muted); }
-        .heatmap-day.active { background: var(--primary); color: #000; font-weight: 900; box-shadow: 0 0 10px var(--primary-glow); }
+        .heatmap-day.active { background: var(--primary); color: #000; font-weight: 900; }
         
-        /* LOG LIST */
         .log-item { background: var(--card-bg); padding: 15px; border-radius: 16px; margin-bottom: 10px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        
-        /* ADMIN */
-        #adminPanel { position: fixed; top: 100px; left: 15px; right: 15px; background: rgba(15,23,42,0.95); border: 2px solid var(--gold); border-radius: 20px; padding: 20px; z-index: 1500; display: none; backdrop-filter: blur(20px); }
     </style>
 </head>
 <body>
 
 <div id="auth-screen">
-    <img src="ers-logo.png" style="width: 140px; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(16,185,129,0.3));">
-    <h2 style="color:white; margin:0 0 5px 0;">ERS Velocity <span style="color:var(--primary); font-size:12px;">V14.0</span></h2>
+    <img src="ers-logo.png" style="width: 140px; margin-bottom: 20px;">
+    <h2 style="color:var(--text-main); margin:0 0 5px 0;">ERS Velocity <span style="color:var(--primary); font-size:12px;">V14.1</span></h2>
     <p style="color:var(--text-muted); font-size:13px; margin-bottom:40px;">Pro Team Platform</p>
     <div style="width:100%; max-width:320px;">
         <input type="email" id="email" placeholder="Email">
@@ -246,22 +247,19 @@
     <div class="app-container">
 
         <div id="view-home" class="view-section active">
-            
             <div id="teamMsgBox" style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); padding:15px; border-radius:16px; margin-bottom:15px; display:none;">
                 <div style="color:var(--gold); font-size:13px; font-weight:bold; margin-bottom:5px;"><i class="ri-megaphone-fill"></i> تحديث إداري</div>
                 <div id="teamMsgContent" style="font-size:13px; color:rgba(255,255,255,0.9);"></div>
             </div>
 
-            <div class="coach-card" style="border-radius:20px; margin-bottom:20px;">
+            <div class="coach-card">
                 <div class="coach-icon"><i class="ri-robot-2-line"></i></div>
-                <div class="coach-text" id="coachText">
-                    <i class="ri-loader-4-line ri-spin"></i> جاري تحليل بياناتك...
-                </div>
+                <div class="coach-text" id="coachText">جاري التحليل...</div>
             </div>
 
             <div class="card">
                 <div class="section-title" style="margin-top:0;"><i class="ri-bar-chart-grouped-line"></i> ملخص الأداء</div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="grid-2">
                     <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:18px; text-align:center;">
                         <div style="font-size:28px; font-weight:900; color:var(--primary)" id="weekTotal">0</div>
                         <div style="font-size:11px; color:var(--text-muted); font-weight:bold;">كم (أسبوعي)</div>
@@ -275,55 +273,39 @@
         </div>
 
         <div id="view-team" class="view-section">
-            
             <div class="team-hero">
                 <i class="ri-trophy-line th-bg-icon"></i>
-                <div style="position:absolute; top:15px; left:15px; font-size:14px; color:rgba(255,255,255,0.3); cursor:pointer;" onclick="adminCheck()"><i class="ri-settings-4-fill"></i></div>
-                
                 <div class="th-label">إجمالي جري الفريق (الشهر)</div>
                 <div class="th-val" id="teamTotalDist">0</div>
-                
-                <div class="th-bar-bg">
-                    <div class="th-bar-fill" id="teamProgBar"></div>
-                </div>
-                <div class="th-target">
-                    <span>البداية</span>
-                    <span id="teamGoalTxt">الهدف: 0 كم</span>
-                </div>
+                <div class="th-bar-bg"><div class="th-bar-fill" id="teamProgBar"></div></div>
+                <div class="th-target"><span>البداية</span><span id="teamGoalTxt">الهدف: 0</span></div>
             </div>
 
-            <div class="pod-row">
-                <a href="https://podcasts.apple.com/us/podcast/running-cast-egypt/id1800972032" target="_blank" class="pod-btn-mini apple">
-                    <i class="ri-apple-fill"></i> Podcast
-                </a>
-                <a href="https://open.spotify.com/show/4cYIPTsFZa3cBIyHLTgcui?si=4bdb39afdf054103" target="_blank" class="pod-btn-mini spotify">
-                    <i class="ri-spotify-fill"></i> Spotify
-                </a>
-            </div>
-
-            <div class="card" style="padding-bottom:5px;">
-                <div class="section-title" style="margin-top:0; justify-content:center; font-size:16px; color:var(--gold);"><i class="ri-medal-fill"></i> أبطال الشهر</div>
-                <div id="podiumContainer" class="podium-container">
-                    <p style="font-size:12px; color:var(--text-muted);">جاري ترتيب الأبطال...</p>
-                </div>
+            <div class="card">
+                <div class="section-title" style="margin-top:0; justify-content:center; color:var(--gold);"><i class="ri-medal-fill"></i> أبطال الشهر</div>
+                <div id="podiumContainer" class="podium-container"></div>
                 
-                <div class="section-title" style="font-size:15px;"><i class="ri-pulse-line"></i> النشاط المباشر</div>
+                <div class="section-title"><i class="ri-pulse-line"></i> النشاط المباشر</div>
                 <div id="teamFeed" style="max-height:400px; overflow-y:auto; padding-right:2px;"></div>
+
+                <div class="pod-row">
+                    <a href="https://podcasts.apple.com/us/podcast/running-cast-egypt/id1800972032" target="_blank" class="pod-btn-mini apple"><i class="ri-apple-fill"></i> Podcast</a>
+                    <a href="https://open.spotify.com/show/4cYIPTsFZa3cBIyHLTgcui?si=4bdb39afdf054103" target="_blank" class="pod-btn-mini spotify"><i class="ri-spotify-fill"></i> Spotify</a>
+                </div>
             </div>
         </div>
 
         <div id="view-log" class="view-section">
             <div class="heatmap-container" id="weekHeatmap"></div>
-
             <div class="log-accordion">
                 <div class="log-acc-header" onclick="toggleLogForm()">
-                    <div style="font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:10px;"><i class="ri-add-circle-fill" style="font-size:22px;"></i> تسجيل نشاط جديد</div>
+                    <div style="font-weight:bold; color:var(--primary); display:flex; align-items:center; gap:10px;"><i class="ri-add-circle-fill" style="font-size:22px;"></i> تسجيل جديد</div>
                     <i class="ri-arrow-down-s-line" id="logToggleIcon"></i>
                 </div>
                 <div class="log-acc-body" id="logFormBody">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="grid-2">
                         <div><label style="font-size:12px; color:var(--text-muted);">المسافة (كم)</label><input type="number" id="logDist" step="0.1" inputmode="decimal"></div>
-                        <div><label style="font-size:12px; color:var(--text-muted);">الزمن (دقيقة)</label><input type="number" id="logTime" inputmode="numeric"></div>
+                        <div><label style="font-size:12px; color:var(--text-muted);">الزمن (د)</label><input type="number" id="logTime" inputmode="numeric"></div>
                     </div>
                     <select id="logType">
                         <option value="Easy Run">Easy Run (هرولة)</option>
@@ -337,56 +319,54 @@
                         <div class="date-input-container"><input type="date" id="logDate"></div>
                         <button class="yesterday-btn" onclick="setYesterday()">أمس</button>
                     </div>
-                    <button class="btn btn-primary" onclick="addRun()" style="margin-top:15px;">تسجيل ونشر 🔥</button>
+                    <button class="btn btn-primary" onclick="addRun()" style="margin-top:15px;">تسجيل 🔥</button>
                 </div>
             </div>
-
             <div id="activityLogList" style="padding-bottom:20px;"></div>
         </div>
 
         <div id="view-profile" class="view-section">
             <div class="card">
                 <div class="section-title" style="margin-top:0;">👤 الملف الشخصي</div>
-                <label style="font-size:12px; color:var(--text-muted);">الاسم الظاهر</label>
+                <label style="font-size:12px; color:var(--text-muted);">الاسم</label>
                 <input type="text" id="profName">
-                
-                <label style="font-size:12px; color:var(--text-muted);">هدفي الحالي</label>
+                <label style="font-size:12px; color:var(--text-muted);">الهدف</label>
                 <select id="profGoal">
                     <option value="fitness">لياقة وتخسيس (Fitness)</option>
                     <option value="speed">تطوير سرعة (Speed)</option>
                     <option value="endurance">مسافات وتحمل (Endurance)</option>
                 </select>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="grid-2">
                     <div><label style="font-size:12px; color:var(--text-muted);">الوزن</label><input type="number" id="profWeight"></div>
                     <div><label style="font-size:12px; color:var(--text-muted);">أفضل 5K</label><input type="number" id="profPB"></div>
                 </div>
-
-                <button class="btn btn-primary" onclick="saveProfile()" style="margin-top:10px;">حفظ التعديلات</button>
-                <button class="btn" onclick="auth.signOut()" style="background:rgba(239,68,68,0.1); color:var(--danger); border:1px solid var(--danger); margin-top:15px;">تسجيل خروج</button>
+                <button class="btn btn-primary" onclick="saveProfile()" style="margin-top:10px;">حفظ</button>
+                <button class="btn" onclick="auth.signOut()" style="background:transparent; color:var(--danger); border:1px solid var(--danger); margin-top:15px;">خروج</button>
             </div>
         </div>
-
     </div>
 
     <div id="notifModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
         <div class="modal-content">
-            <h3 style="margin:0 0 15px 0; border-bottom:1px solid var(--border-color); padding-bottom:10px;">🔔 الإشعارات</h3>
+            <h3 style="margin:0 0 15px 0; color:var(--text-main);">🔔 الإشعارات</h3>
             <div class="notif-list" id="notifList"></div>
             <button class="btn" onclick="document.getElementById('notifModal').style.display='none'" style="margin-top:10px; background:transparent; border:1px solid var(--border-color); color:var(--text-muted);">إغلاق</button>
         </div>
     </div>
 
-    <div id="adminPanel">
-        <h3 style="color:var(--gold); margin-top:0;">إعدادات الفريق</h3>
-        <input type="text" id="admMsg" placeholder="رسالة إدارية">
-        <input type="number" id="admGoal" placeholder="هدف الفريق (كم)">
-        <button class="btn btn-primary" onclick="adminUpdate()">تحديث</button>
-        <button class="btn" onclick="toggleAdminPanel()" style="margin-top:10px; background:transparent; color:var(--text-muted);">إلغاء</button>
+    <div id="settingsModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+        <div class="modal-content">
+            <h3 style="margin:0 0 20px 0; color:var(--text-main);">⚙️ الإعدادات</h3>
+            <button class="btn btn-outline" onclick="toggleTheme()" style="justify-content:space-between;">
+                <span>المظهر (ليلي/نهاري)</span> <i class="ri-contrast-line"></i>
+            </button>
+            <button class="btn btn-primary" onclick="forceUpdateApp()" style="margin-top:15px;">تحديث التطبيق</button>
+            <p style="font-size:12px; color:var(--text-muted); margin-top:20px;">V14.1 - ERS Team</p>
+        </div>
     </div>
 
     <div class="float-btns">
-        <div class="float-btn" onclick="forceUpdateApp()"><i class="ri-refresh-line"></i></div>
+        <div class="float-btn" onclick="openModal('settingsModal')"><i class="ri-settings-4-line"></i></div>
     </div>
 
     <div class="bottom-nav">
@@ -418,8 +398,8 @@
     const db = firebase.firestore();
     let currentUser = null;
     let userData = { name: "", runs: [] };
-    const ADMIN_EMAIL = "ahmad.wagieh@gmail.com";
 
+    // --- LOGIC ---
     auth.onAuthStateChanged(user => {
         if(user) {
             currentUser = user;
@@ -439,7 +419,7 @@
             if(type === 'signup') {
                 await auth.createUserWithEmailAndPassword(e, p);
                 await db.collection('users').doc(auth.currentUser.uid).set({
-                    name: "كابتن جديد", runs: [], totalDistMonth: 0, createdAt: new Date()
+                    name: "عداء جديد", runs: [], totalDistMonth: 0, createdAt: new Date()
                 });
             } else await auth.signInWithEmailAndPassword(e, p);
         } catch(err) { alert(err.message); }
@@ -457,16 +437,15 @@
         });
 
         // Feed
-        db.collection('activity_feed').orderBy('timestamp', 'desc').limit(20).onSnapshot(snap => {
+        db.collection('activity_feed').orderBy('timestamp', 'desc').limit(30).onSnapshot(snap => {
             const feed = document.getElementById('teamFeed');
-            if(snap.empty) { feed.innerHTML='<div style="text-align:center; padding:20px; color:var(--text-muted);">لا يوجد نشاط بعد</div>'; return; }
+            if(snap.empty) { feed.innerHTML='<div style="text-align:center; padding:20px; color:var(--text-muted);">ابدأ الجري الآن!</div>'; return; }
             let html = '';
             snap.forEach(doc => {
                 const d = doc.data();
                 const isLiked = (d.likes || []).includes(currentUser.uid);
                 const active = isLiked ? 'active' : '';
                 const count = (d.likes || []).length;
-                
                 html += `
                 <div class="feed-item">
                     <div class="f-avatar">${d.userName.charAt(0)}</div>
@@ -476,7 +455,7 @@
                             <span class="f-time">${getTimeAgo(d.timestamp?.toDate() || new Date())}</span>
                         </div>
                         <div class="f-stat">سجل <strong>${d.dist} كم</strong> <span style="font-size:12px">(${d.type})</span></div>
-                        ${d.shoe ? `<span class="f-shoe"><i class="ri-footprint-line"></i> ${d.shoe}</span>` : ''}
+                        ${d.shoe ? `<div style="font-size:10px; opacity:0.7; margin-top:2px;"><i class="ri-footprint-line"></i> ${d.shoe}</div>` : ''}
                         <div class="f-actions">
                             <button class="like-btn ${active}" onclick="toggleLike('${doc.id}')">
                                 <i class="ri-thumb-up-fill"></i> <span id="c-${doc.id}">${count > 0 ? count : 'عاش'}</span>
@@ -488,21 +467,17 @@
             feed.innerHTML = html;
         });
 
-        // Podium & Leaderboard
+        // Podium
         db.collection('users').orderBy('totalDistMonth', 'desc').limit(3).onSnapshot(snap => {
             const container = document.getElementById('podiumContainer');
             let html = '';
             let teamTotal = 0;
             let users = [];
             snap.forEach(doc => { users.push(doc.data()); teamTotal += (doc.data().totalDistMonth || 0); });
-            
-            // Need exactly 3 spots for podium, fill with placeholders if needed
             while(users.length < 3) users.push({name:'...', totalDistMonth:0});
-
-            // Order for Visual Podium: 2nd - 1st - 3rd
+            
             const podiumOrder = [users[1], users[0], users[2]];
             const ranks = [2, 1, 3];
-            
             podiumOrder.forEach((u, idx) => {
                 const rank = ranks[idx];
                 const crown = rank === 1 ? '<div class="rank-crown"><i class="ri-vip-crown-fill"></i></div>' : '';
@@ -512,16 +487,13 @@
                     <div class="p-avatar">${u.name ? u.name.charAt(0) : '?'}</div>
                     <div class="p-name">${u.name || '...'}</div>
                     <div class="p-val">${(u.totalDistMonth||0).toFixed(1)}</div>
-                    <div class="p-rank">#${rank}</div>
                 </div>`;
             });
             container.innerHTML = html;
 
-            // Update Hero
+            // System Config
             db.collection('system').doc('config').onSnapshot(sys => {
                 const conf = sys.data() || { goal: 1000 };
-                // Fetch REAL total from stats collection if scalable, but for now sum top users or keep local sum
-                // Note: accurate team total requires a separate counter in Firestore, here we simulate or use top users sum
                 document.getElementById('teamTotalDist').innerText = teamTotal.toFixed(0);
                 document.getElementById('teamGoalTxt').innerText = `الهدف: ${conf.goal}`;
                 const pct = Math.min((teamTotal/conf.goal)*100, 100);
@@ -532,6 +504,12 @@
                 }
             });
         });
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        // Save preference could be added here
+        document.getElementById('settingsModal').style.display='none';
     }
 
     // ACTIONS
@@ -574,16 +552,9 @@
 
     function checkNotifications() {
         const list = document.getElementById('notifList');
-        // 1. Static Welcome Msg to prove it works
-        let html = `
-        <div class="notif-item">
-            <div class="notif-icon"><i class="ri-rocket-2-fill"></i></div>
-            <div class="notif-text">أهلاً بك في التحديث الجديد V14.0! الإشعارات الآن تعمل بنجاح.</div>
-        </div>`;
-        
-        // 2. Real Likes
+        let html = '';
         if(userData.name) {
-            db.collection('activity_feed').where('userName', '==', userData.name).get().then(snap => {
+            db.collection('activity_feed').where('userName', '==', userData.name).orderBy('timestamp', 'desc').limit(5).get().then(snap => {
                 let count = 0;
                 snap.forEach(doc => {
                     const l = doc.data().likes || [];
@@ -597,14 +568,11 @@
                     }
                 });
                 if(count > 0) document.getElementById('notifBadge').classList.add('active');
-                list.innerHTML = html;
+                list.innerHTML = html || '<div style="text-align:center; color:var(--text-muted); padding:10px;">لا إشعارات جديدة</div>';
             });
-        } else {
-            list.innerHTML = html;
         }
     }
 
-    // UTILS
     function updateUI() {
         document.getElementById('headerGreeting').innerText = `أهلاً، ${(userData.name||'').split(' ')[0]}`;
         if(document.getElementById('view-profile').style.display === 'block') {
@@ -613,20 +581,18 @@
             document.getElementById('profWeight').value = userData.weight || "";
             document.getElementById('profPB').value = userData.pb || "";
         }
-        // Logs & Stats logic similar to before...
         const runs = userData.runs || [];
         const logList = document.getElementById('activityLogList');
         logList.innerHTML = runs.slice(0,10).map(r => `
             <div class="log-item">
                 <div>
-                    <div style="font-weight:bold; color:white;">${r.dist} كم</div>
+                    <div style="font-weight:bold; color:var(--text-main);">${r.dist} كم</div>
                     <div style="font-size:11px; color:var(--text-muted);">${r.type} ${r.shoe?'• '+r.shoe:''}</div>
                 </div>
                 <div style="font-size:11px; color:var(--text-muted);">${r.date.slice(5)}</div>
             </div>
         `).join('');
 
-        // Heatmap
         const hm = document.getElementById('weekHeatmap');
         hm.innerHTML = '';
         const days = ['ح','ن','ث','ر','خ','ج','س'];
@@ -635,14 +601,20 @@
             const exists = runs.some(r => r.date === d.toISOString().split('T')[0]);
             hm.innerHTML += `<div class="heatmap-day ${exists?'active':''}">${days[d.getDay()]}</div>`;
         }
+
+        const now = new Date();
+        const startW = new Date(now.setDate(now.getDate() - now.getDay()));
+        const startM = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        const wDist = runs.filter(r => new Date(r.date) >= startW).reduce((s,r)=>s+parseFloat(r.dist),0);
+        const mDist = runs.filter(r => new Date(r.date) >= startM).reduce((s,r)=>s+parseFloat(r.dist),0);
+        document.getElementById('weekTotal').innerText = wDist.toFixed(1);
+        document.getElementById('monthTotal').innerText = mDist.toFixed(1);
     }
     
     function updateCoach() {
-        // Same simple logic
         const n = (userData.name||'').split(' ')[0];
-        document.getElementById('coachText').innerText = `جاهز للتمرين يا ${n}؟\nالتحديث الجديد هيساعدك تتابع فريقك أحسن!`;
+        document.getElementById('coachText').innerText = `أهلاً يا ${n}!\nالتزم بخطتك، وحاول تكسر رقمك الشهر ده.`;
     }
-
     function saveProfile() {
         db.collection('users').doc(currentUser.uid).update({
             name: document.getElementById('profName').value,
@@ -651,7 +623,6 @@
             pb: document.getElementById('profPB').value
         }).then(() => alert("تم الحفظ"));
     }
-
     function switchView(v) {
         document.querySelectorAll('.view-section').forEach(e=>e.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
@@ -663,13 +634,6 @@
     function setYesterday() { const d = new Date(); d.setDate(d.getDate()-1); document.getElementById('logDate').valueAsDate=d; }
     function getTimeAgo(d) { const s = Math.floor((new Date()-d)/1000); if(s<3600) return Math.floor(s/60)+" د"; return Math.floor(s/3600)+" س"; }
     function openModal(id) { document.getElementById(id).style.display='flex'; }
-    function adminCheck() { if(currentUser.email === ADMIN_EMAIL) document.getElementById('adminPanel').style.display='block'; }
-    function toggleAdminPanel() { document.getElementById('adminPanel').style.display='none'; }
-    function adminUpdate() { 
-        const g = parseFloat(document.getElementById('admGoal').value);
-        const m = document.getElementById('admMsg').value;
-        if(g || m) db.collection('system').doc('config').set({goal:g, msg:m}, {merge:true}).then(()=>toggleAdminPanel());
-    }
     function forceUpdateApp() { window.location.reload(true); }
 
     document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('ar-EG');
